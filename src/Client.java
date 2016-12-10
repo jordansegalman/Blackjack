@@ -14,16 +14,26 @@ import java.util.Scanner;
 // TODO: GUI
 
 public class Client {
+    private String serverAddress;   // server address
+    private int serverPort;         // server port
 
     /**
-     * Main method of the client that creates objects and executes other methods.
+     * Constructor for client object.
      *
-     * @param args String array of arguments passed to the client
+     * @param serverAddress Server address
+     * @param serverPort Server port
      */
 
-    public static void main(String[] args) {
-        String serverAddress = "localhost";         // server address
-        int serverPort = 44444;                     // server port
+    public Client(String serverAddress, int serverPort) {
+        this.serverAddress = serverAddress;
+        this.serverPort = serverPort;
+    }
+
+    /**
+     * Starts the client.
+     */
+
+    public void start() {
         String serverMessage;                       // message received from server
         Scanner scanner = new Scanner(System.in);   // scanner to get input from the user
         boolean gameOver = false;                   // true if the game is over, false if not
@@ -59,5 +69,16 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Main method of the client that creates objects and executes other methods.
+     *
+     * @param args String array of arguments passed to the client
+     */
+
+    public static void main(String[] args) {
+        Client client = new Client("localhost", 44444);
+        client.start();
     }
 }
