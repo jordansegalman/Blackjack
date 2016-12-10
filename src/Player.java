@@ -16,24 +16,24 @@ import java.util.concurrent.CountDownLatch;
 // TODO: Insurance
 
 public class Player implements Runnable {
-    private final Table table;                  // table to join
-    private BufferedReader in;                  // in to client
-    private PrintWriter out;                    // out from client
-    private Hand playerHand = new Hand();       // player hand to hold cards
-    private double money = 2500;                // money available to bet
-    private String clientMessage;               // message received from client
-    private double bet;                         // amount of money bet
-    private boolean receivedBet = false;        // true if bet made, false if not
-    private boolean hasBlackjack = false;       // true if player has Blackjack, false if does not
-    private String choice;                      // choice to hit or stand
-    private boolean receivedChoice = false;     // true if choice to hit or stand made, false if not
-    private CountDownLatch startLatch;          // latch to wait for all players to join game
-    private CountDownLatch betLatch;            // latch to wait for all players to bet
-    private CountDownLatch dealLatch;           // latch to wait for all players to be dealt cards
-    private CountDownLatch dealerTurnLatch;     // latch to wait for dealer to finish turn
-    private String playAgain;                   // choice to play again or not
-    private boolean receivedPlayAgain = false;  // true if choice to play again made, false if not
-    private boolean continuePlaying = false;    // true if player wants to keep playing, false if does not
+    private final Table table;                              // table to join
+    private BufferedReader in;                              // in to client
+    private PrintWriter out;                                // out from client
+    private BlackjackHand playerHand = new BlackjackHand(); // player hand to hold cards
+    private double money = 2500;                            // money available to bet
+    private String clientMessage;                           // message received from client
+    private double bet;                                     // amount of money bet
+    private boolean receivedBet = false;                    // true if bet made, false if not
+    private boolean hasBlackjack = false;                   // true if player has Blackjack, false if does not
+    private String choice;                                  // choice to hit or stand
+    private boolean receivedChoice = false;                 // true if choice to hit or stand made, false if not
+    private CountDownLatch startLatch;                      // latch to wait for all players to join game
+    private CountDownLatch betLatch;                        // latch to wait for all players to bet
+    private CountDownLatch dealLatch;                       // latch to wait for all players to be dealt cards
+    private CountDownLatch dealerTurnLatch;                 // latch to wait for dealer to finish turn
+    private String playAgain;                               // choice to play again or not
+    private boolean receivedPlayAgain = false;              // true if choice to play again made, false if not
+    private boolean continuePlaying = false;                // true if player wants to keep playing, false if does not
 
     /**
      * Constructor for player object.

@@ -10,7 +10,7 @@ import java.util.concurrent.CountDownLatch;
 public class Table implements Runnable {
     private ArrayList<Player> table = new ArrayList<>();    // holds the players at the table
     private Deck deck;                                      // deck being used
-    private Hand dealerHand = new Hand();                   // dealer hand to hold cards
+    private BlackjackHand dealerHand = new BlackjackHand(); // dealer hand to hold cards
     private boolean dealerHasBlackjack;                     // true if dealer has Blackjack, false if does not
     private CountDownLatch placedBetsLatch;                 // latch to wait for all players to place their bets
     private CountDownLatch turnLatch;                       // latch to wait for all players to be ready for their turns
@@ -163,7 +163,7 @@ public class Table implements Runnable {
      * @return the dealer hand
      */
 
-    public Hand getDealerHand() {
+    public BlackjackHand getDealerHand() {
         return this.dealerHand;
     }
 
