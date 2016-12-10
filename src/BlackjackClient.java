@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 // TODO: GUI
 
-public class Client {
+public class BlackjackClient {
     private String serverAddress;   // server address
     private int serverPort;         // server port
 
@@ -24,7 +24,7 @@ public class Client {
      * @param serverPort Server port
      */
 
-    public Client(String serverAddress, int serverPort) {
+    public BlackjackClient(String serverAddress, int serverPort) {
         this.serverAddress = serverAddress;
         this.serverPort = serverPort;
     }
@@ -78,7 +78,7 @@ public class Client {
      */
 
     public static void main(String[] args) {
-        Client client = new Client("localhost", 44444);
-        client.start();
+        BlackjackClient blackjackClient = new BlackjackClient("localhost", 44444);
+        blackjackClient.start();
     }
 }

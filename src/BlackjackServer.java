@@ -8,7 +8,7 @@ import java.net.Socket;
  * @author Jordan Segalman
  */
 
-public class Server {
+public class BlackjackServer {
     private int serverPort;         // server port
     private int playersPerTable;    // number of players per table
 
@@ -19,7 +19,7 @@ public class Server {
      * @param playersPerTable Number of players per table
      */
 
-    public Server(int serverPort, int playersPerTable) {
+    public BlackjackServer(int serverPort, int playersPerTable) {
         this.serverPort = serverPort;
         this.playersPerTable = playersPerTable;
     }
@@ -58,7 +58,7 @@ public class Server {
      */
 
     public static void main(String[] args) {
-        Server server = new Server(44444, 1);
-        server.start();
+        BlackjackServer blackjackServer = new BlackjackServer(44444, 1);
+        blackjackServer.start();
     }
 }
