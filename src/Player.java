@@ -12,7 +12,6 @@ import java.util.concurrent.CountDownLatch;
  */
 
 // TODO: Splitting Pairs
-// TODO: Doubling Down
 // TODO: Insurance
 
 public class Player implements Runnable {
@@ -25,6 +24,8 @@ public class Player implements Runnable {
     private double bet;                                     // amount of money bet
     private boolean receivedBet = false;                    // true if bet made, false if not
     private boolean hasBlackjack = false;                   // true if player has Blackjack, false if does not
+    private boolean doubleDown = false;                     // true if player decides to double down, false if does not
+    private Card doubleDownCard;                            // card given to player face down when they double down
     private String choice;                                  // choice to hit or stand
     private boolean receivedChoice = false;                 // true if choice to hit or stand made, false if not
     private CountDownLatch startLatch;                      // latch to wait for all players to join game
@@ -179,6 +180,33 @@ public class Player implements Runnable {
             this.hasBlackjack = true;
         } else if (this.table.getDealerHand().blackjackValue() == 21) {
             out.println("INFOMESSAGE--The dealer has Blackjack.");
+        } else if (this.playerHand.blackjackValue() >= 9 && this.playerHand.blackjackValue() <= 11) {
+            if (this.money >= this.bet * 2) {
+                this.receivedChoice = false;
+                do {
+                    out.println("REPLYMESSAGE--Would you like to double down? [Y/n]");
+                    try {
+                        while (!this.receivedChoice) {
+                            if ((this.clientMessage = in.readLine()) != null) {
+                                this.choice = this.clientMessage;
+                                this.receivedChoice = true;
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (!this.choice.equals("Y") && !this.choice.equals("y") && !this.choice.equals("N") && !this.choice.equals("n")) {
+                        out.println("INFOMESSAGE--Please enter either 'Y' or 'N'.");
+                        this.receivedChoice = false;
+                    }
+                } while (!this.receivedChoice);
+                if (this.choice.equals("Y") || this.choice.equals("y")) {
+                    this.doubleDown = true;
+                    this.bet *= 2;
+                }
+            } else {
+                out.println("INFOMESSAGE--You do not have enough money to double down.");
+            }
         }
         this.table.turnLatchCountDown();
         if (this.table.getNumPlayers() > 1) {
@@ -192,7 +220,7 @@ public class Player implements Runnable {
      */
 
     void takeTurn() {
-        if (!this.hasBlackjack && !this.table.getDealerHasBlackjack()) {
+        if (!this.hasBlackjack && !this.table.getDealerHasBlackjack() && !this.doubleDown) {
             do {
                 this.receivedChoice = false;
                 do {
@@ -223,6 +251,11 @@ public class Player implements Runnable {
             if (this.table.getNumPlayers() > 1) {
                 out.println("INFOMESSAGE--Waiting for other players to take their turns.");
             }
+        } else if (this.doubleDown) {
+            Card newCard = this.table.dealCard();
+            this.dealCard(newCard);
+            this.doubleDownCard = newCard;
+            out.println("INFOMESSAGE--Your bet has been doubled. You were given a card face down.");
         }
     }
 
@@ -238,6 +271,9 @@ public class Player implements Runnable {
             out.println("INFOMESSAGE--" + this.table.getDealerHand().getCard(i));
         }
         out.println("INFOMESSAGE--Dealer's Total: " + this.table.getDealerHand().blackjackValue());
+        if (this.doubleDown) {
+            out.println("INFOMESSAGE--Your face down card is the " + this.doubleDownCard + ".");
+        }
         out.println("INFOMESSAGE--Your Total: " + this.playerHand.blackjackValue());
         if (!this.hasBlackjack && !this.table.getDealerHasBlackjack()) {
             if (this.playerHand.blackjackValue() > 21 && this.table.getDealerHand().blackjackValue() > 21) {
