@@ -81,6 +81,16 @@ public class Card {
     }
 
     /**
+     * Returns the rank of the card.
+     *
+     * @return the rank of the card
+     */
+
+    public Rank rank() {
+        return this.rank;
+    }
+
+    /**
      * Returns a string representation of the card.
      *
      * @return the string representation of the card
