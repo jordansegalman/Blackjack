@@ -108,6 +108,7 @@ public class Player implements Runnable {
         this.playerHand.clear();
         this.receivedBet = false;
         this.hasBlackjack = false;
+        this.doubleDown = false;
         this.receivedChoice = false;
         this.receivedPlayAgain = false;
         this.continuePlaying = false;
@@ -180,7 +181,20 @@ public class Player implements Runnable {
             this.hasBlackjack = true;
         } else if (this.table.getDealerHand().blackjackValue() == 21) {
             out.println("INFOMESSAGE--The dealer has Blackjack.");
-        } else if (this.playerHand.blackjackValue() >= 9 && this.playerHand.blackjackValue() <= 11) {
+        }
+        this.table.turnLatchCountDown();
+        if (this.table.getNumPlayers() > 1) {
+            out.println("INFOMESSAGE--Waiting for other players to take their turns.");
+        }
+    }
+
+    /**
+     * Performs the player's turn by asking if the player wants to
+     * hit or stand.
+     */
+
+    void takeTurn() {
+        if (this.playerHand.blackjackValue() >= 9 && this.playerHand.blackjackValue() <= 11) {
             if (this.money >= this.bet * 2) {
                 this.receivedChoice = false;
                 do {
@@ -203,24 +217,15 @@ public class Player implements Runnable {
                 if (this.choice.equals("Y") || this.choice.equals("y")) {
                     this.doubleDown = true;
                     this.bet *= 2;
+                    Card newCard = this.table.dealCard();
+                    this.dealCard(newCard);
+                    this.doubleDownCard = newCard;
+                    out.println("INFOMESSAGE--Your bet has been doubled. You were given a card face down.");
                 }
             } else {
                 out.println("INFOMESSAGE--You do not have enough money to double down.");
             }
-        }
-        this.table.turnLatchCountDown();
-        if (this.table.getNumPlayers() > 1) {
-            out.println("INFOMESSAGE--Waiting for other players to take their turns.");
-        }
-    }
-
-    /**
-     * Performs the player's turn by asking if the player wants to
-     * hit or stand.
-     */
-
-    void takeTurn() {
-        if (!this.hasBlackjack && !this.table.getDealerHasBlackjack() && !this.doubleDown) {
+        } else if (!this.hasBlackjack && !this.table.getDealerHasBlackjack() && !this.doubleDown) {
             do {
                 this.receivedChoice = false;
                 do {
@@ -251,11 +256,6 @@ public class Player implements Runnable {
             if (this.table.getNumPlayers() > 1) {
                 out.println("INFOMESSAGE--Waiting for other players to take their turns.");
             }
-        } else if (this.doubleDown) {
-            Card newCard = this.table.dealCard();
-            this.dealCard(newCard);
-            this.doubleDownCard = newCard;
-            out.println("INFOMESSAGE--Your bet has been doubled. You were given a card face down.");
         }
     }
 
