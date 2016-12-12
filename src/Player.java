@@ -50,7 +50,6 @@ public class Player implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        out.println("INFOMESSAGE--Welcome to Blackjack!");
     }
 
     /**
@@ -59,6 +58,7 @@ public class Player implements Runnable {
 
     @Override
     public void run() {
+        out.println("INFOMESSAGE--Welcome to Blackjack!");
         do {
             this.playBlackjack();
         } while (this.continuePlaying);

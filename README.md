@@ -1,6 +1,6 @@
 # Blackjack
 
-This is a multiplayer Blackjack card game with a server and a client. The server acts as the house and creates new tables for players to join through the client. Every player starts with a certain amount of money and must make a minimum bet each round. Players can leave after each round or will be kicked out when they do not have enough money to place the minimum bet. The dealer hits on soft 17 and a new deck of cards is used for each round. All other rules are standard Blackjack rules.
+This is a multiplayer Blackjack card game with a server and a client. The server acts as the house and creates new tables for players to join through the client. Every player starts with a certain amount of money and must make a minimum bet each round. Players can leave after each round or will be kicked out when they do not have enough money to place the minimum bet. The dealer hits on a soft 17, a shoe of six decks is used, and the shoe is shuffled when a new round starts if there is less than one and a half decks worth of cards remaining in the shoe. All other rules are standard Blackjack rules.
 
 ## How to Play
 

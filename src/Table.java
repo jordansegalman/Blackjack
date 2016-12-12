@@ -9,7 +9,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class Table implements Runnable {
     private ArrayList<Player> table = new ArrayList<>();    // holds the players at the table
-    private Deck deck;                                      // deck being used
+    private Shoe shoe;                                      // shoe being used to deal cards
     private BlackjackHand dealerHand = new BlackjackHand(); // dealer hand to hold cards
     private boolean dealerHasBlackjack;                     // true if dealer has Blackjack, false if does not
     private CountDownLatch placedBetsLatch;                 // latch to wait for all players to place their bets
@@ -22,6 +22,8 @@ public class Table implements Runnable {
 
     @Override
     public void run() {
+        this.shoe = new Shoe(6);
+        this.shoe.shuffle();
         do {
             this.playBlackjack();
         } while (this.numPlayers() > 0);
@@ -72,8 +74,10 @@ public class Table implements Runnable {
      */
 
     private void setup() {
-        this.deck = new Deck();
-        this.deck.shuffle();
+        if (this.shoe.remainingCards() < 78) {
+            this.shoe = new Shoe(6);
+            this.shoe.shuffle();
+        }
         this.dealerHand.clear();
         this.dealerHasBlackjack = false;
         this.placedBetsLatch = new CountDownLatch(this.numPlayers());
@@ -87,9 +91,9 @@ public class Table implements Runnable {
 
     private void dealInitialCards() {
         for (int i = 0; i < 2; i++) {
-            this.dealerHand.addCard(this.deck.dealCard());
+            this.dealerHand.addCard(this.shoe.dealCard());
             for (Player player : this.table) {
-                player.originalPlayerHand().addCard(this.deck.dealCard());
+                player.originalPlayerHand().addCard(this.shoe.dealCard());
             }
         }
         if (this.dealerHand.blackjackValue() == 21) {
@@ -103,7 +107,7 @@ public class Table implements Runnable {
 
     private void dealerTurn() {
         while ((this.dealerHand.isSoft() && this.dealerHand.blackjackValue() == 17) || this.dealerHand.blackjackValue() < 17) {
-            this.dealerHand.addCard(this.deck.dealCard());
+            this.dealerHand.addCard(this.shoe.dealCard());
         }
     }
 
@@ -168,13 +172,13 @@ public class Table implements Runnable {
     }
 
     /**
-     * Returns a card dealt from the deck.
+     * Returns a card dealt from the shoe.
      *
-     * @return a card dealt from the deck
+     * @return a card dealt from the shoe
      */
 
     public Card dealCard() {
-        return this.deck.dealCard();
+        return this.shoe.dealCard();
     }
 
     /**
