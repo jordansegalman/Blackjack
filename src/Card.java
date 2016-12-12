@@ -5,8 +5,8 @@
  */
 
 public class Card {
-    private final Rank rank;    // rank of the card
-    private final Suit suit;    // suit of the card
+    private final Rank RANK;    // rank of the card
+    private final Suit SUIT;    // suit of the card
 
     /**
      * Ranks that cards can have.
@@ -66,8 +66,8 @@ public class Card {
      */
 
     public Card(Rank rank, Suit suit) {
-        this.rank = rank;
-        this.suit = suit;
+        this.RANK = rank;
+        this.SUIT = suit;
     }
 
     /**
@@ -77,7 +77,7 @@ public class Card {
      */
 
     public int value() {
-        return this.rank.value;
+        return this.RANK.value;
     }
 
     /**
@@ -87,7 +87,7 @@ public class Card {
      */
 
     public Rank rank() {
-        return this.rank;
+        return this.RANK;
     }
 
     /**
@@ -98,6 +98,6 @@ public class Card {
 
     @Override
     public String toString() {
-        return this.rank + " of " + this.suit;
+        return this.RANK + " of " + this.SUIT;
     }
 }

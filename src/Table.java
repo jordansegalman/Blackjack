@@ -24,7 +24,7 @@ public class Table implements Runnable {
     public void run() {
         do {
             this.playBlackjack();
-        } while (this.getNumPlayers() > 0);
+        } while (this.numPlayers() > 0);
     }
 
     /**
@@ -54,7 +54,7 @@ public class Table implements Runnable {
             e.printStackTrace();
         }
         for (Player player : this.table) {
-            player.takeTurn();
+            player.takeTurn(player.originalPlayerHand());
         }
         this.dealerTurn();
         for (Player player : this.table) {
@@ -76,9 +76,9 @@ public class Table implements Runnable {
         this.deck.shuffle();
         this.dealerHand.clear();
         this.dealerHasBlackjack = false;
-        this.placedBetsLatch = new CountDownLatch(this.getNumPlayers());
-        this.turnLatch = new CountDownLatch(this.getNumPlayers());
-        this.continuePlayingLatch = new CountDownLatch(this.getNumPlayers());
+        this.placedBetsLatch = new CountDownLatch(this.numPlayers());
+        this.turnLatch = new CountDownLatch(this.numPlayers());
+        this.continuePlayingLatch = new CountDownLatch(this.numPlayers());
     }
 
     /**
@@ -89,7 +89,7 @@ public class Table implements Runnable {
         for (int i = 0; i < 2; i++) {
             this.dealerHand.addCard(this.deck.dealCard());
             for (Player player : this.table) {
-                player.dealCard(this.deck.dealCard());
+                player.originalPlayerHand().addCard(this.deck.dealCard());
             }
         }
         if (this.dealerHand.blackjackValue() == 21) {
@@ -133,7 +133,7 @@ public class Table implements Runnable {
      * @return the number of players at the table
      */
 
-    public int getNumPlayers() {
+    public int numPlayers() {
         return this.table.size();
     }
 
@@ -143,7 +143,7 @@ public class Table implements Runnable {
      * @return the minimum bet of the table
      */
 
-    public double getMinimumBet() {
+    public double minimumBet() {
         return 500;
     }
 
@@ -153,7 +153,7 @@ public class Table implements Runnable {
      * @return true if the dealer has Blackjack, false if does not
      */
 
-    public boolean getDealerHasBlackjack() {
+    public boolean dealerHasBlackjack() {
         return this.dealerHasBlackjack;
     }
 
@@ -163,7 +163,7 @@ public class Table implements Runnable {
      * @return the dealer hand
      */
 
-    public BlackjackHand getDealerHand() {
+    public BlackjackHand dealerHand() {
         return this.dealerHand;
     }
 
