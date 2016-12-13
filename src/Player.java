@@ -58,12 +58,12 @@ public class Player implements Runnable {
 
     @Override
     public void run() {
-        out.println("INFOMESSAGE--Welcome to Blackjack!");
+        this.out.println("INFOMESSAGE--Welcome to Blackjack!");
         do {
             this.playBlackjack();
         } while (this.continuePlaying);
-        out.println("INFOMESSAGE--You leave with $" + String.format("%.2f", this.money) + ".");
-        out.println("GAMEOVERMESSAGE--Thanks for playing!");
+        this.out.println("INFOMESSAGE--You leave with $" + String.format("%.2f", this.money) + ".");
+        this.out.println("GAMEOVERMESSAGE--Thanks for playing!");
     }
 
     /**
@@ -118,7 +118,7 @@ public class Player implements Runnable {
         this.betLatch = new CountDownLatch(1);
         this.dealLatch = new CountDownLatch(1);
         this.dealerTurnLatch = new CountDownLatch(1);
-        out.println("INFOMESSAGE--Waiting for other players to join.");
+        this.out.println("INFOMESSAGE--Waiting for other players to join.");
     }
 
     /**
@@ -128,11 +128,11 @@ public class Player implements Runnable {
     private void getBet() {
         do {
             boolean betNotNumeric = false;  // true if bet is not a positive integer, false if it is
-            out.println("INFOMESSAGE--You have $" + String.format("%.2f", this.money) + ".");
-            out.println("REPLYMESSAGE--The minimum bet is $" + String.format("%.2f", this.table.minimumBet()) + ". How much would you like to bet?");
+            this.out.println("INFOMESSAGE--You have $" + String.format("%.2f", this.money) + ".");
+            this.out.println("REPLYMESSAGE--The minimum bet is $" + String.format("%.2f", this.table.minimumBet()) + ". How much would you like to bet?");
             try {
                 while (!this.receivedBet) {
-                    if ((this.clientMessage = in.readLine()) != null) {
+                    if ((this.clientMessage = this.in.readLine()) != null) {
                         try {
                             int bet = Integer.parseInt(this.clientMessage);
                             this.originalPlayerHand.placeBet(bet);
@@ -147,20 +147,20 @@ public class Player implements Runnable {
                 e.printStackTrace();
             }
             if (betNotNumeric) {
-                out.println("INFOMESSAGE--Your bet must be a positive whole number.");
+                this.out.println("INFOMESSAGE--Your bet must be a positive whole number.");
                 this.receivedBet = false;
             } else if (this.originalPlayerHand.bet() > this.money) {
-                out.println("INFOMESSAGE--You cannot bet more money than you have.");
+                this.out.println("INFOMESSAGE--You cannot bet more money than you have.");
                 this.receivedBet = false;
             } else if (this.originalPlayerHand.bet() < this.table.minimumBet()) {
-                out.println("INFOMESSAGE--You must bet at least the minimum amount.");
+                this.out.println("INFOMESSAGE--You must bet at least the minimum amount.");
                 this.receivedBet = false;
             }
         } while (!this.receivedBet);
         this.money -= this.originalPlayerHand.bet();
         this.table.placedBetsLatchCountDown();
         if (this.table.numPlayers() > 1) {
-            out.println("INFOMESSAGE--Waiting for other players to place their bets.");
+            this.out.println("INFOMESSAGE--Waiting for other players to place their bets.");
         }
     }
 
@@ -171,23 +171,23 @@ public class Player implements Runnable {
      */
 
     private void sendRoundInformation() {
-        out.println("INFOMESSAGE--Your Cards:");
+        this.out.println("INFOMESSAGE--Your Cards:");
         for (int i = 0; i < this.originalPlayerHand.size(); i++) {
-            out.println("INFOMESSAGE--" + this.originalPlayerHand.getCard(i));
+            this.out.println("INFOMESSAGE--" + this.originalPlayerHand.getCard(i));
         }
-        out.println("INFOMESSAGE--The dealer is showing the " + table.dealerHand().getCard(0) + ".");
+        this.out.println("INFOMESSAGE--The dealer is showing the " + this.table.dealerHand().getCard(0) + ".");
         if (this.originalPlayerHand.blackjackValue() == 21 && this.table.dealerHand().blackjackValue() == 21) {
-            out.println("INFOMESSAGE--You and the dealer both have Blackjack.");
+            this.out.println("INFOMESSAGE--You and the dealer both have Blackjack.");
             this.hasBlackjack = true;
         } else if (this.originalPlayerHand.blackjackValue() == 21) {
-            out.println("INFOMESSAGE--You have Blackjack.");
+            this.out.println("INFOMESSAGE--You have Blackjack.");
             this.hasBlackjack = true;
         } else if (this.table.dealerHand().blackjackValue() == 21) {
-            out.println("INFOMESSAGE--The dealer has Blackjack.");
+            this.out.println("INFOMESSAGE--The dealer has Blackjack.");
         }
         this.table.turnLatchCountDown();
         if (this.table.numPlayers() > 1) {
-            out.println("INFOMESSAGE--Waiting for other players to take their turns.");
+            this.out.println("INFOMESSAGE--Waiting for other players to take their turns.");
         }
     }
 
@@ -203,11 +203,11 @@ public class Player implements Runnable {
             if (this.money >= hand.bet()) {
                 this.receivedChoice = false;
                 do {
-                    out.println("INFOMESSAGE--Hand Total: " + hand.blackjackValue());
-                    out.println("REPLYMESSAGE--Would you like to split pairs? [Y/n]");
+                    this.out.println("INFOMESSAGE--Hand Total: " + hand.blackjackValue());
+                    this.out.println("REPLYMESSAGE--Would you like to split pairs? [Y/n]");
                     try {
                         while (!this.receivedChoice) {
-                            if ((this.clientMessage = in.readLine()) != null) {
+                            if ((this.clientMessage = this.in.readLine()) != null) {
                                 this.choice = this.clientMessage;
                                 this.receivedChoice = true;
                             }
@@ -216,7 +216,7 @@ public class Player implements Runnable {
                         e.printStackTrace();
                     }
                     if (!this.choice.equals("Y") && !this.choice.equals("y") && !this.choice.equals("N") && !this.choice.equals("n")) {
-                        out.println("INFOMESSAGE--Please enter either 'Y' or 'N'.");
+                        this.out.println("INFOMESSAGE--Please enter either 'Y' or 'N'.");
                         this.receivedChoice = false;
                     }
                 } while (!this.receivedChoice);
@@ -224,18 +224,18 @@ public class Player implements Runnable {
                     this.splitPairs(hand);
                 }
             } else {
-                out.println("INFOMESSAGE--You do not have enough money to split pairs.");
+                this.out.println("INFOMESSAGE--You do not have enough money to split pairs.");
             }
         }
         if (!this.hasBlackjack && !this.table.dealerHasBlackjack() && !hand.splitPairs() && ((hand.blackjackValue() >= 9 && hand.blackjackValue() <= 11) || (hand.isSoft() && hand.blackjackValue() >= 19 && hand.blackjackValue() <= 21))) {
             if (this.money >= hand.bet()) {
                 this.receivedChoice = false;
                 do {
-                    out.println("INFOMESSAGE--Hand Total: " + hand.blackjackValue());
-                    out.println("REPLYMESSAGE--Would you like to double down? [Y/n]");
+                    this.out.println("INFOMESSAGE--Hand Total: " + hand.blackjackValue());
+                    this.out.println("REPLYMESSAGE--Would you like to double down? [Y/n]");
                     try {
                         while (!this.receivedChoice) {
-                            if ((this.clientMessage = in.readLine()) != null) {
+                            if ((this.clientMessage = this.in.readLine()) != null) {
                                 this.choice = this.clientMessage;
                                 this.receivedChoice = true;
                             }
@@ -244,7 +244,7 @@ public class Player implements Runnable {
                         e.printStackTrace();
                     }
                     if (!this.choice.equals("Y") && !this.choice.equals("y") && !this.choice.equals("N") && !this.choice.equals("n")) {
-                        out.println("INFOMESSAGE--Please enter either 'Y' or 'N'.");
+                        this.out.println("INFOMESSAGE--Please enter either 'Y' or 'N'.");
                         this.receivedChoice = false;
                     }
                 } while (!this.receivedChoice);
@@ -254,21 +254,21 @@ public class Player implements Runnable {
                     hand.placeBet(hand.bet() * 2);
                     Card newCard = this.table.dealCard();
                     hand.addDoubleDownCard(newCard);
-                    out.println("INFOMESSAGE--Your bet on this hand has been doubled. You were given a card face down.");
+                    this.out.println("INFOMESSAGE--Your bet on this hand has been doubled. You were given a card face down.");
                 }
             } else {
-                out.println("INFOMESSAGE--You do not have enough money to double down.");
+                this.out.println("INFOMESSAGE--You do not have enough money to double down.");
             }
         }
         if (!this.hasBlackjack && !this.table.dealerHasBlackjack() && !hand.splitPairs() && !hand.doubleDown()) {
             do {
                 this.receivedChoice = false;
                 do {
-                    out.println("INFOMESSAGE--Hand Total: " + hand.blackjackValue());
-                    out.println("REPLYMESSAGE--Would you like to hit or stand? [H/s]");
+                    this.out.println("INFOMESSAGE--Hand Total: " + hand.blackjackValue());
+                    this.out.println("REPLYMESSAGE--Would you like to hit or stand? [H/s]");
                     try {
                         while (!this.receivedChoice) {
-                            if ((this.clientMessage = in.readLine()) != null) {
+                            if ((this.clientMessage = this.in.readLine()) != null) {
                                 this.choice = this.clientMessage;
                                 this.receivedChoice = true;
                             }
@@ -277,23 +277,23 @@ public class Player implements Runnable {
                         e.printStackTrace();
                     }
                     if (!this.choice.equals("H") && !this.choice.equals("h") && !this.choice.equals("S") && !this.choice.equals("s")) {
-                        out.println("INFOMESSAGE--Please enter either 'H' or 'S'.");
+                        this.out.println("INFOMESSAGE--Please enter either 'H' or 'S'.");
                         this.receivedChoice = false;
                     }
                 } while (!this.receivedChoice);
                 if (this.choice.equals("H") || this.choice.equals("h")) {
                     Card newCard = this.table.dealCard();
                     hand.addCard(newCard);
-                    out.println("INFOMESSAGE--You got the " + newCard + ".");
+                    this.out.println("INFOMESSAGE--You got the " + newCard + ".");
                 }
             } while ((this.choice.equals("H") || this.choice.equals("h")) && hand.blackjackValue() <= 21);
-            out.println("INFOMESSAGE--Final Hand Total: " + hand.blackjackValue());
+            this.out.println("INFOMESSAGE--Final Hand Total: " + hand.blackjackValue());
             if (hand.blackjackValue() > 21) {
-                out.println("INFOMESSAGE--You busted.");
+                this.out.println("INFOMESSAGE--You busted.");
             }
         }
         if (this.table.numPlayers() > 1 && !this.hasBlackjack && !this.table.dealerHasBlackjack() && hand == this.playerHands.get(this.playerHands.size() - 1)) {
-            out.println("INFOMESSAGE--Waiting for other players to take their turns.");
+            this.out.println("INFOMESSAGE--Waiting for other players to take their turns.");
         }
     }
 
@@ -318,24 +318,24 @@ public class Player implements Runnable {
         if (firstHand.getCard(0).rank() == Card.Rank.ACE && secondHand.getCard(0).rank() == Card.Rank.ACE) {
             Card newCard = this.table.dealCard();
             firstHand.addCard(newCard);
-            out.println("INFOMESSAGE--You got the " + newCard + " on the first hand.");
-            out.println("INFOMESSAGE--Final First Hand Total: " + firstHand.blackjackValue());
+            this.out.println("INFOMESSAGE--You got the " + newCard + " on the first hand.");
+            this.out.println("INFOMESSAGE--Final First Hand Total: " + firstHand.blackjackValue());
             newCard = this.table.dealCard();
             secondHand.addCard(newCard);
-            out.println("INFOMESSAGE--You got the " + newCard + " on the second hand.");
-            out.println("INFOMESSAGE--Final Second Hand Total: " + secondHand.blackjackValue());
+            this.out.println("INFOMESSAGE--You got the " + newCard + " on the second hand.");
+            this.out.println("INFOMESSAGE--Final Second Hand Total: " + secondHand.blackjackValue());
             if (this.table.numPlayers() > 1 && secondHand == this.playerHands.get(this.playerHands.size() - 1)) {
-                out.println("INFOMESSAGE--Waiting for other players to take their turns.");
+                this.out.println("INFOMESSAGE--Waiting for other players to take their turns.");
             }
         } else {
             Card newCard = this.table.dealCard();
             firstHand.addCard(newCard);
-            out.println("INFOMESSAGE--You got the " + newCard + " on the first hand.");
-            out.println("INFOMESSAGE--First Hand Total: " + firstHand.blackjackValue());
+            this.out.println("INFOMESSAGE--You got the " + newCard + " on the first hand.");
+            this.out.println("INFOMESSAGE--First Hand Total: " + firstHand.blackjackValue());
             newCard = this.table.dealCard();
             secondHand.addCard(newCard);
-            out.println("INFOMESSAGE--You got the " + newCard + " on the second hand.");
-            out.println("INFOMESSAGE--Second Hand Total: " + secondHand.blackjackValue());
+            this.out.println("INFOMESSAGE--You got the " + newCard + " on the second hand.");
+            this.out.println("INFOMESSAGE--Second Hand Total: " + secondHand.blackjackValue());
             this.takeTurn(firstHand);
             this.takeTurn(secondHand);
         }
@@ -346,9 +346,9 @@ public class Player implements Runnable {
      */
 
     private void sendDealerCards() {
-        out.println("INFOMESSAGE--Dealer's Cards:");
+        this.out.println("INFOMESSAGE--Dealer's Cards:");
         for (int i = 0; i < this.table.dealerHand().size(); i++) {
-            out.println("INFOMESSAGE--" + this.table.dealerHand().getCard(i));
+            this.out.println("INFOMESSAGE--" + this.table.dealerHand().getCard(i));
         }
     }
 
@@ -361,39 +361,39 @@ public class Player implements Runnable {
      */
 
     private void sendResult(BlackjackHand hand) {
-        out.println("INFOMESSAGE--Dealer's Total: " + this.table.dealerHand().blackjackValue());
+        this.out.println("INFOMESSAGE--Dealer's Total: " + this.table.dealerHand().blackjackValue());
         if (hand.doubleDown()) {
-            out.println("INFOMESSAGE--Your face down card is the " + hand.doubleDownCard() + ".");
+            this.out.println("INFOMESSAGE--Your face down card is the " + hand.doubleDownCard() + ".");
         }
-        out.println("INFOMESSAGE--Hand Total: " + hand.blackjackValue());
+        this.out.println("INFOMESSAGE--Hand Total: " + hand.blackjackValue());
         if (!this.hasBlackjack && !this.table.dealerHasBlackjack()) {
             if (hand.blackjackValue() > 21 && this.table.dealerHand().blackjackValue() > 21) {
-                out.println("INFOMESSAGE--You and the dealer both busted. It's a tie!");
+                this.out.println("INFOMESSAGE--You and the dealer both busted. It's a tie!");
                 this.money += hand.bet();
             } else if (hand.blackjackValue() > 21) {
-                out.println("INFOMESSAGE--You busted. The dealer wins!");
+                this.out.println("INFOMESSAGE--You busted. The dealer wins!");
             } else if (this.table.dealerHand().blackjackValue() > 21) {
-                out.println("INFOMESSAGE--The dealer busted. You win!");
+                this.out.println("INFOMESSAGE--The dealer busted. You win!");
                 this.money += hand.bet() * 2;
             } else {
                 if (hand.blackjackValue() == this.table.dealerHand().blackjackValue()) {
-                    out.println("INFOMESSAGE--It's a tie!");
+                    this.out.println("INFOMESSAGE--It's a tie!");
                     this.money += hand.bet();
                 } else if (hand.blackjackValue() < this.table.dealerHand().blackjackValue()) {
-                    out.println("INFOMESSAGE--The dealer wins!");
+                    this.out.println("INFOMESSAGE--The dealer wins!");
                 } else if (hand.blackjackValue() > this.table.dealerHand().blackjackValue()){
-                    out.println("INFOMESSAGE--You win!");
+                    this.out.println("INFOMESSAGE--You win!");
                     this.money += hand.bet() * 2;
                 }
             }
         } else {
             if (this.hasBlackjack && this.table.dealerHasBlackjack()) {
-                out.println("INFOMESSAGE--You and the dealer both have Blackjack. It's a tie!");
+                this.out.println("INFOMESSAGE--You and the dealer both have Blackjack. It's a tie!");
                 this.money += hand.bet();
             } else if (!this.hasBlackjack && this.table.dealerHasBlackjack()) {
-                out.println("INFOMESSAGE--The dealer has Blackjack. The dealer wins!");
+                this.out.println("INFOMESSAGE--The dealer has Blackjack. The dealer wins!");
             } else if (this.hasBlackjack && !this.table.dealerHasBlackjack()) {
-                out.println("INFOMESSAGE--You have Blackjack. You win!");
+                this.out.println("INFOMESSAGE--You have Blackjack. You win!");
                 this.money += (hand.bet() + (hand.bet() * (3.0 / 2.0)));
             }
         }
@@ -406,10 +406,10 @@ public class Player implements Runnable {
     private void getContinuePlaying() {
         if (this.money >= this.table.minimumBet()) {
             do {
-                out.println("REPLYMESSAGE--Would you like to keep playing? [Y/n]");
+                this.out.println("REPLYMESSAGE--Would you like to keep playing? [Y/n]");
                 try {
                     while (!this.receivedPlayAgain) {
-                        if ((this.clientMessage = in.readLine()) != null) {
+                        if ((this.clientMessage = this.in.readLine()) != null) {
                             this.playAgain = this.clientMessage;
                             this.receivedPlayAgain = true;
                         }
@@ -418,7 +418,7 @@ public class Player implements Runnable {
                     e.printStackTrace();
                 }
                 if (!this.playAgain.equals("Y") && !this.playAgain.equals("y") && !this.playAgain.equals("N") && !this.playAgain.equals("n")) {
-                    out.println("INFOMESSAGE--Please enter either 'Y' or 'N'.");
+                    this.out.println("INFOMESSAGE--Please enter either 'Y' or 'N'.");
                     this.receivedPlayAgain = false;
                 }
             } while (!this.receivedPlayAgain);
@@ -428,7 +428,7 @@ public class Player implements Runnable {
                 this.table.removePlayer(this);
             }
         } else {
-            out.println("INFOMESSAGE--You do not have enough money to make the minimum bet.");
+            this.out.println("INFOMESSAGE--You do not have enough money to make the minimum bet.");
             this.table.removePlayer(this);
         }
         this.table.continuePlayingLatchCountDown();

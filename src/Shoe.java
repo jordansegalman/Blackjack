@@ -44,7 +44,7 @@ public class Shoe {
 
     public Card dealCard() {
         Card card = this.shoe.get(this.shoe.size() - 1);    // last card in the shoe
-        this.shoe.remove(this.shoe.size() - 1);
+        this.shoe.remove(card);
         return card;
     }
 

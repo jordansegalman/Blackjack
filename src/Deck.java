@@ -38,7 +38,7 @@ public class Deck {
 
     public Card dealCard() {
         Card card = this.deck.get(this.deck.size() - 1);    // last card in the deck
-        this.deck.remove(this.deck.size() - 1);
+        this.deck.remove(card);
         return card;
     }
 }

@@ -39,7 +39,7 @@ public class BlackjackClient {
         boolean gameOver = false;                   // true if the game is over, false if not
 
         try {
-            Socket socket = new Socket(serverAddress, serverPort);                      // socket on server address and port
+            Socket socket = new Socket(this.serverAddress, this.serverPort);            // socket on server address and port
             InputStreamReader isr = new InputStreamReader(socket.getInputStream());     // input stream reader from socket
             BufferedReader in = new BufferedReader(isr);                                // in to server
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);          // out from server

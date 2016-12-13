@@ -128,7 +128,7 @@ public class Table implements Runnable {
      */
 
     public void removePlayer(Player player) {
-        this.table.remove(this.table.indexOf(player));
+        this.table.remove(player);
     }
 
     /**
