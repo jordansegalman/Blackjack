@@ -205,7 +205,7 @@ public class Player implements Runnable {
                 this.money += (this.insuranceBet + (this.insuranceBet * 2));
                 this.out.println("INFOMESSAGE--You won $" + String.format("%.2f", this.insuranceBet * 2) + " from your insurance bet.");
             }
-        } else {
+        } else if (this.table.dealerShownCard().rank() == Card.Rank.ACE && this.table.dealerHand().blackjackValue() != 21){
             this.out.println("INFOMESSAGE--The dealer does not have Blackjack.");
         }
         this.table.turnLatchCountDown();
