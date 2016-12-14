@@ -13,6 +13,7 @@ public class Table implements Runnable {
     private BlackjackHand dealerHand = new BlackjackHand(); // dealer hand to hold cards
     private boolean dealerHasBlackjack;                     // true if dealer has Blackjack, false if does not
     private CountDownLatch placedBetsLatch;                 // latch to wait for all players to place their bets
+    private CountDownLatch placedInsuranceBetsLatch;        // latch to wait for all players to place their insurance bets
     private CountDownLatch turnLatch;                       // latch to wait for all players to be ready for their turns
     private CountDownLatch continuePlayingLatch;            // latch to wait for all players to determine if they will keep playing
 
@@ -51,6 +52,14 @@ public class Table implements Runnable {
             player.dealLatchCountDown();
         }
         try {
+            this.placedInsuranceBetsLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        for (Player player : this.table) {
+            player.insuranceBetLatchCountDown();
+        }
+        try {
             this.turnLatch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -81,6 +90,7 @@ public class Table implements Runnable {
         this.dealerHand.clear();
         this.dealerHasBlackjack = false;
         this.placedBetsLatch = new CountDownLatch(this.numPlayers());
+        this.placedInsuranceBetsLatch = new CountDownLatch(this.numPlayers());
         this.turnLatch = new CountDownLatch(this.numPlayers());
         this.continuePlayingLatch = new CountDownLatch(this.numPlayers());
     }
@@ -162,6 +172,16 @@ public class Table implements Runnable {
     }
 
     /**
+     * Returns the card the dealer is showing.
+     *
+     * @return the card the dealer is showing
+     */
+
+    public Card dealerShownCard() {
+        return this.dealerHand.getCard(0);
+    }
+
+    /**
      * Returns the dealer hand.
      *
      * @return the dealer hand
@@ -187,6 +207,14 @@ public class Table implements Runnable {
 
     public void placedBetsLatchCountDown() {
         this.placedBetsLatch.countDown();
+    }
+
+    /**
+     * Decrements the placed insurance bets latch.
+     */
+
+    public void placedInsuranceBetsLatchCountDown() {
+        this.placedInsuranceBetsLatch.countDown();
     }
 
     /**

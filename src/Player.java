@@ -12,8 +12,6 @@ import java.util.concurrent.CountDownLatch;
  * @author Jordan Segalman
  */
 
-// TODO: Insurance
-
 public class Player implements Runnable {
     private Table table;                                                // table to join
     private BufferedReader in;                                          // in to client
@@ -26,8 +24,11 @@ public class Player implements Runnable {
     private boolean hasBlackjack = false;                               // true if player has Blackjack, false if does not
     private String choice;                                              // choice to hit or stand
     private boolean receivedChoice = false;                             // true if choice to hit or stand made, false if not
+    private double insuranceBet;                                        // amount of insurance bet
+    private boolean placedInsuranceBet = false;                         // true if insurance bet made, false if not
     private CountDownLatch startLatch;                                  // latch to wait for all players to join game
-    private CountDownLatch betLatch;                                    // latch to wait for all players to bet
+    private CountDownLatch betLatch;                                    // latch to wait for all players to place their bets
+    private CountDownLatch insuranceBetLatch;                           // latch to wait for all players to place their insurance bets
     private CountDownLatch dealLatch;                                   // latch to wait for all players to be dealt cards
     private CountDownLatch dealerTurnLatch;                             // latch to wait for dealer to finish turn
     private String playAgain;                                           // choice to play again or not
@@ -112,10 +113,12 @@ public class Player implements Runnable {
         this.receivedBet = false;
         this.hasBlackjack = false;
         this.receivedChoice = false;
+        this.placedInsuranceBet = false;
         this.receivedPlayAgain = false;
         this.continuePlaying = false;
         this.startLatch = new CountDownLatch(1);
         this.betLatch = new CountDownLatch(1);
+        this.insuranceBetLatch = new CountDownLatch(1);
         this.dealLatch = new CountDownLatch(1);
         this.dealerTurnLatch = new CountDownLatch(1);
         this.out.println("INFOMESSAGE--Waiting for other players to join.");
@@ -175,19 +178,77 @@ public class Player implements Runnable {
         for (int i = 0; i < this.originalPlayerHand.size(); i++) {
             this.out.println("INFOMESSAGE--" + this.originalPlayerHand.getCard(i));
         }
-        this.out.println("INFOMESSAGE--The dealer is showing the " + this.table.dealerHand().getCard(0) + ".");
+        if (this.originalPlayerHand.blackjackValue() == 21) {
+            this.out.println("INFOMESSAGE--You have Blackjack.");
+            this.hasBlackjack = true;
+        }
+        this.out.println("INFOMESSAGE--The dealer is showing the " + this.table.dealerShownCard() + ".");
+        if (this.table.dealerShownCard().rank() == Card.Rank.ACE) {
+            this.getInsuranceBet();
+        }
+        this.table.placedInsuranceBetsLatchCountDown();
+        try {
+            this.insuranceBetLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (this.originalPlayerHand.blackjackValue() == 21 && this.table.dealerHand().blackjackValue() == 21) {
             this.out.println("INFOMESSAGE--You and the dealer both have Blackjack.");
             this.hasBlackjack = true;
-        } else if (this.originalPlayerHand.blackjackValue() == 21) {
-            this.out.println("INFOMESSAGE--You have Blackjack.");
-            this.hasBlackjack = true;
+            if (this.placedInsuranceBet) {
+                this.money += (this.insuranceBet + (this.insuranceBet * 2));
+                this.out.println("INFOMESSAGE--You won $" + String.format("%.2f", this.insuranceBet * 2) + " from your insurance bet.");
+            }
         } else if (this.table.dealerHand().blackjackValue() == 21) {
             this.out.println("INFOMESSAGE--The dealer has Blackjack.");
+            if (this.placedInsuranceBet) {
+                this.money += (this.insuranceBet + (this.insuranceBet * 2));
+                this.out.println("INFOMESSAGE--You won $" + String.format("%.2f", this.insuranceBet * 2) + " from your insurance bet.");
+            }
+        } else {
+            this.out.println("INFOMESSAGE--The dealer does not have Blackjack.");
         }
         this.table.turnLatchCountDown();
         if (this.table.numPlayers() > 1) {
             this.out.println("INFOMESSAGE--Waiting for other players to take their turns.");
+        }
+    }
+
+    /**
+     * Asks the player if they want to place an insurance bet.
+     */
+
+    private void getInsuranceBet() {
+        if (this.money >= this.originalPlayerHand.bet() / 2) {
+            this.receivedChoice = false;
+            do {
+                this.out.println("REPLYMESSAGE--Would you like to place an insurance bet? [Y/n]");
+                try {
+                    while (!this.receivedChoice) {
+                        if ((this.clientMessage = this.in.readLine()) != null) {
+                            this.choice = this.clientMessage;
+                            this.receivedChoice = true;
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (!this.choice.equals("Y") && !this.choice.equals("y") && !this.choice.equals("N") && !this.choice.equals("n")) {
+                    this.out.println("INFOMESSAGE--Please enter either 'Y' or 'N'.");
+                    this.receivedChoice = false;
+                }
+            } while (!this.receivedChoice);
+            if (this.choice.equals("Y") || this.choice.equals("y")) {
+                this.insuranceBet = this.originalPlayerHand.bet() / 2;
+                this.money -= this.insuranceBet;
+                this.placedInsuranceBet = true;
+                this.out.println("INFOMESSAGE--You placed an insurance bet of $" + String.format("%.2f", this.insuranceBet) + ".");
+            }
+        } else {
+            this.out.println("INFOMESSAGE--You do not have enough money to place an insurance bet.");
+        }
+        if (this.table.numPlayers() > 1) {
+            this.out.println("INFOMESSAGE--Waiting for other players to place their insurance bets.");
         }
     }
 
@@ -375,6 +436,7 @@ public class Player implements Runnable {
             } else if (this.table.dealerHand().blackjackValue() > 21) {
                 this.out.println("INFOMESSAGE--The dealer busted. You win!");
                 this.money += hand.bet() * 2;
+                this.out.println("INFOMESSAGE--You won $" + String.format("%.2f", hand.bet()) + ".");
             } else {
                 if (hand.blackjackValue() == this.table.dealerHand().blackjackValue()) {
                     this.out.println("INFOMESSAGE--It's a tie!");
@@ -384,6 +446,7 @@ public class Player implements Runnable {
                 } else if (hand.blackjackValue() > this.table.dealerHand().blackjackValue()){
                     this.out.println("INFOMESSAGE--You win!");
                     this.money += hand.bet() * 2;
+                    this.out.println("INFOMESSAGE--You won $" + String.format("%.2f", hand.bet()) + ".");
                 }
             }
         } else {
@@ -395,6 +458,7 @@ public class Player implements Runnable {
             } else if (this.hasBlackjack && !this.table.dealerHasBlackjack()) {
                 this.out.println("INFOMESSAGE--You have Blackjack. You win!");
                 this.money += (hand.bet() + (hand.bet() * (3.0 / 2.0)));
+                this.out.println("INFOMESSAGE--You won $" + String.format("%.2f", hand.bet() * (3.0 / 2.0)) + ".");
             }
         }
     }
@@ -458,6 +522,14 @@ public class Player implements Runnable {
 
     public void betLatchCountDown() {
         this.betLatch.countDown();
+    }
+
+    /**
+     * Decrements the insurance bet latch.
+     */
+
+    public void insuranceBetLatchCountDown() {
+        this.insuranceBetLatch.countDown();
     }
 
     /**
