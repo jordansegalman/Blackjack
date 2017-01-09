@@ -1,3 +1,5 @@
+package BlackjackServer;
+
 /**
  * Card objects represent a standard playing card with a rank and a suit.
  *

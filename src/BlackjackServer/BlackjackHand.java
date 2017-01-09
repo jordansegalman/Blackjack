@@ -1,3 +1,5 @@
+package BlackjackServer;
+
 /**
  * BlackjackHand objects represent a hand of cards in Blackjack.
  *

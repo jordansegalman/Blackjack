@@ -1,3 +1,5 @@
+package BlackjackServer;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -59,12 +61,14 @@ public class Player implements Runnable {
 
     @Override
     public void run() {
-        this.out.println("INFOMESSAGE--Welcome to Blackjack!");
+//        this.out.println("INFOMESSAGE--Welcome to Blackjack!");
+        this.out.println("SERVERMESSAGE--WELCOME");
         do {
             this.playBlackjack();
         } while (this.continuePlaying);
-        this.out.println("INFOMESSAGE--You leave with $" + String.format("%.2f", this.money) + ".");
-        this.out.println("GAMEOVERMESSAGE--Thanks for playing!");
+//        this.out.println("INFOMESSAGE--You leave with $" + String.format("%.2f", this.money) + ".");
+//        this.out.println("GAMEOVERMESSAGE--Thanks for playing!");
+        this.out.println("SERVERMESSAGE--GAMEOVER--" + String.format("%.2f", this.money));
     }
 
     /**
@@ -121,7 +125,8 @@ public class Player implements Runnable {
         this.insuranceBetLatch = new CountDownLatch(1);
         this.dealLatch = new CountDownLatch(1);
         this.dealerTurnLatch = new CountDownLatch(1);
-        this.out.println("INFOMESSAGE--Waiting for other players to join.");
+//        this.out.println("INFOMESSAGE--Waiting for other players to join.");
+//        this.out.println("SERVERMESSAGE--WAITING");
     }
 
     /**
@@ -131,8 +136,9 @@ public class Player implements Runnable {
     private void getBet() {
         do {
             boolean betNotNumeric = false;  // true if bet is not a positive integer, false if it is
-            this.out.println("INFOMESSAGE--You have $" + String.format("%.2f", this.money) + ".");
-            this.out.println("REPLYMESSAGE--The minimum bet is $" + String.format("%.2f", this.table.minimumBet()) + ". How much would you like to bet?");
+//            this.out.println("INFOMESSAGE--You have $" + String.format("%.2f", this.money) + ".");
+//            this.out.println("REPLYMESSAGE--The minimum bet is $" + String.format("%.2f", this.table.minimumBet()) + ". How much would you like to bet?");
+            this.out.println("SERVERMESSAGE--GETBET--" + String.format("%.2f", this.money) + "--" + String.format("%.2f", this.table.minimumBet()));
             try {
                 while (!this.receivedBet) {
                     if ((this.clientMessage = this.in.readLine()) != null) {
@@ -150,21 +156,26 @@ public class Player implements Runnable {
                 e.printStackTrace();
             }
             if (betNotNumeric) {
-                this.out.println("INFOMESSAGE--Your bet must be a positive whole number.");
+//                this.out.println("INFOMESSAGE--Your bet must be a positive whole number.");
+                this.out.println("SERVERMESSAGE--BETRESPONSE--INVALID");
                 this.receivedBet = false;
             } else if (this.originalPlayerHand.bet() > this.money) {
-                this.out.println("INFOMESSAGE--You cannot bet more money than you have.");
+//                this.out.println("INFOMESSAGE--You cannot bet more money than you have.");
+                this.out.println("SERVERMESSAGE--BETRESPONSE--TOOMUCH");
                 this.receivedBet = false;
             } else if (this.originalPlayerHand.bet() < this.table.minimumBet()) {
-                this.out.println("INFOMESSAGE--You must bet at least the minimum amount.");
+//                this.out.println("INFOMESSAGE--You must bet at least the minimum amount.");
+                this.out.println("SERVERMESSAGE--BETRESPONSE--MINIMUM");
+
                 this.receivedBet = false;
             }
         } while (!this.receivedBet);
         this.money -= this.originalPlayerHand.bet();
         this.table.placedBetsLatchCountDown();
-        if (this.table.numPlayers() > 1) {
-            this.out.println("INFOMESSAGE--Waiting for other players to place their bets.");
-        }
+        this.out.println("SERVERMESSAGE--BETRESPONSE--SUCCESS--" + String.format("%.2f", this.money));
+//        if (this.table.numPlayers() > 1) {
+//            this.out.println("INFOMESSAGE--Waiting for other players to place their bets.");
+//        }
     }
 
     /**

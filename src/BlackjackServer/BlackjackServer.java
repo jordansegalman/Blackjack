@@ -1,9 +1,11 @@
+package BlackjackServer;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * Server objects represent a Blackjack server that clients can connect to.
+ * BlackjackServer objects represent a Blackjack server that Blackjack clients can connect to.
  *
  * @author Jordan Segalman
  */
@@ -13,7 +15,7 @@ public class BlackjackServer {
     private int playersPerTable;    // number of players per table
 
     /**
-     * Constructor for server object.
+     * Constructor for Blackjack server object.
      *
      * @param serverPort Server port
      * @param playersPerTable Number of players per table

@@ -23,9 +23,9 @@ javac *.java
 Once you have compiled the java files, all you have to do is run the server and client.
 
 ```
-java Server
+java BlackjackServer
 
-java Client
+java BlackjackClient
 ```
 
 ## License
