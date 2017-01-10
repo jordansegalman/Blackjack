@@ -24,8 +24,8 @@ public class Player implements Runnable {
     private String clientMessage;                                       // message received from client
     private boolean receivedBet = false;                                // true if bet made, false if not
     private boolean hasBlackjack = false;                               // true if player has Blackjack, false if does not
-    private String choice;                                              // choice to hit or stand
-    private boolean receivedChoice = false;                             // true if choice to hit or stand made, false if not
+    private String choice;                                              // choice player made
+    private boolean receivedChoice = false;                             // true if player made a choice, false if did not
     private double insuranceBet;                                        // amount of insurance bet
     private boolean placedInsuranceBet = false;                         // true if insurance bet made, false if not
     private CountDownLatch startLatch;                                  // latch to wait for all players to join game
@@ -234,16 +234,7 @@ public class Player implements Runnable {
             this.receivedChoice = false;
             do {
                 this.out.println("REPLYMESSAGE--Would you like to place an insurance bet? [Y/n]");
-                try {
-                    while (!this.receivedChoice) {
-                        if ((this.clientMessage = this.in.readLine()) != null) {
-                            this.choice = this.clientMessage;
-                            this.receivedChoice = true;
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                this.getChoice();
                 if (!this.choice.equals("Y") && !this.choice.equals("y") && !this.choice.equals("N") && !this.choice.equals("n")) {
                     this.out.println("INFOMESSAGE--Please enter either 'Y' or 'N'.");
                     this.receivedChoice = false;
@@ -277,16 +268,7 @@ public class Player implements Runnable {
                 do {
                     this.out.println("INFOMESSAGE--Hand Total: " + hand.blackjackValue());
                     this.out.println("REPLYMESSAGE--Would you like to split pairs? [Y/n]");
-                    try {
-                        while (!this.receivedChoice) {
-                            if ((this.clientMessage = this.in.readLine()) != null) {
-                                this.choice = this.clientMessage;
-                                this.receivedChoice = true;
-                            }
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    this.getChoice();
                     if (!this.choice.equals("Y") && !this.choice.equals("y") && !this.choice.equals("N") && !this.choice.equals("n")) {
                         this.out.println("INFOMESSAGE--Please enter either 'Y' or 'N'.");
                         this.receivedChoice = false;
@@ -305,16 +287,7 @@ public class Player implements Runnable {
                 do {
                     this.out.println("INFOMESSAGE--Hand Total: " + hand.blackjackValue());
                     this.out.println("REPLYMESSAGE--Would you like to double down? [Y/n]");
-                    try {
-                        while (!this.receivedChoice) {
-                            if ((this.clientMessage = this.in.readLine()) != null) {
-                                this.choice = this.clientMessage;
-                                this.receivedChoice = true;
-                            }
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    this.getChoice();
                     if (!this.choice.equals("Y") && !this.choice.equals("y") && !this.choice.equals("N") && !this.choice.equals("n")) {
                         this.out.println("INFOMESSAGE--Please enter either 'Y' or 'N'.");
                         this.receivedChoice = false;
@@ -338,16 +311,7 @@ public class Player implements Runnable {
                 do {
                     this.out.println("INFOMESSAGE--Hand Total: " + hand.blackjackValue());
                     this.out.println("REPLYMESSAGE--Would you like to hit or stand? [H/s]");
-                    try {
-                        while (!this.receivedChoice) {
-                            if ((this.clientMessage = this.in.readLine()) != null) {
-                                this.choice = this.clientMessage;
-                                this.receivedChoice = true;
-                            }
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    this.getChoice();
                     if (!this.choice.equals("H") && !this.choice.equals("h") && !this.choice.equals("S") && !this.choice.equals("s")) {
                         this.out.println("INFOMESSAGE--Please enter either 'H' or 'S'.");
                         this.receivedChoice = false;
@@ -507,6 +471,23 @@ public class Player implements Runnable {
             this.table.removePlayer(this);
         }
         this.table.continuePlayingLatchCountDown();
+    }
+
+    /**
+     * Gets the player's choice.
+     */
+
+    private void getChoice() {
+        try {
+            while (!this.receivedChoice) {
+                if ((this.clientMessage = this.in.readLine()) != null) {
+                    this.choice = this.clientMessage;
+                    this.receivedChoice = true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
