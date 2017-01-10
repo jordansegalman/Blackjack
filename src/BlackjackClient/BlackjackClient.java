@@ -13,13 +13,13 @@ public class BlackjackClient {
     private BlackjackClientModel model;
     private BlackjackClientView view;
 
-    public void playBlackjack() {
+    private void playBlackjack() {
         this.model = new BlackjackClientModel("localhost", 44444);
         this.view = new BlackjackClientView(this.model);
         this.getServerMessage();
     }
 
-    public void getServerMessage() {
+    private void getServerMessage() {
         SwingWorker swingWorker = new SwingWorker<String, String>() {
             @Override
             public String doInBackground() throws Exception {
@@ -38,15 +38,17 @@ public class BlackjackClient {
         swingWorker.execute();
     }
 
-    public void changeView (String serverMessage) {
+    private void changeView (String serverMessage) {
         String[] serverMessageParts = serverMessage.split("--");
         switch (serverMessageParts[1]) {
             case "WELCOME":
-                this.view.addWelcomePanel();
+                this.view.showWelcomePanel();
                 this.getServerMessage();
                 break;
             case "GETBET":
-                this.view.addBetPanel(serverMessageParts[2], serverMessageParts[3]);
+                this.view.showBetPanel();
+                this.view.setMoneyLabel(serverMessageParts[2]);
+                this.view.setMinimumBetLabel(serverMessageParts[3]);
                 this.getServerMessage();
                 break;
             case "BETRESPONSE":
@@ -64,7 +66,8 @@ public class BlackjackClient {
                         this.getServerMessage();
                         break;
                     case "SUCCESS":
-                        this.view.addRoundInformationPanel(serverMessageParts[3]);
+                        this.view.betSuccess();
+                        this.view.setMoneyLabel(serverMessageParts[3]);
                         this.getServerMessage();
                         break;
                 }
