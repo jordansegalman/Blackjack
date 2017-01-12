@@ -35,8 +35,19 @@ public class BlackjackClientModel {
         }
     }
 
+    /**
+     * Gets a message sent by the server.
+     *
+     * @return message sent by the server
+     */
+
     public String getServerMessage() {
         String serverMessage = null;
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         while (serverMessage == null) {
             try {
                 serverMessage = this.in.readLine();
@@ -47,9 +58,19 @@ public class BlackjackClientModel {
         return serverMessage;
     }
 
+    /**
+     * Sends a message to the server.
+     *
+     * @param clientMessage Message to send to server
+     */
+
     public void sendClientMessage(String clientMessage) {
         this.out.println(clientMessage);
     }
+
+    /**
+     * Sends a message to the server to quit the game and closes the socket.
+     */
 
     public void quitGame() {
         this.sendClientMessage("CLIENTMESSAGE--QUITGAME");
