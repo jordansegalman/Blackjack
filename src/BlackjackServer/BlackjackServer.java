@@ -60,7 +60,7 @@ public class BlackjackServer {
      */
 
     public static void main(String[] args) {
-        BlackjackServer blackjackServer = new BlackjackServer(44444, 1);
+        BlackjackServer blackjackServer = new BlackjackServer(44444, 2);
         blackjackServer.start();
     }
 }

@@ -156,9 +156,10 @@ public class BlackjackClientView extends JFrame implements ActionListener {
     private JLabel playerCardsLabel = new JLabel("Your Cards:");
     private DefaultListModel<String> playerListModel = new DefaultListModel<>();
     private JList<String> playerCardsList;
+    private JLabel originalHandBetLabel = new JLabel();
     private JLabel roundInformationMoneyLabel = new JLabel();
-    private JLabel roundInformationMessageLabel;
-    private JLabel roundInformationSecondMessageLabel;
+    private JLabel roundInformationBlackjackLabel;
+    private JLabel roundInformationInsuranceLabel;
     private JLabel insuranceBetWaitingLabel = new JLabel("Waiting for other players to place their insurance bets.");
     private JLabel beforeTurnWaitingLabel = new JLabel("Waiting for other players to take their turns.");
 
@@ -177,31 +178,40 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         constraints.gridy = 3;
         this.roundInformationPanel.add(this.playerCardsList, constraints);
         constraints.gridy = 4;
-        this.roundInformationPanel.add(this.roundInformationMoneyLabel, constraints);
-        this.roundInformationMessageLabel = new JLabel();
+        this.roundInformationPanel.add(this.originalHandBetLabel, constraints);
         constraints.gridy = 5;
-        this.roundInformationPanel.add(this.roundInformationMessageLabel, constraints);
-        this.roundInformationSecondMessageLabel = new JLabel();
+        this.roundInformationPanel.add(this.roundInformationMoneyLabel, constraints);
+        this.roundInformationBlackjackLabel = new JLabel();
         constraints.gridy = 6;
-        this.roundInformationPanel.add(this.roundInformationSecondMessageLabel, constraints);
-        this.yesInsuranceBetButton.setVisible(false);
+        this.roundInformationPanel.add(this.roundInformationBlackjackLabel, constraints);
+        this.roundInformationInsuranceLabel = new JLabel();
         constraints.gridy = 7;
+        this.roundInformationPanel.add(this.roundInformationInsuranceLabel, constraints);
+        this.yesInsuranceBetButton.setVisible(false);
+        constraints.gridy = 8;
         this.roundInformationPanel.add(this.yesInsuranceBetButton, constraints);
         this.noInsuranceBetButton.setVisible(false);
         constraints.gridx = 1;
         this.roundInformationPanel.add(this.noInsuranceBetButton, constraints);
         this.insuranceBetWaitingLabel.setVisible(false);
         constraints.gridx = 0;
-        constraints.gridy = 8;
+        constraints.gridy = 9;
         this.roundInformationPanel.add(this.insuranceBetWaitingLabel, constraints);
         this.beforeTurnWaitingLabel.setVisible(false);
-        constraints.gridy = 9;
+        constraints.gridy = 10;
         this.roundInformationPanel.add(this.beforeTurnWaitingLabel, constraints);
         add(this.roundInformationPanel, PanelNames.ROUNDINFORMATIONPANEL.toString());
     }
 
     public void addDealerCard(String card) {
         this.dealerListModel.addElement(card + "\n");
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
+    }
+
+    public void removeDealerCard(int index) {
+        this.dealerListModel.removeElementAt(index);
         this.validate();
         this.repaint();
         this.setVisible(true);
@@ -214,22 +224,29 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         this.setVisible(true);
     }
 
-    public void setRoundInformationMessage(String message) {
-        this.roundInformationMessageLabel.setText(message);
+    public void setOriginalHandBetLabel(String bet) {
+        this.originalHandBetLabel.setText(bet);
         this.validate();
         this.repaint();
         this.setVisible(true);
     }
 
-    public void setRoundInformationSecondMessage(String message) {
-        this.roundInformationSecondMessageLabel.setText(message);
+    public void setRoundInformationBlackjackLabel(String message) {
+        this.roundInformationBlackjackLabel.setText(message);
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
+    }
+
+    public void setRoundInformationInsuranceLabel(String message) {
+        this.roundInformationInsuranceLabel.setText(message);
         this.validate();
         this.repaint();
         this.setVisible(true);
     }
 
     public void enableInsuranceBet() {
-        this.setRoundInformationSecondMessage("Would you like to place an insurance bet?");
+        this.setRoundInformationInsuranceLabel("Would you like to place an insurance bet?");
         this.yesInsuranceBetButton.setVisible(true);
         this.noInsuranceBetButton.setVisible(true);
         this.validate();
@@ -238,7 +255,7 @@ public class BlackjackClientView extends JFrame implements ActionListener {
     }
 
     public void insuranceBetError() {
-        this.setRoundInformationSecondMessage("ERROR");
+        this.setRoundInformationInsuranceLabel("ERROR");
         this.yesInsuranceBetButton.setEnabled(true);
         this.noInsuranceBetButton.setEnabled(true);
         this.validate();
@@ -249,6 +266,13 @@ public class BlackjackClientView extends JFrame implements ActionListener {
     public void insuranceBetSuccess() {
         this.yesInsuranceBetButton.setVisible(false);
         this.noInsuranceBetButton.setVisible(false);
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
+    }
+
+    public void insuranceBetNotPlaced() {
+        this.roundInformationInsuranceLabel.setVisible(false);
         this.validate();
         this.repaint();
         this.setVisible(true);
@@ -272,8 +296,11 @@ public class BlackjackClientView extends JFrame implements ActionListener {
     private JPanel turnPanel;
     private JLabel dealerCardsTurnLabel = new JLabel("Dealer's Cards:");
     private JList<String> dealerCardsTurnList;
+    private JLabel dealerHandValueLabel = new JLabel();
     private JLabel playerCardsTurnLabel = new JLabel("Your Cards:");
     private JPanel playerHandsPanel;
+    private JLabel turnBlackjackLabel = new JLabel();
+    private JLabel afterTurnWaitingLabel = new JLabel("Waiting for other players to take their turns.");
 
     private void createTurnPanel() {
         this.turnPanel = new JPanel(new GridBagLayout());
@@ -285,11 +312,25 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         constraints.gridy = 1;
         this.turnPanel.add(this.dealerCardsTurnList, constraints);
         constraints.gridy = 2;
+        this.turnPanel.add(this.dealerHandValueLabel, constraints);
+        constraints.gridy = 3;
         this.turnPanel.add(this.playerCardsTurnLabel, constraints);
         this.playerHandsPanel = new JPanel();
-        constraints.gridy = 3;
+        constraints.gridy = 4;
         this.turnPanel.add(this.playerHandsPanel, constraints);
+        constraints.gridy = 5;
+        this.turnPanel.add(this.turnBlackjackLabel, constraints);
+        this.afterTurnWaitingLabel.setVisible(false);
+        constraints.gridy = 6;
+        this.turnPanel.add(this.afterTurnWaitingLabel, constraints);
         add(this.turnPanel, PanelNames.TURNPANEL.toString());
+    }
+
+    public void setDealerHandValueLabel(String handValue) {
+        this.dealerHandValueLabel.setText(handValue);
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
     }
 
     public void addPlayerHandPanel(PlayerHandPanel playerHandPanel, int index) {
@@ -304,6 +345,17 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         this.validate();
         this.repaint();
         this.setVisible(true);
+    }
+
+    public void setTurnBlackjackLabel(String blackjack) {
+        this.turnBlackjackLabel.setText(blackjack);
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
+    }
+
+    public void setAfterTurnWaiting(Boolean waiting) {
+        this.afterTurnWaitingLabel.setVisible(waiting);
     }
 
     private void showPanel(PanelNames panel) {

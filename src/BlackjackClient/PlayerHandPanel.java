@@ -10,6 +10,7 @@ public class PlayerHandPanel extends JPanel implements ActionListener {
     private DefaultListModel<String> cardsListModel = new DefaultListModel<>();
     private JList<String> cardsList = new JList<>(this.cardsListModel);
     private JLabel handValueLabel = new JLabel();
+    private JLabel handBetLabel = new JLabel();
     private JButton hitButton = new JButton("Hit");
     private JButton standButton = new JButton("Stand");
     private JButton yesButton = new JButton("Yes");
@@ -18,27 +19,38 @@ public class PlayerHandPanel extends JPanel implements ActionListener {
 
     public PlayerHandPanel(BlackjackClientModel model, String firstCard, String secondCard) {
         this.model = model;
+        this.cardsListModel.addElement(firstCard);
+        this.cardsListModel.addElement(secondCard);
+        this.setupHand();
+    }
+
+    public PlayerHandPanel(BlackjackClientModel model) {
+        this.model = model;
+        this.setupHand();
+    }
+
+    private void setupHand() {
         this.setupActionListeners();
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
-        this.cardsListModel.addElement(firstCard);
-        this.cardsListModel.addElement(secondCard);
         constraints.gridx = 0;
         constraints.gridy = 0;
         add(this.cardsList, constraints);
         constraints.gridy = 1;
         add(this.handValueLabel, constraints);
         constraints.gridy = 2;
+        add(this.handBetLabel, constraints);
+        constraints.gridy = 3;
         add(this.handMessageLabel, constraints);
         this.hitButton.setEnabled(false);
-        constraints.gridy = 3;
+        constraints.gridy = 4;
         add(this.hitButton, constraints);
         this.standButton.setEnabled(false);
         constraints.gridx = 1;
         add(this.standButton, constraints);
         this.yesButton.setEnabled(false);
         constraints.gridx = 0;
-        constraints.gridy = 4;
+        constraints.gridy = 5;
         add(this.yesButton, constraints);
         this.noButton.setEnabled(false);
         constraints.gridx = 1;
@@ -47,6 +59,13 @@ public class PlayerHandPanel extends JPanel implements ActionListener {
 
     public void setHandValueLabel(String handValue) {
         this.handValueLabel.setText(handValue);
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
+    }
+
+    public void setHandBet(String bet) {
+        this.handBetLabel.setText(bet);
         this.validate();
         this.repaint();
         this.setVisible(true);
@@ -91,8 +110,35 @@ public class PlayerHandPanel extends JPanel implements ActionListener {
         this.setVisible(true);
     }
 
-    public void setAfterTurnWaiting() {
-        setHandMessageLabel("Waiting for other players to take their turns.");
+    public void enableDoubleDown() {
+        setHandMessageLabel("Would you like to double down?");
+        this.yesButton.setEnabled(true);
+        this.noButton.setEnabled(true);
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
+    }
+
+    public void doubleDownSuccess() {
+        setHandMessageLabel("Your bet on this hand has been doubled. You were given a card face down.");
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
+    }
+
+    public void enableSplitPairs() {
+        setHandMessageLabel("Would you like to split pairs?");
+        this.yesButton.setEnabled(true);
+        this.noButton.setEnabled(true);
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
+    }
+
+    public void yesNoError() {
+        setHandMessageLabel("ERROR");
+        this.yesButton.setEnabled(true);
+        this.noButton.setEnabled(true);
         this.validate();
         this.repaint();
         this.setVisible(true);
