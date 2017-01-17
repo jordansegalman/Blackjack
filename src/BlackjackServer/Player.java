@@ -232,7 +232,7 @@ public class Player implements Runnable {
         this.table.turnLatchCountDown();
         if (this.table.numPlayers() > 1) {
 //            this.out.println("INFOMESSAGE--Waiting for other players to take their turns.");
-            this.out.println("SERVERMESSAGE--WAITING--TURN");
+            this.out.println("SERVERMESSAGE--WAITING--BEFORETURN");
         }
     }
 
@@ -279,6 +279,10 @@ public class Player implements Runnable {
      */
 
     void takeTurn(BlackjackHand hand) {
+        if (hand == this.originalPlayerHand) {
+            this.out.println("SERVERMESSAGE--TAKETURN");
+            this.out.println("SERVERMESSAGE--NEWHAND--0--" + hand.getCard(0) + "--" + hand.getCard(1));
+        }
         if (!this.hasBlackjack && !this.table.dealerHasBlackjack() && hand.getCard(0).rank() == hand.getCard(1).rank()) {
             if (this.money >= hand.bet()) {
                 this.receivedChoice = false;
@@ -326,27 +330,34 @@ public class Player implements Runnable {
             do {
                 this.receivedChoice = false;
                 do {
-                    this.out.println("INFOMESSAGE--Hand Total: " + hand.blackjackValue());
-                    this.out.println("REPLYMESSAGE--Would you like to hit or stand? [H/s]");
+//                    this.out.println("INFOMESSAGE--Hand Total: " + hand.blackjackValue());
+                    this.out.println("SERVERMESSAGE--HANDTOTAL--" + this.playerHands.indexOf(hand) + "--" + hand.blackjackValue());
+//                    this.out.println("REPLYMESSAGE--Would you like to hit or stand? [H/s]");
+                    this.out.println("SERVERMESSAGE--GETHITSTAND--" + this.playerHands.indexOf(hand));
                     this.getChoice();
-                    if (!this.choice.equals("H") && !this.choice.equals("h") && !this.choice.equals("S") && !this.choice.equals("s")) {
-                        this.out.println("INFOMESSAGE--Please enter either 'H' or 'S'.");
+                    if (!this.choice.equals("Hit") && !this.choice.equals("Stand")) {
+//                        this.out.println("INFOMESSAGE--Please enter either 'H' or 'S'.");
+                        this.out.println("SERVERMESSAGE--HITSTANDRESPONSE--ERROR--" + this.playerHands.indexOf(hand));
                         this.receivedChoice = false;
                     }
                 } while (!this.receivedChoice);
-                if (this.choice.equals("H") || this.choice.equals("h")) {
+                if (this.choice.equals("Hit")) {
                     Card newCard = this.table.dealCard();
                     hand.addCard(newCard);
-                    this.out.println("INFOMESSAGE--You got the " + newCard + ".");
+//                    this.out.println("INFOMESSAGE--You got the " + newCard + ".");
+                    this.out.println("SERVERMESSAGE--HITSTANDRESPONSE--NEWCARD--" + this.playerHands.indexOf(hand) + "--" + newCard);
                 }
-            } while ((this.choice.equals("H") || this.choice.equals("h")) && hand.blackjackValue() <= 21);
-            this.out.println("INFOMESSAGE--Final Hand Total: " + hand.blackjackValue());
+            } while (this.choice.equals("Hit") && hand.blackjackValue() <= 21);
+//            this.out.println("INFOMESSAGE--Final Hand Total: " + hand.blackjackValue());
+            this.out.println("SERVERMESSAGE--HANDTOTAL--" + this.playerHands.indexOf(hand) + "--" + hand.blackjackValue());
             if (hand.blackjackValue() > 21) {
-                this.out.println("INFOMESSAGE--You busted.");
+//                this.out.println("INFOMESSAGE--You busted.");
+                this.out.println("SERVERMESSAGE--HITSTANDRESPONSE--BUST--" + this.playerHands.indexOf(hand));
             }
         }
         if (this.table.numPlayers() > 1 && !this.hasBlackjack && !this.table.dealerHasBlackjack() && hand == this.playerHands.get(this.playerHands.size() - 1)) {
-            this.out.println("INFOMESSAGE--Waiting for other players to take their turns.");
+//            this.out.println("INFOMESSAGE--Waiting for other players to take their turns.");
+            this.out.println("SERVERMESSAGE--WAITING--AFTERTURN--" + this.playerHands.indexOf(hand));
         }
     }
 

@@ -134,6 +134,45 @@ public class BlackjackClient {
                 this.view.setRoundInformationMoneyLabel(serverMessageParts[3]);
                 this.getServerMessage();
                 break;
+            case "TAKETURN":
+                this.view.setBeforeTurnWaiting(false);
+                this.view.showTurnPanel();
+                this.getServerMessage();
+                break;
+            case "NEWHAND":
+                this.model.addPlayerHandPanel(Integer.parseInt(serverMessageParts[2]), new PlayerHandPanel(this.model, serverMessageParts[3], serverMessageParts[4]));
+                this.view.addPlayerHandPanel(this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])), Integer.parseInt(serverMessageParts[2]));
+                this.getServerMessage();
+                break;
+            case "REMOVEHAND":
+                this.view.removePlayerHandPanel(this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])));
+                this.model.removePlayerHandPanel(Integer.parseInt(serverMessageParts[2]));
+                this.getServerMessage();
+                break;
+            case "HANDTOTAL":
+                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).setHandValueLabel("Hand Value: " + serverMessageParts[3]);
+                this.getServerMessage();
+                break;
+            case "GETHITSTAND":
+                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).enableHitStand();
+                this.getServerMessage();
+                break;
+            case "HITSTANDRESPONSE":
+                switch (serverMessageParts[2]) {
+                    case "ERROR":
+                        this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).hitStandError();
+                        this.getServerMessage();
+                        break;
+                    case "NEWCARD":
+                        this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).addCard(serverMessageParts[4]);
+                        this.getServerMessage();
+                        break;
+                    case "BUST":
+                        this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).bust();
+                        this.getServerMessage();
+                        break;
+                }
+                break;
             case "WAITING":
                 switch (serverMessageParts[2]) {
                     case "WELCOME":
@@ -148,8 +187,12 @@ public class BlackjackClient {
                         this.view.setInsuranceBetWaiting(true);
                         this.getServerMessage();
                         break;
-                    case "TURN":
-                        this.view.setTurnWaiting(true);
+                    case "BEFORETURN":
+                        this.view.setBeforeTurnWaiting(true);
+                        this.getServerMessage();
+                        break;
+                    case "AFTERTURN":
+                        this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).setAfterTurnWaiting();
                         this.getServerMessage();
                         break;
                 }

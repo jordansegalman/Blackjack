@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  * BlackjackClientModel objects represent a Blackjack client model that holds client information.
@@ -16,6 +17,7 @@ public class BlackjackClientModel {
     private Socket socket;          // socket on server address and port
     private BufferedReader in;      // in to server
     private PrintWriter out;        // out from server
+    private ArrayList<PlayerHandPanel> playerHandPanels = new ArrayList<>();
 
     /**
      * Constructor for Blackjack client model object.
@@ -66,6 +68,18 @@ public class BlackjackClientModel {
 
     public void sendClientMessage(String clientMessage) {
         this.out.println(clientMessage);
+    }
+
+    public void addPlayerHandPanel(int index, PlayerHandPanel playerHandPanel) {
+        this.playerHandPanels.add(index, playerHandPanel);
+    }
+
+    public PlayerHandPanel getPlayerHandPanel(int index) {
+        return this.playerHandPanels.get(index);
+    }
+
+    public void removePlayerHandPanel(int index) {
+        this.playerHandPanels.remove(index);
     }
 
     /**
