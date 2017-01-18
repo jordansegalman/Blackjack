@@ -82,6 +82,10 @@ public class BlackjackClientModel {
         this.playerHandPanels.remove(index);
     }
 
+    public void reset() {
+        this.playerHandPanels.clear();
+    }
+
     /**
      * Sends a message to the server to quit the game and closes the socket.
      */

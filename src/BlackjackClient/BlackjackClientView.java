@@ -24,12 +24,8 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         this.model = model;
         this.setupWindowListener(this.model);
         this.setupFrame();
+        this.setupPanels();
         this.setupActionListeners();
-        this.createWelcomePanel();
-        this.createBetPanel();
-        this.createRoundInformationPanel();
-        this.createTurnPanel();
-        this.createContinuePlayingPanel();
     }
 
     private void setupWindowListener(BlackjackClientModel model) {
@@ -56,6 +52,14 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         this.setVisible(true);
     }
 
+    private void setupPanels() {
+        this.createWelcomePanel();
+        this.createBetPanel();
+        this.createRoundInformationPanel();
+        this.createTurnPanel();
+        this.createContinuePlayingPanel();
+    }
+
     private void setupActionListeners() {
         this.betButton.addActionListener(this);
         this.yesInsuranceBetButton.addActionListener(this);
@@ -65,15 +69,17 @@ public class BlackjackClientView extends JFrame implements ActionListener {
     }
 
     private JPanel welcomePanel;
-    private JLabel welcomeLabel = new JLabel("Welcome to Blackjack!");
-    private JLabel welcomeWaitingLabel = new JLabel("Waiting for other players to join.");
+    private JLabel welcomeLabel;
+    private JLabel welcomeWaitingLabel;
 
     private void createWelcomePanel() {
         this.welcomePanel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
+        this.welcomeLabel = new JLabel("Welcome to Blackjack!");
         constraints.gridx = 0;
         constraints.gridy = 0;
         this.welcomePanel.add(this.welcomeLabel, constraints);
+        this.welcomeWaitingLabel = new JLabel("Waiting for other players to join.");
         this.welcomeWaitingLabel.setVisible(false);
         constraints.gridy = 1;
         this.welcomePanel.add(this.welcomeWaitingLabel, constraints);
@@ -82,31 +88,39 @@ public class BlackjackClientView extends JFrame implements ActionListener {
 
     public void setWelcomeWaiting(Boolean waiting) {
         this.welcomeWaitingLabel.setVisible(waiting);
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
     }
 
     private JPanel betPanel;
-    private JLabel minimumBetLabel = new JLabel();
-    private JTextField betField = new JTextField(5);
-    private JButton betButton = new JButton("Place Bet");
-    private JLabel betMoneyLabel = new JLabel();
+    private JLabel minimumBetLabel;
+    private JTextField betField;
+    private JButton betButton;
+    private JLabel betMoneyLabel;
     private JLabel betMessageLabel;
-    private JLabel betWaitingLabel = new JLabel("Waiting for other players to place their bets.");
+    private JLabel betWaitingLabel;
 
     private void createBetPanel() {
         this.betPanel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
+        this.minimumBetLabel = new JLabel();
         constraints.gridx = 0;
         constraints.gridy = 0;
         this.betPanel.add(this.minimumBetLabel, constraints);
+        this.betField = new JTextField(5);
         constraints.gridy = 1;
         this.betPanel.add(this.betField, constraints);
+        this.betButton = new JButton("Place Bet");
         constraints.gridy = 2;
         this.betPanel.add(this.betButton, constraints);
+        this.betMoneyLabel = new JLabel();
         constraints.gridy = 3;
         this.betPanel.add(this.betMoneyLabel, constraints);
         this.betMessageLabel = new JLabel("Place your bet.");
         constraints.gridy = 4;
         this.betPanel.add(this.betMessageLabel, constraints);
+        this.betWaitingLabel = new JLabel("Waiting for other players to place their bets.");
         this.betWaitingLabel.setVisible(false);
         constraints.gridy = 5;
         this.betPanel.add(this.betWaitingLabel, constraints);
@@ -123,6 +137,7 @@ public class BlackjackClientView extends JFrame implements ActionListener {
     public void betError(String errorMessage) {
         this.betMessageLabel.setText(errorMessage);
         this.betButton.setEnabled(true);
+        this.betButton.setVisible(true);
         this.validate();
         this.repaint();
         this.setVisible(true);
@@ -144,40 +159,49 @@ public class BlackjackClientView extends JFrame implements ActionListener {
 
     public void setBetWaiting(Boolean waiting) {
         this.betWaitingLabel.setVisible(waiting);
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
     }
 
     private JPanel roundInformationPanel;
-    private JLabel dealerCardsLabel = new JLabel("Dealer's Cards:");
-    private DefaultListModel<String> dealerListModel = new DefaultListModel<>();
+    private JLabel dealerCardsLabel;
+    private DefaultListModel<String> dealerListModel;
     private JList<String> dealerCardsList;
-    private JLabel playerCardsLabel = new JLabel("Your Cards:");
-    private DefaultListModel<String> playerListModel = new DefaultListModel<>();
+    private JLabel playerCardsLabel;
+    private DefaultListModel<String> playerListModel;
     private JList<String> playerCardsList;
-    private JLabel originalHandBetLabel = new JLabel();
-    private JLabel roundInformationMoneyLabel = new JLabel();
+    private JLabel originalHandBetLabel;
+    private JLabel roundInformationMoneyLabel;
     private JLabel roundInformationBlackjackLabel;
     private JLabel roundInformationInsuranceLabel;
-    private JButton yesInsuranceBetButton = new JButton("Yes");
-    private JButton noInsuranceBetButton = new JButton("No");
-    private JLabel insuranceBetWaitingLabel = new JLabel("Waiting for other players to place their insurance bets.");
-    private JLabel beforeTurnWaitingLabel = new JLabel("Waiting for other players to take their turns.");
+    private JButton yesInsuranceBetButton;
+    private JButton noInsuranceBetButton;
+    private JLabel insuranceBetWaitingLabel;
+    private JLabel beforeTurnWaitingLabel;
 
     private void createRoundInformationPanel() {
         this.roundInformationPanel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
+        this.dealerCardsLabel = new JLabel("Dealer's Cards:");
         constraints.gridx = 0;
         constraints.gridy = 0;
         this.roundInformationPanel.add(this.dealerCardsLabel, constraints);
+        this.dealerListModel = new DefaultListModel<>();
         this.dealerCardsList = new JList<>(dealerListModel);
         constraints.gridy = 1;
         this.roundInformationPanel.add(this.dealerCardsList, constraints);
+        this.playerCardsLabel = new JLabel("Your Cards:");
         constraints.gridy = 2;
         this.roundInformationPanel.add(this.playerCardsLabel, constraints);
+        this.playerListModel = new DefaultListModel<>();
         this.playerCardsList = new JList<>(playerListModel);
         constraints.gridy = 3;
         this.roundInformationPanel.add(this.playerCardsList, constraints);
+        this.originalHandBetLabel = new JLabel();
         constraints.gridy = 4;
         this.roundInformationPanel.add(this.originalHandBetLabel, constraints);
+        this.roundInformationMoneyLabel = new JLabel();
         constraints.gridy = 5;
         this.roundInformationPanel.add(this.roundInformationMoneyLabel, constraints);
         this.roundInformationBlackjackLabel = new JLabel();
@@ -186,16 +210,22 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         this.roundInformationInsuranceLabel = new JLabel();
         constraints.gridy = 7;
         this.roundInformationPanel.add(this.roundInformationInsuranceLabel, constraints);
+        this.yesInsuranceBetButton = new JButton("Yes");
+        this.yesInsuranceBetButton.setEnabled(false);
         this.yesInsuranceBetButton.setVisible(false);
         constraints.gridy = 8;
         this.roundInformationPanel.add(this.yesInsuranceBetButton, constraints);
+        this.noInsuranceBetButton = new JButton("No");
+        this.noInsuranceBetButton.setEnabled(false);
         this.noInsuranceBetButton.setVisible(false);
         constraints.gridx = 1;
         this.roundInformationPanel.add(this.noInsuranceBetButton, constraints);
+        this.insuranceBetWaitingLabel = new JLabel("Waiting for other players to place their insurance bets.");
         this.insuranceBetWaitingLabel.setVisible(false);
         constraints.gridx = 0;
         constraints.gridy = 9;
         this.roundInformationPanel.add(this.insuranceBetWaitingLabel, constraints);
+        this.beforeTurnWaitingLabel = new JLabel("Waiting for other players to take their turns.");
         this.beforeTurnWaitingLabel.setVisible(false);
         constraints.gridy = 10;
         this.roundInformationPanel.add(this.beforeTurnWaitingLabel, constraints);
@@ -246,7 +276,9 @@ public class BlackjackClientView extends JFrame implements ActionListener {
 
     public void enableInsuranceBet() {
         this.setRoundInformationInsuranceLabel("Would you like to place an insurance bet?");
+        this.yesInsuranceBetButton.setEnabled(true);
         this.yesInsuranceBetButton.setVisible(true);
+        this.noInsuranceBetButton.setEnabled(true);
         this.noInsuranceBetButton.setVisible(true);
         this.validate();
         this.repaint();
@@ -256,7 +288,9 @@ public class BlackjackClientView extends JFrame implements ActionListener {
     public void insuranceBetError() {
         this.setRoundInformationInsuranceLabel("ERROR");
         this.yesInsuranceBetButton.setEnabled(true);
+        this.yesInsuranceBetButton.setVisible(true);
         this.noInsuranceBetButton.setEnabled(true);
+        this.noInsuranceBetButton.setVisible(true);
         this.validate();
         this.repaint();
         this.setVisible(true);
@@ -286,42 +320,54 @@ public class BlackjackClientView extends JFrame implements ActionListener {
 
     public void setInsuranceBetWaiting(Boolean waiting) {
         this.insuranceBetWaitingLabel.setVisible(waiting);
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
     }
 
     public void setBeforeTurnWaiting(Boolean waiting) {
         this.beforeTurnWaitingLabel.setVisible(waiting);
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
     }
 
     private JPanel turnPanel;
-    private JLabel dealerCardsTurnLabel = new JLabel("Dealer's Cards:");
+    private JLabel dealerCardsTurnLabel;
     private JList<String> dealerCardsTurnList;
-    private JLabel dealerHandValueLabel = new JLabel();
-    private JLabel playerCardsTurnLabel = new JLabel("Your Cards:");
+    private JLabel dealerHandValueLabel;
+    private JLabel playerCardsTurnLabel;
     private JPanel playerHandsPanel;
-    private JLabel turnMoneyLabel = new JLabel();
-    private JLabel turnBlackjackLabel = new JLabel();
-    private JLabel afterTurnWaitingLabel = new JLabel("Waiting for other players to take their turns.");
+    private JLabel turnMoneyLabel;
+    private JLabel turnBlackjackLabel;
+    private JLabel afterTurnWaitingLabel;
 
     private void createTurnPanel() {
         this.turnPanel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
+        this.dealerCardsTurnLabel = new JLabel("Dealer's Cards:");
         constraints.gridx = 0;
         constraints.gridy = 0;
         this.turnPanel.add(this.dealerCardsTurnLabel, constraints);
         this.dealerCardsTurnList = new JList<>(dealerListModel);
         constraints.gridy = 1;
         this.turnPanel.add(this.dealerCardsTurnList, constraints);
+        this.dealerHandValueLabel = new JLabel();
         constraints.gridy = 2;
         this.turnPanel.add(this.dealerHandValueLabel, constraints);
+        this.playerCardsTurnLabel = new JLabel("Your Cards:");
         constraints.gridy = 3;
         this.turnPanel.add(this.playerCardsTurnLabel, constraints);
         this.playerHandsPanel = new JPanel();
         constraints.gridy = 4;
         this.turnPanel.add(this.playerHandsPanel, constraints);
+        this.turnMoneyLabel = new JLabel();
         constraints.gridy = 5;
         this.turnPanel.add(this.turnMoneyLabel, constraints);
+        this.turnBlackjackLabel = new JLabel();
         constraints.gridy = 6;
         this.turnPanel.add(this.turnBlackjackLabel, constraints);
+        this.afterTurnWaitingLabel = new JLabel("Waiting for other players to take their turns.");
         this.afterTurnWaitingLabel.setVisible(false);
         constraints.gridy = 7;
         this.turnPanel.add(this.afterTurnWaitingLabel, constraints);
@@ -365,28 +411,54 @@ public class BlackjackClientView extends JFrame implements ActionListener {
 
     public void setAfterTurnWaiting(Boolean waiting) {
         this.afterTurnWaitingLabel.setVisible(waiting);
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
     }
 
     private JPanel continuePlayingPanel;
-    private JLabel continuePlayingMessageLabel = new JLabel();
-    private JButton yesContinuePlayingButton = new JButton("Yes");
-    private JButton noContinuePlayingButton = new JButton("No");
-    private JLabel continuePlayingMoneyLabel = new JLabel();
+    private JLabel continuePlayingMessageLabel;
+    private JButton yesContinuePlayingButton;
+    private JButton noContinuePlayingButton;
+    private JLabel continuePlayingMoneyLabel;
+    private JLabel continuePlayingWaitingLabel;
 
     private void createContinuePlayingPanel() {
         this.continuePlayingPanel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
+        this.continuePlayingMessageLabel = new JLabel();
         constraints.gridx = 0;
         constraints.gridy = 0;
         this.continuePlayingPanel.add(this.continuePlayingMessageLabel, constraints);
+        this.yesContinuePlayingButton = new JButton("Yes");
+        this.yesContinuePlayingButton.setEnabled(false);
+        this.yesContinuePlayingButton.setVisible(false);
         constraints.gridy = 1;
         this.continuePlayingPanel.add(this.yesContinuePlayingButton, constraints);
+        this.noContinuePlayingButton = new JButton("No");
+        this.noContinuePlayingButton.setEnabled(false);
+        this.noContinuePlayingButton.setVisible(false);
         constraints.gridx = 1;
         this.continuePlayingPanel.add(this.noContinuePlayingButton, constraints);
+        this.continuePlayingMoneyLabel = new JLabel();
         constraints.gridx = 0;
         constraints.gridy = 2;
         this.continuePlayingPanel.add(this.continuePlayingMoneyLabel, constraints);
+        this.continuePlayingWaitingLabel = new JLabel("Waiting for other players to join.");
+        this.continuePlayingWaitingLabel.setVisible(false);
+        constraints.gridy = 3;
+        this.continuePlayingPanel.add(this.continuePlayingWaitingLabel, constraints);
         add(this.continuePlayingPanel, PanelNames.CONTINUEPLAYINGPANEL.toString());
+    }
+
+    public void enableContinuePlaying() {
+        this.yesContinuePlayingButton.setEnabled(true);
+        this.yesContinuePlayingButton.setVisible(true);
+        this.noContinuePlayingButton.setEnabled(true);
+        this.noContinuePlayingButton.setVisible(true);
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
     }
 
     public void setContinuePlayingMoneyLabel(String money) {
@@ -406,7 +478,9 @@ public class BlackjackClientView extends JFrame implements ActionListener {
     public void continuePlayingError() {
         this.setContinuePlayingMessageLabel("ERROR");
         this.yesContinuePlayingButton.setEnabled(true);
+        this.yesContinuePlayingButton.setVisible(true);
         this.noContinuePlayingButton.setEnabled(true);
+        this.yesContinuePlayingButton.setVisible(true);
         this.validate();
         this.repaint();
         this.setVisible(true);
@@ -414,8 +488,13 @@ public class BlackjackClientView extends JFrame implements ActionListener {
 
     public void gameOver() {
         this.setContinuePlayingMessageLabel("Thanks for playing!");
-        this.yesContinuePlayingButton.setVisible(false);
-        this.noContinuePlayingButton.setVisible(false);
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
+    }
+
+    public void setContinuePlayingWaiting(Boolean waiting) {
+        this.continuePlayingWaitingLabel.setVisible(waiting);
         this.validate();
         this.repaint();
         this.setVisible(true);
@@ -449,6 +528,12 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         showPanel(PanelNames.CONTINUEPLAYINGPANEL);
     }
 
+    public void reset() {
+        this.setupPanels();
+        this.setupActionListeners();
+        this.showContinuePlayingPanel();
+    }
+
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         Object target = actionEvent.getSource();
@@ -456,22 +541,31 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         if (target == this.betButton) {
             this.model.sendClientMessage(this.betField.getText());
             this.betButton.setEnabled(false);
+            this.betButton.setVisible(false);
         } else if (target == this.yesInsuranceBetButton) {
             this.model.sendClientMessage(this.yesInsuranceBetButton.getText());
             this.yesInsuranceBetButton.setEnabled(false);
+            this.yesInsuranceBetButton.setVisible(false);
             this.noInsuranceBetButton.setEnabled(false);
+            this.noInsuranceBetButton.setVisible(false);
         } else if (target == this.noInsuranceBetButton) {
             this.model.sendClientMessage(this.noInsuranceBetButton.getText());
-            this.noInsuranceBetButton.setEnabled(false);
             this.yesInsuranceBetButton.setEnabled(false);
+            this.yesInsuranceBetButton.setVisible(false);
+            this.noInsuranceBetButton.setEnabled(false);
+            this.noInsuranceBetButton.setVisible(false);
         } else if (target == this.yesContinuePlayingButton) {
             this.model.sendClientMessage(this.yesContinuePlayingButton.getText());
             this.yesContinuePlayingButton.setEnabled(false);
+            this.yesContinuePlayingButton.setVisible(false);
             this.noContinuePlayingButton.setEnabled(false);
+            this.noContinuePlayingButton.setVisible(false);
         } else if (target == this.noContinuePlayingButton) {
             this.model.sendClientMessage(this.noContinuePlayingButton.getText());
             this.yesContinuePlayingButton.setEnabled(false);
+            this.yesContinuePlayingButton.setVisible(false);
             this.noContinuePlayingButton.setEnabled(false);
+            this.noContinuePlayingButton.setVisible(false);
         }
     }
 }

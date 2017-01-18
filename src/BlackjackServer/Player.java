@@ -554,12 +554,13 @@ public class Player implements Runnable {
             } while (!this.receivedPlayAgain);
             if (this.playAgain.equals("Yes")) {
                 this.continuePlaying = true;
+                this.out.println("SERVERMESSAGE--CONTINUEPLAYINGRESPONSE--CONTINUE");
             } else {
                 this.table.removePlayer(this);
             }
         } else {
 //            this.out.println("INFOMESSAGE--You do not have enough money to make the minimum bet.");
-            this.out.println("SERVERMESSAGE--CANNOTCONTINUEPLAYING");
+            this.out.println("SERVERMESSAGE--CANNOTCONTINUEPLAYING--" + String.format("%.2f", this.money));
             this.table.removePlayer(this);
         }
         this.table.continuePlayingLatchCountDown();

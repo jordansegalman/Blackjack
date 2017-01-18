@@ -47,6 +47,7 @@ public class BlackjackClient {
                 break;
             case "GETBET":
                 this.view.setWelcomeWaiting(false);
+                this.view.setContinuePlayingWaiting(false);
                 this.view.showBetPanel();
                 this.view.setBetMoneyLabel(serverMessageParts[2]);
                 this.view.setMinimumBetLabel(serverMessageParts[3]);
@@ -336,6 +337,7 @@ public class BlackjackClient {
                 break;
             case "GETCONTINUEPLAYING":
                 this.view.showContinuePlayingPanel();
+                this.view.enableContinuePlaying();
                 this.view.setContinuePlayingMessageLabel("Would you like to keep playing?");
                 this.view.setContinuePlayingMoneyLabel(serverMessageParts[2]);
                 this.getServerMessage();
@@ -346,10 +348,17 @@ public class BlackjackClient {
                         this.view.continuePlayingError();
                         this.getServerMessage();
                         break;
+                    case "CONTINUE":
+                        this.view.reset();
+                        this.model.reset();
+                        this.getServerMessage();
+                        break;
                 }
                 break;
             case "CANNOTCONTINUEPLAYING":
+                this.view.showContinuePlayingPanel();
                 this.view.setContinuePlayingMessageLabel("You do not have enough money to make the minimum bet.");
+                this.view.setContinuePlayingMoneyLabel(serverMessageParts[2]);
                 this.getServerMessage();
                 break;
             case "GAMEOVER":
@@ -360,6 +369,7 @@ public class BlackjackClient {
                 switch (serverMessageParts[2]) {
                     case "WELCOME":
                         this.view.setWelcomeWaiting(true);
+                        this.view.setContinuePlayingWaiting(true);
                         this.getServerMessage();
                         break;
                     case "BET":
@@ -381,7 +391,7 @@ public class BlackjackClient {
                 }
                 break;
             default:
-                System.out.println(serverMessage);
+                System.err.println("UNKNOWN MESSAGE RECEIVED FROM SERVER: \"" + serverMessage + "\"");
                 break;
         }
     }

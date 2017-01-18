@@ -43,16 +43,20 @@ public class PlayerHandPanel extends JPanel implements ActionListener {
         constraints.gridy = 3;
         add(this.handMessageLabel, constraints);
         this.hitButton.setEnabled(false);
+        this.hitButton.setVisible(false);
         constraints.gridy = 4;
         add(this.hitButton, constraints);
         this.standButton.setEnabled(false);
+        this.standButton.setVisible(false);
         constraints.gridx = 1;
         add(this.standButton, constraints);
         this.yesButton.setEnabled(false);
+        this.yesButton.setVisible(false);
         constraints.gridx = 0;
         constraints.gridy = 5;
         add(this.yesButton, constraints);
         this.noButton.setEnabled(false);
+        this.noButton.setVisible(false);
         constraints.gridx = 1;
         add(this.noButton, constraints);
     }
@@ -81,7 +85,9 @@ public class PlayerHandPanel extends JPanel implements ActionListener {
     public void enableHitStand() {
         setHandMessageLabel("Would you like to hit or stand?");
         this.hitButton.setEnabled(true);
+        this.hitButton.setVisible(true);
         this.standButton.setEnabled(true);
+        this.standButton.setVisible(true);
         this.validate();
         this.repaint();
         this.setVisible(true);
@@ -90,7 +96,9 @@ public class PlayerHandPanel extends JPanel implements ActionListener {
     public void hitStandError() {
         setHandMessageLabel("ERROR");
         this.hitButton.setEnabled(true);
+        this.hitButton.setVisible(true);
         this.standButton.setEnabled(true);
+        this.standButton.setVisible(true);
         this.validate();
         this.repaint();
         this.setVisible(true);
@@ -120,7 +128,9 @@ public class PlayerHandPanel extends JPanel implements ActionListener {
     public void enableDoubleDown() {
         setHandMessageLabel("Would you like to double down?");
         this.yesButton.setEnabled(true);
+        this.yesButton.setVisible(true);
         this.noButton.setEnabled(true);
+        this.noButton.setVisible(true);
         this.validate();
         this.repaint();
         this.setVisible(true);
@@ -136,7 +146,9 @@ public class PlayerHandPanel extends JPanel implements ActionListener {
     public void enableSplitPairs() {
         setHandMessageLabel("Would you like to split pairs?");
         this.yesButton.setEnabled(true);
+        this.yesButton.setVisible(true);
         this.noButton.setEnabled(true);
+        this.noButton.setVisible(true);
         this.validate();
         this.repaint();
         this.setVisible(true);
@@ -145,7 +157,9 @@ public class PlayerHandPanel extends JPanel implements ActionListener {
     public void yesNoError() {
         setHandMessageLabel("ERROR");
         this.yesButton.setEnabled(true);
+        this.yesButton.setVisible(true);
         this.noButton.setEnabled(true);
+        this.noButton.setVisible(true);
         this.validate();
         this.repaint();
         this.setVisible(true);
@@ -172,19 +186,27 @@ public class PlayerHandPanel extends JPanel implements ActionListener {
         if(target == this.hitButton) {
             this.model.sendClientMessage(this.hitButton.getText());
             this.hitButton.setEnabled(false);
+            this.hitButton.setVisible(false);
             this.standButton.setEnabled(false);
+            this.standButton.setVisible(false);
         } else if (target == this.standButton) {
             this.model.sendClientMessage(this.standButton.getText());
             this.hitButton.setEnabled(false);
+            this.hitButton.setVisible(false);
             this.standButton.setEnabled(false);
+            this.standButton.setVisible(false);
         } else if (target == this.yesButton) {
             this.model.sendClientMessage(this.yesButton.getText());
             this.yesButton.setEnabled(false);
+            this.yesButton.setVisible(false);
             this.noButton.setEnabled(false);
+            this.noButton.setVisible(false);
         } else if (target == this.noButton) {
             this.model.sendClientMessage(this.noButton.getText());
             this.yesButton.setEnabled(false);
+            this.yesButton.setVisible(false);
             this.noButton.setEnabled(false);
+            this.noButton.setVisible(false);
         }
     }
 }
