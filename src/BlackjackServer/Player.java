@@ -68,7 +68,7 @@ public class Player implements Runnable {
         } while (this.continuePlaying);
 //        this.out.println("INFOMESSAGE--You leave with $" + String.format("%.2f", this.money) + ".");
 //        this.out.println("GAMEOVERMESSAGE--Thanks for playing!");
-        this.out.println("SERVERMESSAGE--GAMEOVER--" + String.format("%.2f", this.money));
+        this.out.println("SERVERMESSAGE--GAMEOVER");
     }
 
     /**
@@ -534,7 +534,8 @@ public class Player implements Runnable {
     private void getContinuePlaying() {
         if (this.money >= this.table.minimumBet()) {
             do {
-                this.out.println("REPLYMESSAGE--Would you like to keep playing? [Y/n]");
+//                this.out.println("REPLYMESSAGE--Would you like to keep playing? [Y/n]");
+                this.out.println("SERVERMESSAGE--GETCONTINUEPLAYING--" + String.format("%.2f", this.money));
                 try {
                     while (!this.receivedPlayAgain) {
                         if ((this.clientMessage = this.in.readLine()) != null) {
@@ -545,18 +546,20 @@ public class Player implements Runnable {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (!this.playAgain.equals("Y") && !this.playAgain.equals("y") && !this.playAgain.equals("N") && !this.playAgain.equals("n")) {
-                    this.out.println("INFOMESSAGE--Please enter either 'Y' or 'N'.");
+                if (!this.playAgain.equals("Yes") && !this.playAgain.equals("No")) {
+//                    this.out.println("INFOMESSAGE--Please enter either 'Y' or 'N'.");
+                    this.out.println("SERVERMESSAGE--CONTINUEPLAYINGRESPONSE--ERROR");
                     this.receivedPlayAgain = false;
                 }
             } while (!this.receivedPlayAgain);
-            if (this.playAgain.equals("Y") || this.playAgain.equals("y")) {
+            if (this.playAgain.equals("Yes")) {
                 this.continuePlaying = true;
             } else {
                 this.table.removePlayer(this);
             }
         } else {
-            this.out.println("INFOMESSAGE--You do not have enough money to make the minimum bet.");
+//            this.out.println("INFOMESSAGE--You do not have enough money to make the minimum bet.");
+            this.out.println("SERVERMESSAGE--CANNOTCONTINUEPLAYING");
             this.table.removePlayer(this);
         }
         this.table.continuePlayingLatchCountDown();

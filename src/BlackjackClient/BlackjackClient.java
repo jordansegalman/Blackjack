@@ -334,6 +334,28 @@ public class BlackjackClient {
                         break;
                 }
                 break;
+            case "GETCONTINUEPLAYING":
+                this.view.showContinuePlayingPanel();
+                this.view.setContinuePlayingMessageLabel("Would you like to keep playing?");
+                this.view.setContinuePlayingMoneyLabel(serverMessageParts[2]);
+                this.getServerMessage();
+                break;
+            case "CONTINUEPLAYINGRESPONSE":
+                switch (serverMessageParts[2]) {
+                    case "ERROR":
+                        this.view.continuePlayingError();
+                        this.getServerMessage();
+                        break;
+                }
+                break;
+            case "CANNOTCONTINUEPLAYING":
+                this.view.setContinuePlayingMessageLabel("You do not have enough money to make the minimum bet.");
+                this.getServerMessage();
+                break;
+            case "GAMEOVER":
+                this.view.gameOver();
+                this.getServerMessage();
+                break;
             case "WAITING":
                 switch (serverMessageParts[2]) {
                     case "WELCOME":

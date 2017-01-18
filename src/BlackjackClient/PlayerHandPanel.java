@@ -170,19 +170,19 @@ public class PlayerHandPanel extends JPanel implements ActionListener {
         Object target = actionEvent.getSource();
 
         if(target == this.hitButton) {
-            this.model.sendClientMessage("Hit");
+            this.model.sendClientMessage(this.hitButton.getText());
             this.hitButton.setEnabled(false);
             this.standButton.setEnabled(false);
         } else if (target == this.standButton) {
-            this.model.sendClientMessage("Stand");
+            this.model.sendClientMessage(this.standButton.getText());
             this.hitButton.setEnabled(false);
             this.standButton.setEnabled(false);
         } else if (target == this.yesButton) {
-            this.model.sendClientMessage("Yes");
+            this.model.sendClientMessage(this.yesButton.getText());
             this.yesButton.setEnabled(false);
             this.noButton.setEnabled(false);
         } else if (target == this.noButton) {
-            this.model.sendClientMessage("No");
+            this.model.sendClientMessage(this.noButton.getText());
             this.yesButton.setEnabled(false);
             this.noButton.setEnabled(false);
         }
