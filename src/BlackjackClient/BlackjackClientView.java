@@ -299,6 +299,7 @@ public class BlackjackClientView extends JFrame implements ActionListener {
     private JLabel dealerHandValueLabel = new JLabel();
     private JLabel playerCardsTurnLabel = new JLabel("Your Cards:");
     private JPanel playerHandsPanel;
+    private JLabel turnMoneyLabel = new JLabel();
     private JLabel turnBlackjackLabel = new JLabel();
     private JLabel afterTurnWaitingLabel = new JLabel("Waiting for other players to take their turns.");
 
@@ -319,9 +320,11 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         constraints.gridy = 4;
         this.turnPanel.add(this.playerHandsPanel, constraints);
         constraints.gridy = 5;
+        this.turnPanel.add(this.turnMoneyLabel, constraints);
+        constraints.gridy = 6;
         this.turnPanel.add(this.turnBlackjackLabel, constraints);
         this.afterTurnWaitingLabel.setVisible(false);
-        constraints.gridy = 6;
+        constraints.gridy = 7;
         this.turnPanel.add(this.afterTurnWaitingLabel, constraints);
         add(this.turnPanel, PanelNames.TURNPANEL.toString());
     }
@@ -342,6 +345,13 @@ public class BlackjackClientView extends JFrame implements ActionListener {
 
     public void removePlayerHandPanel(PlayerHandPanel playerHandPanel) {
         this.playerHandsPanel.remove(playerHandPanel);
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
+    }
+
+    public void setTurnMoneyLabel(String money) {
+        this.turnMoneyLabel.setText("$" + money);
         this.validate();
         this.repaint();
         this.setVisible(true);

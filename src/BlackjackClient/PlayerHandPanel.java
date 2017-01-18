@@ -103,6 +103,13 @@ public class PlayerHandPanel extends JPanel implements ActionListener {
         this.setVisible(true);
     }
 
+    public void removeCard(int index) {
+        this.cardsListModel.removeElementAt(index);
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
+    }
+
     public void bust() {
         setHandMessageLabel("You busted.");
         this.validate();
@@ -139,6 +146,13 @@ public class PlayerHandPanel extends JPanel implements ActionListener {
         setHandMessageLabel("ERROR");
         this.yesButton.setEnabled(true);
         this.noButton.setEnabled(true);
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
+    }
+
+    public void revealDoubleDownCard(String message) {
+        setHandMessageLabel(message);
         this.validate();
         this.repaint();
         this.setVisible(true);
