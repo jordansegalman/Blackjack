@@ -340,7 +340,7 @@ public class BlackjackClientView extends JFrame implements ActionListener {
     private JList<String> dealerCardsTurnList;
     private JLabel dealerHandValueLabel;
     private JLabel playerCardsTurnLabel;
-    private JPanel playerHandsPanel;
+    private JPanel blackjackHandsPanel;
     private JLabel turnMoneyLabel;
     private JLabel turnBlackjackLabel;
     private JLabel afterTurnWaitingLabel;
@@ -361,9 +361,9 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         this.playerCardsTurnLabel = new JLabel("Your Cards:");
         constraints.gridy = 3;
         this.turnPanel.add(this.playerCardsTurnLabel, constraints);
-        this.playerHandsPanel = new JPanel();
+        this.blackjackHandsPanel = new JPanel();
         constraints.gridy = 4;
-        this.turnPanel.add(this.playerHandsPanel, constraints);
+        this.turnPanel.add(this.blackjackHandsPanel, constraints);
         this.turnMoneyLabel = new JLabel();
         constraints.gridy = 5;
         this.turnPanel.add(this.turnMoneyLabel, constraints);
@@ -384,15 +384,15 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         this.setVisible(true);
     }
 
-    public void addPlayerHandPanel(PlayerHandPanel playerHandPanel, int index) {
-        this.playerHandsPanel.add(playerHandPanel, index);
+    public void addBlackjackHandPanel(BlackjackHandPanel blackjackHandPanel, int index) {
+        this.blackjackHandsPanel.add(blackjackHandPanel, index);
         this.validate();
         this.repaint();
         this.setVisible(true);
     }
 
-    public void removePlayerHandPanel(PlayerHandPanel playerHandPanel) {
-        this.playerHandsPanel.remove(playerHandPanel);
+    public void removeBlackjackHandPanel(BlackjackHandPanel blackjackHandPanel) {
+        this.blackjackHandsPanel.remove(blackjackHandPanel);
         this.validate();
         this.repaint();
         this.setVisible(true);

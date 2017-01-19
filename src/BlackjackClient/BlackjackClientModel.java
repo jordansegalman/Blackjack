@@ -18,7 +18,7 @@ public class BlackjackClientModel {
     private Socket socket;          // socket on server address and port
     private BufferedReader in;      // in to server
     private PrintWriter out;        // out from server
-    private ArrayList<PlayerHandPanel> playerHandPanels = new ArrayList<>();
+    private ArrayList<BlackjackHandPanel> blackjackHandPanels = new ArrayList<>();
 
     /**
      * Constructor for Blackjack client model object.
@@ -71,20 +71,20 @@ public class BlackjackClientModel {
         this.out.println(clientMessage);
     }
 
-    public void addPlayerHandPanel(int index, PlayerHandPanel playerHandPanel) {
-        this.playerHandPanels.add(index, playerHandPanel);
+    public void addBlackjackHandPanel(int index, BlackjackHandPanel blackjackHandPanel) {
+        this.blackjackHandPanels.add(index, blackjackHandPanel);
     }
 
-    public PlayerHandPanel getPlayerHandPanel(int index) {
-        return this.playerHandPanels.get(index);
+    public BlackjackHandPanel getBlackjackHandPanel(int index) {
+        return this.blackjackHandPanels.get(index);
     }
 
-    public void removePlayerHandPanel(int index) {
-        this.playerHandPanels.remove(index);
+    public void removeBlackjackHandPanel(int index) {
+        this.blackjackHandPanels.remove(index);
     }
 
     public void reset() {
-        this.playerHandPanels.clear();
+        this.blackjackHandPanels.clear();
     }
 
     /**

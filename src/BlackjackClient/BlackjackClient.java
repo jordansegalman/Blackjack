@@ -157,26 +157,26 @@ public class BlackjackClient {
                 this.getServerMessage();
                 break;
             case "NEWHAND":
-                this.model.addPlayerHandPanel(Integer.parseInt(serverMessageParts[2]), new PlayerHandPanel(this.model, serverMessageParts[3], serverMessageParts[4]));
-                this.view.addPlayerHandPanel(this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])), Integer.parseInt(serverMessageParts[2]));
+                this.model.addBlackjackHandPanel(Integer.parseInt(serverMessageParts[2]), new BlackjackHandPanel(this.model, serverMessageParts[3], serverMessageParts[4]));
+                this.view.addBlackjackHandPanel(this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])), Integer.parseInt(serverMessageParts[2]));
                 this.getServerMessage();
                 break;
             case "NEWEMPTYHAND":
-                this.model.addPlayerHandPanel(Integer.parseInt(serverMessageParts[2]), new PlayerHandPanel(this.model));
-                this.view.addPlayerHandPanel(this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])), Integer.parseInt(serverMessageParts[2]));
+                this.model.addBlackjackHandPanel(Integer.parseInt(serverMessageParts[2]), new BlackjackHandPanel(this.model));
+                this.view.addBlackjackHandPanel(this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])), Integer.parseInt(serverMessageParts[2]));
                 this.getServerMessage();
                 break;
             case "REMOVEHAND":
-                this.view.removePlayerHandPanel(this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])));
-                this.model.removePlayerHandPanel(Integer.parseInt(serverMessageParts[2]));
+                this.view.removeBlackjackHandPanel(this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])));
+                this.model.removeBlackjackHandPanel(Integer.parseInt(serverMessageParts[2]));
                 this.getServerMessage();
                 break;
             case "HANDBET":
-                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).setHandBet("Bet: $" + serverMessageParts[3]);
+                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).setHandBet("Bet: $" + serverMessageParts[3]);
                 this.getServerMessage();
                 break;
             case "HANDVALUE":
-                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).setHandValueLabel("Hand Value: " + serverMessageParts[3]);
+                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).setHandValueLabel("Hand Value: " + serverMessageParts[3]);
                 this.getServerMessage();
                 break;
             case "TURNBLACKJACK":
@@ -196,33 +196,33 @@ public class BlackjackClient {
                 }
                 break;
             case "NEWCARD":
-                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).addCard(serverMessageParts[3]);
+                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).addCard(serverMessageParts[3]);
                 this.getServerMessage();
                 break;
             case "GETHITSTAND":
-                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).enableHitStand();
+                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).enableHitStand();
                 this.getServerMessage();
                 break;
             case "HITSTANDRESPONSE":
                 switch (serverMessageParts[2]) {
                     case "ERROR":
-                        this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).hitStandError();
+                        this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[3])).hitStandError();
                         this.getServerMessage();
                         break;
                 }
                 break;
             case "BUST":
-                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).bust();
+                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).bust();
                 this.getServerMessage();
                 break;
             case "GETSPLITPAIRS":
-                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).enableSplitPairs();
+                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).enableSplitPairs();
                 this.getServerMessage();
                 break;
             case "SPLITPAIRSRESPONSE":
                 switch (serverMessageParts[2]) {
                     case "ERROR":
-                        this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).yesNoError();
+                        this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[3])).yesNoError();
                         this.getServerMessage();
                         break;
                     case "SUCCESS":
@@ -232,28 +232,28 @@ public class BlackjackClient {
                 }
                 break;
             case "CANNOTSPLITPAIRS":
-                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).setHandMessageLabel("You do not have enough money to split pairs.");
+                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).setHandMessageLabel("You do not have enough money to split pairs.");
                 this.getServerMessage();
                 break;
             case "GETDOUBLEDOWN":
-                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).enableDoubleDown();
+                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).enableDoubleDown();
                 this.getServerMessage();
                 break;
             case "DOUBLEDOWNRESPONSE":
                 switch (serverMessageParts[2]) {
                     case "ERROR":
-                        this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).yesNoError();
+                        this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[3])).yesNoError();
                         this.getServerMessage();
                         break;
                     case "SUCCESS":
-                        this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).doubleDownSuccess();
+                        this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[3])).doubleDownSuccess();
                         this.view.setTurnMoneyLabel(serverMessageParts[4]);
                         this.getServerMessage();
                         break;
                 }
                 break;
             case "CANNOTDOUBLEDOWN":
-                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).setHandMessageLabel("You do not have enough money to double down.");
+                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).setHandMessageLabel("You do not have enough money to double down.");
                 this.getServerMessage();
                 break;
             case "SENDRESULT":
@@ -269,11 +269,11 @@ public class BlackjackClient {
                 this.getServerMessage();
                 break;
             case "REMOVEPLAYERCARD":
-                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).removeCard(Integer.parseInt(serverMessageParts[3]));
+                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).removeCard(Integer.parseInt(serverMessageParts[3]));
                 this.getServerMessage();
                 break;
             case "REVEALDOUBLEDOWNCARD":
-                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).revealDoubleDownCard("Your face-down card is the " + serverMessageParts[3] + ".");
+                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).revealDoubleDownCard("Your face-down card is the " + serverMessageParts[3] + ".");
                 this.getServerMessage();
                 break;
             case "ROUNDRESULT":
@@ -281,17 +281,17 @@ public class BlackjackClient {
                     case "BUST":
                         switch (serverMessageParts[3]) {
                             case "TIE":
-                                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You and the dealer both busted. It's a tie!");
+                                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You and the dealer both busted. It's a tie!");
                                 this.view.setTurnMoneyLabel(serverMessageParts[5]);
                                 this.getServerMessage();
                                 break;
                             case "DEALER":
-                                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You busted. The dealer wins!");
+                                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You busted. The dealer wins!");
                                 this.view.setTurnMoneyLabel(serverMessageParts[5]);
                                 this.getServerMessage();
                                 break;
                             case "PLAYER":
-                                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("The dealer busted. You win!");
+                                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("The dealer busted. You win!");
                                 this.view.setTurnMoneyLabel(serverMessageParts[5]);
                                 this.getServerMessage();
                                 break;
@@ -300,17 +300,17 @@ public class BlackjackClient {
                     case "NORMAL":
                         switch (serverMessageParts[3]) {
                             case "TIE":
-                                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("It's a tie!");
+                                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("It's a tie!");
                                 this.view.setTurnMoneyLabel(serverMessageParts[5]);
                                 this.getServerMessage();
                                 break;
                             case "DEALER":
-                                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("The dealer wins!");
+                                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("The dealer wins!");
                                 this.view.setTurnMoneyLabel(serverMessageParts[5]);
                                 this.getServerMessage();
                                 break;
                             case "PLAYER":
-                                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You win!");
+                                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You win!");
                                 this.view.setTurnMoneyLabel(serverMessageParts[5]);
                                 this.getServerMessage();
                                 break;
@@ -319,17 +319,17 @@ public class BlackjackClient {
                     case "BLACKJACK":
                         switch (serverMessageParts[3]) {
                             case "TIE":
-                                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You and the dealer both have Blackjack. It's a tie!");
+                                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You and the dealer both have Blackjack. It's a tie!");
                                 this.view.setTurnMoneyLabel(serverMessageParts[5]);
                                 this.getServerMessage();
                                 break;
                             case "DEALER":
-                                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("The dealer has Blackjack. The dealer wins!");
+                                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("The dealer has Blackjack. The dealer wins!");
                                 this.view.setTurnMoneyLabel(serverMessageParts[5]);
                                 this.getServerMessage();
                                 break;
                             case "PLAYER":
-                                this.model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You have Blackjack. You win!");
+                                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You have Blackjack. You win!");
                                 this.view.setTurnMoneyLabel(serverMessageParts[5]);
                                 this.getServerMessage();
                                 break;

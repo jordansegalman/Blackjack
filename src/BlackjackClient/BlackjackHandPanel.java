@@ -5,7 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class PlayerHandPanel extends JPanel implements ActionListener {
+public class BlackjackHandPanel extends JPanel implements ActionListener {
     private BlackjackClientModel model;
     private DefaultListModel<String> cardsListModel = new DefaultListModel<>();
     private JList<String> cardsList = new JList<>(this.cardsListModel);
@@ -17,14 +17,14 @@ public class PlayerHandPanel extends JPanel implements ActionListener {
     private JButton noButton = new JButton("No");
     private JLabel handMessageLabel = new JLabel();
 
-    public PlayerHandPanel(BlackjackClientModel model, String firstCard, String secondCard) {
+    public BlackjackHandPanel(BlackjackClientModel model, String firstCard, String secondCard) {
         this.model = model;
         this.cardsListModel.addElement(firstCard);
         this.cardsListModel.addElement(secondCard);
         this.setupHand();
     }
 
-    public PlayerHandPanel(BlackjackClientModel model) {
+    public BlackjackHandPanel(BlackjackClientModel model) {
         this.model = model;
         this.setupHand();
     }
