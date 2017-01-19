@@ -35,12 +35,12 @@ public class BlackjackServer {
     public void start() {
         try {
             System.out.println("Creating server socket");
-            ServerSocket serverSocket = new ServerSocket(this.serverPort);  // server socket on server port
-            System.out.println("Listening on port: " + this.serverPort);
+            ServerSocket serverSocket = new ServerSocket(serverPort);  // server socket on server port
+            System.out.println("Listening on port: " + serverPort);
             while (true) {
                 Table newTable = new Table();                               // new table players can join
                 Thread newTableThread = new Thread(newTable);               // new thread for table
-                for (int i = 0; i < this.playersPerTable; i++) {
+                for (int i = 0; i < playersPerTable; i++) {
                     Socket socket = serverSocket.accept();                  // new socket from server socket
                     System.out.println("Received request from port: " + socket.getPort());
                     Player newPlayer = new Player(socket, newTable);        // new player to join table

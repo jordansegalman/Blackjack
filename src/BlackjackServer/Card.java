@@ -37,7 +37,7 @@ public class Card {
 
         @Override
         public String toString() {
-            return this.name().charAt(0) + this.name().substring(1, this.name().length()).toLowerCase();
+            return name().charAt(0) + name().substring(1, name().length()).toLowerCase();
         }
     }
 
@@ -56,7 +56,7 @@ public class Card {
 
         @Override
         public String toString() {
-            return this.name().charAt(0) + this.name().substring(1, this.name().length()).toLowerCase();
+            return name().charAt(0) + name().substring(1, name().length()).toLowerCase();
         }
     }
 
@@ -68,8 +68,8 @@ public class Card {
      */
 
     public Card(Rank rank, Suit suit) {
-        this.RANK = rank;
-        this.SUIT = suit;
+        RANK = rank;
+        SUIT = suit;
     }
 
     /**
@@ -79,7 +79,7 @@ public class Card {
      */
 
     public int value() {
-        return this.RANK.value;
+        return RANK.value;
     }
 
     /**
@@ -89,7 +89,7 @@ public class Card {
      */
 
     public Rank rank() {
-        return this.RANK;
+        return RANK;
     }
 
     /**
@@ -100,6 +100,6 @@ public class Card {
 
     @Override
     public String toString() {
-        return this.RANK + " of " + this.SUIT;
+        return RANK + " of " + SUIT;
     }
 }

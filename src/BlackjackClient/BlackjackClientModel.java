@@ -29,10 +29,10 @@ public class BlackjackClientModel {
 
     public BlackjackClientModel(String serverAddress, int serverPort) {
         try {
-            this.socket = new Socket(serverAddress, serverPort);
-            InputStreamReader isr = new InputStreamReader(this.socket.getInputStream());    // input stream reader from socket
-            this.in = new BufferedReader(isr);
-            this.out = new PrintWriter(this.socket.getOutputStream(), true);
+            socket = new Socket(serverAddress, serverPort);
+            InputStreamReader isr = new InputStreamReader(socket.getInputStream());    // input stream reader from socket
+            in = new BufferedReader(isr);
+            out = new PrintWriter(socket.getOutputStream(), true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,7 +53,7 @@ public class BlackjackClientModel {
         }
         while (serverMessage == null) {
             try {
-                serverMessage = this.in.readLine();
+                serverMessage = in.readLine();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -68,23 +68,23 @@ public class BlackjackClientModel {
      */
 
     public void sendClientMessage(String clientMessage) {
-        this.out.println(clientMessage);
+        out.println(clientMessage);
     }
 
     public void addBlackjackHandPanel(int index, BlackjackHandPanel blackjackHandPanel) {
-        this.blackjackHandPanels.add(index, blackjackHandPanel);
+        blackjackHandPanels.add(index, blackjackHandPanel);
     }
 
     public BlackjackHandPanel getBlackjackHandPanel(int index) {
-        return this.blackjackHandPanels.get(index);
+        return blackjackHandPanels.get(index);
     }
 
     public void removeBlackjackHandPanel(int index) {
-        this.blackjackHandPanels.remove(index);
+        blackjackHandPanels.remove(index);
     }
 
     public void reset() {
-        this.blackjackHandPanels.clear();
+        blackjackHandPanels.clear();
     }
 
     /**
@@ -92,9 +92,9 @@ public class BlackjackClientModel {
      */
 
     public void quitGame() {
-        this.sendClientMessage("CLIENTMESSAGE--QUITGAME");
+        sendClientMessage("CLIENTMESSAGE--QUITGAME");
         try {
-            this.socket.close();
+            socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

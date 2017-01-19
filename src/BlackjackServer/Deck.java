@@ -1,7 +1,6 @@
 package BlackjackServer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Deck objects represent a standard deck of playing cards.
@@ -19,17 +18,9 @@ public class Deck {
     public Deck() {
         for (Card.Suit suit : Card.Suit.values()) {
             for (Card.Rank rank : Card.Rank.values()) {
-                this.deck.add(new Card(rank, suit));
+                deck.add(new Card(rank, suit));
             }
         }
-    }
-
-    /**
-     * Shuffles the deck.
-     */
-
-    public void shuffle() {
-        Collections.shuffle(this.deck);
     }
 
     /**
@@ -39,8 +30,8 @@ public class Deck {
      */
 
     public Card dealCard() {
-        Card card = this.deck.get(this.deck.size() - 1);    // last card in the deck
-        this.deck.remove(card);
+        Card card = deck.get(deck.size() - 1);    // last card in the deck
+        deck.remove(card);
         return card;
     }
 
@@ -51,6 +42,6 @@ public class Deck {
      */
 
     public int size() {
-        return this.deck.size();
+        return deck.size();
     }
 }

@@ -30,11 +30,11 @@ public class Table implements Runnable {
 
     @Override
     public void run() {
-        this.shoe = new Shoe(NUMBER_OF_DECKS);
-        this.shoe.shuffle();
+        shoe = new Shoe(NUMBER_OF_DECKS);
+        shoe.shuffle();
         do {
-            this.playBlackjack();
-        } while (this.numPlayers() > 0);
+            playBlackjack();
+        } while (numPlayers() > 0);
     }
 
     /**
@@ -42,44 +42,44 @@ public class Table implements Runnable {
      */
 
     private void playBlackjack() {
-        this.setup();
-        for (Player player : this.table) {
+        setup();
+        for (Player player : table) {
             player.startLatchCountDown();
         }
         try {
-            this.placedBetsLatch.await();
+            placedBetsLatch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        for (Player player : this.table) {
+        for (Player player : table) {
             player.betLatchCountDown();
         }
-        this.dealInitialCards();
-        for (Player player : this.table) {
+        dealInitialCards();
+        for (Player player : table) {
             player.dealLatchCountDown();
         }
         try {
-            this.placedInsuranceBetsLatch.await();
+            placedInsuranceBetsLatch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        for (Player player : this.table) {
+        for (Player player : table) {
             player.insuranceBetLatchCountDown();
         }
         try {
-            this.turnLatch.await();
+            turnLatch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        for (Player player : this.table) {
+        for (Player player : table) {
             player.takeTurn(player.originalPlayerHand());
         }
-        this.dealerTurn();
-        for (Player player : this.table) {
+        dealerTurn();
+        for (Player player : table) {
             player.dealerTurnLatchCountDown();
         }
         try {
-            this.continuePlayingLatch.await();
+            continuePlayingLatch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -90,16 +90,16 @@ public class Table implements Runnable {
      */
 
     private void setup() {
-        if (this.shoe.remainingCards() < MINIMUM_NUMBER_OF_CARDS_BEFORE_SHUFFLE) {
-            this.shoe = new Shoe(NUMBER_OF_DECKS);
-            this.shoe.shuffle();
+        if (shoe.remainingCards() < MINIMUM_NUMBER_OF_CARDS_BEFORE_SHUFFLE) {
+            shoe = new Shoe(NUMBER_OF_DECKS);
+            shoe.shuffle();
         }
-        this.dealerHand.clear();
-        this.dealerHasBlackjack = false;
-        this.placedBetsLatch = new CountDownLatch(this.numPlayers());
-        this.placedInsuranceBetsLatch = new CountDownLatch(this.numPlayers());
-        this.turnLatch = new CountDownLatch(this.numPlayers());
-        this.continuePlayingLatch = new CountDownLatch(this.numPlayers());
+        dealerHand.clear();
+        dealerHasBlackjack = false;
+        placedBetsLatch = new CountDownLatch(numPlayers());
+        placedInsuranceBetsLatch = new CountDownLatch(numPlayers());
+        turnLatch = new CountDownLatch(numPlayers());
+        continuePlayingLatch = new CountDownLatch(numPlayers());
     }
 
     /**
@@ -108,13 +108,13 @@ public class Table implements Runnable {
 
     private void dealInitialCards() {
         for (int i = 0; i < 2; i++) {
-            this.dealerHand.addCard(this.shoe.dealCard());
-            for (Player player : this.table) {
-                player.originalPlayerHand().addCard(this.shoe.dealCard());
+            dealerHand.addCard(shoe.dealCard());
+            for (Player player : table) {
+                player.originalPlayerHand().addCard(shoe.dealCard());
             }
         }
-        if (this.dealerHand.blackjackValue() == MAXIMUM_SCORE) {
-            this.dealerHasBlackjack = true;
+        if (dealerHand.blackjackValue() == MAXIMUM_SCORE) {
+            dealerHasBlackjack = true;
         }
     }
 
@@ -123,8 +123,8 @@ public class Table implements Runnable {
      */
 
     private void dealerTurn() {
-        while ((this.dealerHand.isSoft() && this.dealerHand.blackjackValue() == DEALER_HIT_THRESHOLD) || this.dealerHand.blackjackValue() < DEALER_HIT_THRESHOLD) {
-            this.dealerHand.addCard(this.shoe.dealCard());
+        while ((dealerHand.isSoft() && dealerHand.blackjackValue() == DEALER_HIT_THRESHOLD) || dealerHand.blackjackValue() < DEALER_HIT_THRESHOLD) {
+            dealerHand.addCard(shoe.dealCard());
         }
     }
 
@@ -135,7 +135,7 @@ public class Table implements Runnable {
      */
 
     public void addPlayer(Player player) {
-        this.table.add(player);
+        table.add(player);
     }
 
     /**
@@ -145,7 +145,7 @@ public class Table implements Runnable {
      */
 
     public void removePlayer(Player player) {
-        this.table.remove(player);
+        table.remove(player);
     }
 
     /**
@@ -155,7 +155,7 @@ public class Table implements Runnable {
      */
 
     public int numPlayers() {
-        return this.table.size();
+        return table.size();
     }
 
     /**
@@ -175,7 +175,7 @@ public class Table implements Runnable {
      */
 
     public boolean dealerHasBlackjack() {
-        return this.dealerHasBlackjack;
+        return dealerHasBlackjack;
     }
 
     /**
@@ -185,7 +185,7 @@ public class Table implements Runnable {
      */
 
     public Card dealerShownCard() {
-        return this.dealerHand.getCard(0);
+        return dealerHand.getCard(0);
     }
 
     /**
@@ -195,7 +195,7 @@ public class Table implements Runnable {
      */
 
     public BlackjackHand dealerHand() {
-        return this.dealerHand;
+        return dealerHand;
     }
 
     /**
@@ -205,7 +205,7 @@ public class Table implements Runnable {
      */
 
     public Card dealCard() {
-        return this.shoe.dealCard();
+        return shoe.dealCard();
     }
 
     /**
@@ -213,7 +213,7 @@ public class Table implements Runnable {
      */
 
     public void placedBetsLatchCountDown() {
-        this.placedBetsLatch.countDown();
+        placedBetsLatch.countDown();
     }
 
     /**
@@ -221,7 +221,7 @@ public class Table implements Runnable {
      */
 
     public void placedInsuranceBetsLatchCountDown() {
-        this.placedInsuranceBetsLatch.countDown();
+        placedInsuranceBetsLatch.countDown();
     }
 
     /**
@@ -229,7 +229,7 @@ public class Table implements Runnable {
      */
 
     public void turnLatchCountDown() {
-        this.turnLatch.countDown();
+        turnLatch.countDown();
     }
 
     /**
@@ -237,6 +237,6 @@ public class Table implements Runnable {
      */
 
     public void continuePlayingLatchCountDown() {
-        this.continuePlayingLatch.countDown();
+        continuePlayingLatch.countDown();
     }
 }

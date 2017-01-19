@@ -16,9 +16,9 @@ public class BlackjackClient {
     private BlackjackClientView view;
 
     private void playBlackjack() {
-        this.model = new BlackjackClientModel(DEFAULT_SERVER, DEFAULT_PORT);
-        this.view = new BlackjackClientView(this.model);
-        this.getServerMessage();
+        model = new BlackjackClientModel(DEFAULT_SERVER, DEFAULT_PORT);
+        view = new BlackjackClientView(model);
+        getServerMessage();
     }
 
     private void getServerMessage() {
@@ -44,351 +44,355 @@ public class BlackjackClient {
         String[] serverMessageParts = serverMessage.split("--");
         switch (serverMessageParts[1]) {
             case "WELCOME":
-                this.view.showWelcomePanel();
-                this.getServerMessage();
+                view.showWelcomePanel();
+                getServerMessage();
                 break;
             case "GETBET":
-                this.view.setWelcomeWaiting(false);
-                this.view.setContinuePlayingWaiting(false);
-                this.view.showBetPanel();
-                this.view.setBetMoneyLabel(serverMessageParts[2]);
-                this.view.setMinimumBetLabel(serverMessageParts[3]);
-                this.getServerMessage();
+                view.setWelcomeWaiting(false);
+                view.setContinuePlayingWaiting(false);
+                view.showBetPanel();
+                view.setBetMoneyLabel(serverMessageParts[2]);
+                view.setMinimumBetLabel(serverMessageParts[3]);
+                getServerMessage();
                 break;
             case "BETRESPONSE":
                 switch (serverMessageParts[2]) {
                     case "INVALID":
-                        this.view.betError("Your bet must be a positive whole number.");
-                        this.getServerMessage();
+                        view.betError("Your bet must be a positive whole number.");
+                        getServerMessage();
                         break;
                     case "TOOMUCH":
-                        this.view.betError("You cannot bet more money than you have.");
-                        this.getServerMessage();
+                        view.betError("You cannot bet more money than you have.");
+                        getServerMessage();
                         break;
                     case "MINIMUM":
-                        this.view.betError("You must bet at least the minimum amount.");
-                        this.getServerMessage();
+                        view.betError("You must bet at least the minimum amount.");
+                        getServerMessage();
                         break;
                     case "SUCCESS":
-                        this.view.betSuccess();
-                        this.view.setBetMoneyLabel(serverMessageParts[3]);
-                        this.getServerMessage();
+                        view.betSuccess();
+                        view.setBetMoneyLabel(serverMessageParts[3]);
+                        getServerMessage();
                         break;
                 }
                 break;
             case "NEWROUND":
-                this.view.setBetWaiting(false);
-                this.view.showRoundInformationPanel();
-                this.view.setRoundInformationMoneyLabel(serverMessageParts[2]);
-                this.getServerMessage();
+                view.setBetWaiting(false);
+                view.showRoundInformationPanel();
+                view.setRoundInformationMoneyLabel(serverMessageParts[2]);
+                getServerMessage();
                 break;
             case "NEWPLAYERCARD":
-                this.view.addPlayerCard(serverMessageParts[2]);
-                this.getServerMessage();
+                view.addPlayerCard(serverMessageParts[2]);
+                getServerMessage();
                 break;
             case "ORIGINALHANDBET":
-                this.view.setOriginalHandBetLabel("Bet: $" + serverMessageParts[2]);
-                this.getServerMessage();
+                view.setOriginalHandBetLabel("Bet: $" + serverMessageParts[2]);
+                getServerMessage();
                 break;
             case "BLACKJACK":
                 switch (serverMessageParts[2]) {
                     case "PLAYERANDDEALER":
-                        this.view.setRoundInformationBlackjackLabel("You and the dealer both have Blackjack!");
-                        this.getServerMessage();
+                        view.setRoundInformationBlackjackLabel("You and the dealer both have Blackjack!");
+                        getServerMessage();
                         break;
                     case "PLAYER":
-                        this.view.setRoundInformationBlackjackLabel("You have Blackjack!");
-                        this.getServerMessage();
+                        view.setRoundInformationBlackjackLabel("You have Blackjack!");
+                        getServerMessage();
                         break;
                     case "DEALER":
-                        this.view.setRoundInformationBlackjackLabel("The dealer has Blackjack!");
-                        this.getServerMessage();
+                        view.setRoundInformationBlackjackLabel("The dealer has Blackjack!");
+                        getServerMessage();
                         break;
                     case "DEALERNOBLACKJACK":
-                        this.view.setRoundInformationBlackjackLabel("The dealer does not have Blackjack.");
-                        this.getServerMessage();
+                        view.setRoundInformationBlackjackLabel("The dealer does not have Blackjack.");
+                        getServerMessage();
                         break;
                 }
                 break;
             case "NEWDEALERCARD":
-                this.view.addDealerCard(serverMessageParts[2]);
-                this.getServerMessage();
+                view.addDealerCard(serverMessageParts[2]);
+                getServerMessage();
                 break;
             case "GETINSURANCEBET":
-                this.view.enableInsuranceBet();
-                this.getServerMessage();
+                view.enableInsuranceBet();
+                getServerMessage();
                 break;
             case "INSURANCEBETRESPONSE":
                 switch (serverMessageParts[2]) {
                     case "ERROR":
-                        this.view.insuranceBetError();
-                        this.getServerMessage();
+                        view.insuranceBetError();
+                        getServerMessage();
                         break;
                     case "PLACED":
-                        this.view.insuranceBetSuccess();
-                        this.view.setRoundInformationInsuranceLabel("Insurance Bet: $" + serverMessageParts[3]);
-                        this.view.setRoundInformationMoneyLabel(serverMessageParts[4]);
-                        this.getServerMessage();
+                        view.insuranceBetSuccess();
+                        view.setRoundInformationInsuranceLabel("Insurance Bet: $" + serverMessageParts[3]);
+                        view.setRoundInformationMoneyLabel(serverMessageParts[4]);
+                        getServerMessage();
                         break;
                     case "NOTPLACED":
-                        this.view.insuranceBetSuccess();
-                        this.view.insuranceBetNotPlaced();
-                        this.getServerMessage();
+                        view.insuranceBetSuccess();
+                        view.insuranceBetNotPlaced();
+                        getServerMessage();
                         break;
                 }
                 break;
+            case "CANNOTINSURANCEBET":
+                view.setRoundInformationInsuranceLabel("You do not have enough money to place an insurance bet.");
+                getServerMessage();
+                break;
             case "INSURANCEBETWON":
-                this.view.setRoundInformationInsuranceLabel("You won $" + serverMessageParts[2] + " from your insurance bet.");
-                this.view.setRoundInformationMoneyLabel(serverMessageParts[3]);
-                this.getServerMessage();
+                view.setRoundInformationInsuranceLabel("You won $" + serverMessageParts[2] + " from your insurance bet.");
+                view.setRoundInformationMoneyLabel(serverMessageParts[3]);
+                getServerMessage();
                 break;
             case "INSURANCEBETLOST":
-                this.view.setRoundInformationInsuranceLabel("You lost your insurance bet.");
-                this.getServerMessage();
+                view.setRoundInformationInsuranceLabel("You lost your insurance bet.");
+                getServerMessage();
                 break;
             case "INSURANCEBETDONE":
-                this.view.setInsuranceBetWaiting(false);
-                this.getServerMessage();
+                view.setInsuranceBetWaiting(false);
+                getServerMessage();
                 break;
             case "TAKETURN":
-                this.view.setBeforeTurnWaiting(false);
-                this.view.showTurnPanel();
-                this.view.setTurnMoneyLabel(serverMessageParts[2]);
-                this.getServerMessage();
+                view.setBeforeTurnWaiting(false);
+                view.showTurnPanel();
+                view.setTurnMoneyLabel(serverMessageParts[2]);
+                getServerMessage();
                 break;
             case "NEWHAND":
-                this.model.addBlackjackHandPanel(Integer.parseInt(serverMessageParts[2]), new BlackjackHandPanel(this.model, serverMessageParts[3], serverMessageParts[4]));
-                this.view.addBlackjackHandPanel(this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])), Integer.parseInt(serverMessageParts[2]));
-                this.getServerMessage();
+                model.addBlackjackHandPanel(Integer.parseInt(serverMessageParts[2]), new BlackjackHandPanel(model, serverMessageParts[3], serverMessageParts[4]));
+                view.addBlackjackHandPanel(model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])), Integer.parseInt(serverMessageParts[2]));
+                getServerMessage();
                 break;
             case "NEWEMPTYHAND":
-                this.model.addBlackjackHandPanel(Integer.parseInt(serverMessageParts[2]), new BlackjackHandPanel(this.model));
-                this.view.addBlackjackHandPanel(this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])), Integer.parseInt(serverMessageParts[2]));
-                this.getServerMessage();
+                model.addBlackjackHandPanel(Integer.parseInt(serverMessageParts[2]), new BlackjackHandPanel(model));
+                view.addBlackjackHandPanel(model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])), Integer.parseInt(serverMessageParts[2]));
+                getServerMessage();
                 break;
             case "REMOVEHAND":
-                this.view.removeBlackjackHandPanel(this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])));
-                this.model.removeBlackjackHandPanel(Integer.parseInt(serverMessageParts[2]));
-                this.getServerMessage();
+                view.removeBlackjackHandPanel(model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])));
+                model.removeBlackjackHandPanel(Integer.parseInt(serverMessageParts[2]));
+                getServerMessage();
                 break;
             case "HANDBET":
-                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).setHandBet("Bet: $" + serverMessageParts[3]);
-                this.getServerMessage();
+                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).setHandBet("Bet: $" + serverMessageParts[3]);
+                getServerMessage();
                 break;
             case "HANDVALUE":
-                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).setHandValueLabel("Hand Value: " + serverMessageParts[3]);
-                this.getServerMessage();
+                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).setHandValueLabel("Hand Value: " + serverMessageParts[3]);
+                getServerMessage();
                 break;
             case "TURNBLACKJACK":
                 switch (serverMessageParts[2]) {
                     case "PLAYERANDDEALER":
-                        this.view.setTurnBlackjackLabel("You and the dealer both have Blackjack!");
-                        this.getServerMessage();
+                        view.setTurnBlackjackLabel("You and the dealer both have Blackjack!");
+                        getServerMessage();
                         break;
                     case "PLAYER":
-                        this.view.setTurnBlackjackLabel("You have Blackjack!");
-                        this.getServerMessage();
+                        view.setTurnBlackjackLabel("You have Blackjack!");
+                        getServerMessage();
                         break;
                     case "DEALER":
-                        this.view.setTurnBlackjackLabel("The dealer has Blackjack!");
-                        this.getServerMessage();
+                        view.setTurnBlackjackLabel("The dealer has Blackjack!");
+                        getServerMessage();
                         break;
                 }
                 break;
             case "NEWCARD":
-                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).addCard(serverMessageParts[3]);
-                this.getServerMessage();
+                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).addCard(serverMessageParts[3]);
+                getServerMessage();
                 break;
             case "GETHITSTAND":
-                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).enableHitStand();
-                this.getServerMessage();
+                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).enableHitStand();
+                getServerMessage();
                 break;
             case "HITSTANDRESPONSE":
                 switch (serverMessageParts[2]) {
                     case "ERROR":
-                        this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[3])).hitStandError();
-                        this.getServerMessage();
+                        model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[3])).hitStandError();
+                        getServerMessage();
                         break;
                 }
                 break;
             case "BUST":
-                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).bust();
-                this.getServerMessage();
+                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).bust();
+                getServerMessage();
                 break;
             case "GETSPLITPAIRS":
-                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).enableSplitPairs();
-                this.getServerMessage();
+                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).enableSplitPairs();
+                getServerMessage();
                 break;
             case "SPLITPAIRSRESPONSE":
                 switch (serverMessageParts[2]) {
                     case "ERROR":
-                        this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[3])).yesNoError();
-                        this.getServerMessage();
+                        model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[3])).yesNoError();
+                        getServerMessage();
                         break;
                     case "SUCCESS":
-                        this.view.setTurnMoneyLabel(serverMessageParts[3]);
-                        this.getServerMessage();
+                        view.setTurnMoneyLabel(serverMessageParts[3]);
+                        getServerMessage();
                         break;
                 }
                 break;
             case "CANNOTSPLITPAIRS":
-                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).setHandMessageLabel("You do not have enough money to split pairs.");
-                this.getServerMessage();
+                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).setHandMessageLabel("You do not have enough money to split pairs.");
+                getServerMessage();
                 break;
             case "GETDOUBLEDOWN":
-                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).enableDoubleDown();
-                this.getServerMessage();
+                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).enableDoubleDown();
+                getServerMessage();
                 break;
             case "DOUBLEDOWNRESPONSE":
                 switch (serverMessageParts[2]) {
                     case "ERROR":
-                        this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[3])).yesNoError();
-                        this.getServerMessage();
+                        model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[3])).yesNoError();
+                        getServerMessage();
                         break;
                     case "SUCCESS":
-                        this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[3])).doubleDownSuccess();
-                        this.view.setTurnMoneyLabel(serverMessageParts[4]);
-                        this.getServerMessage();
+                        model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[3])).doubleDownSuccess();
+                        view.setTurnMoneyLabel(serverMessageParts[4]);
+                        getServerMessage();
                         break;
                 }
                 break;
             case "CANNOTDOUBLEDOWN":
-                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).setHandMessageLabel("You do not have enough money to double down.");
-                this.getServerMessage();
+                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).setHandMessageLabel("You do not have enough money to double down.");
+                getServerMessage();
                 break;
             case "SENDRESULT":
-                this.view.setAfterTurnWaiting(false);
-                this.getServerMessage();
+                view.setAfterTurnWaiting(false);
+                getServerMessage();
                 break;
             case "REMOVEDEALERCARD":
-                this.view.removeDealerCard(Integer.parseInt(serverMessageParts[2]));
-                this.getServerMessage();
+                view.removeDealerCard(Integer.parseInt(serverMessageParts[2]));
+                getServerMessage();
                 break;
             case "DEALERHANDVALUE":
-                this.view.setDealerHandValueLabel("Dealer Hand Value: " + serverMessageParts[2]);
-                this.getServerMessage();
+                view.setDealerHandValueLabel("Dealer Hand Value: " + serverMessageParts[2]);
+                getServerMessage();
                 break;
             case "REMOVEPLAYERCARD":
-                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).removeCard(Integer.parseInt(serverMessageParts[3]));
-                this.getServerMessage();
+                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).removeCard(Integer.parseInt(serverMessageParts[3]));
+                getServerMessage();
                 break;
             case "REVEALDOUBLEDOWNCARD":
-                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).revealDoubleDownCard("Your face-down card is the " + serverMessageParts[3] + ".");
-                this.getServerMessage();
+                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).revealDoubleDownCard("Your face-down card is the " + serverMessageParts[3] + ".");
+                getServerMessage();
                 break;
             case "ROUNDRESULT":
                 switch (serverMessageParts[2]) {
                     case "BUST":
                         switch (serverMessageParts[3]) {
                             case "TIE":
-                                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You and the dealer both busted. It's a tie!");
-                                this.view.setTurnMoneyLabel(serverMessageParts[5]);
-                                this.getServerMessage();
+                                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You and the dealer both busted. It's a tie!");
+                                view.setTurnMoneyLabel(serverMessageParts[5]);
+                                getServerMessage();
                                 break;
                             case "DEALER":
-                                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You busted. The dealer wins!");
-                                this.view.setTurnMoneyLabel(serverMessageParts[5]);
-                                this.getServerMessage();
+                                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You busted. The dealer wins!");
+                                view.setTurnMoneyLabel(serverMessageParts[5]);
+                                getServerMessage();
                                 break;
                             case "PLAYER":
-                                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("The dealer busted. You win!");
-                                this.view.setTurnMoneyLabel(serverMessageParts[5]);
-                                this.getServerMessage();
+                                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("The dealer busted. You win!");
+                                view.setTurnMoneyLabel(serverMessageParts[5]);
+                                getServerMessage();
                                 break;
                         }
                         break;
                     case "NORMAL":
                         switch (serverMessageParts[3]) {
                             case "TIE":
-                                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("It's a tie!");
-                                this.view.setTurnMoneyLabel(serverMessageParts[5]);
-                                this.getServerMessage();
+                                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("It's a tie!");
+                                view.setTurnMoneyLabel(serverMessageParts[5]);
+                                getServerMessage();
                                 break;
                             case "DEALER":
-                                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("The dealer wins!");
-                                this.view.setTurnMoneyLabel(serverMessageParts[5]);
-                                this.getServerMessage();
+                                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("The dealer wins!");
+                                view.setTurnMoneyLabel(serverMessageParts[5]);
+                                getServerMessage();
                                 break;
                             case "PLAYER":
-                                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You win!");
-                                this.view.setTurnMoneyLabel(serverMessageParts[5]);
-                                this.getServerMessage();
+                                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You win!");
+                                view.setTurnMoneyLabel(serverMessageParts[5]);
+                                getServerMessage();
                                 break;
                         }
                         break;
                     case "BLACKJACK":
                         switch (serverMessageParts[3]) {
                             case "TIE":
-                                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You and the dealer both have Blackjack. It's a tie!");
-                                this.view.setTurnMoneyLabel(serverMessageParts[5]);
-                                this.getServerMessage();
+                                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You and the dealer both have Blackjack. It's a tie!");
+                                view.setTurnMoneyLabel(serverMessageParts[5]);
+                                getServerMessage();
                                 break;
                             case "DEALER":
-                                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("The dealer has Blackjack. The dealer wins!");
-                                this.view.setTurnMoneyLabel(serverMessageParts[5]);
-                                this.getServerMessage();
+                                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("The dealer has Blackjack. The dealer wins!");
+                                view.setTurnMoneyLabel(serverMessageParts[5]);
+                                getServerMessage();
                                 break;
                             case "PLAYER":
-                                this.model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You have Blackjack. You win!");
-                                this.view.setTurnMoneyLabel(serverMessageParts[5]);
-                                this.getServerMessage();
+                                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You have Blackjack. You win!");
+                                view.setTurnMoneyLabel(serverMessageParts[5]);
+                                getServerMessage();
                                 break;
                         }
                         break;
                 }
                 break;
             case "GETCONTINUEPLAYING":
-                this.view.showContinuePlayingPanel();
-                this.view.enableContinuePlaying();
-                this.view.setContinuePlayingMessageLabel("Would you like to keep playing?");
-                this.view.setContinuePlayingMoneyLabel(serverMessageParts[2]);
-                this.getServerMessage();
+                view.showContinuePlayingPanel();
+                view.enableContinuePlaying();
+                view.setContinuePlayingMessageLabel("Would you like to keep playing?");
+                view.setContinuePlayingMoneyLabel(serverMessageParts[2]);
+                getServerMessage();
                 break;
             case "CONTINUEPLAYINGRESPONSE":
                 switch (serverMessageParts[2]) {
                     case "ERROR":
-                        this.view.continuePlayingError();
-                        this.getServerMessage();
+                        view.continuePlayingError();
+                        getServerMessage();
                         break;
                     case "CONTINUE":
-                        this.view.reset();
-                        this.model.reset();
-                        this.getServerMessage();
+                        view.reset();
+                        model.reset();
+                        getServerMessage();
                         break;
                 }
                 break;
             case "CANNOTCONTINUEPLAYING":
-                this.view.showContinuePlayingPanel();
-                this.view.setContinuePlayingMessageLabel("You do not have enough money to make the minimum bet.");
-                this.view.setContinuePlayingMoneyLabel(serverMessageParts[2]);
-                this.getServerMessage();
+                view.showContinuePlayingPanel();
+                view.setContinuePlayingMessageLabel("You do not have enough money to make the minimum bet.");
+                view.setContinuePlayingMoneyLabel(serverMessageParts[2]);
+                getServerMessage();
                 break;
             case "GAMEOVER":
-                this.view.gameOver();
-                this.getServerMessage();
+                view.gameOver();
+                getServerMessage();
                 break;
             case "WAITING":
                 switch (serverMessageParts[2]) {
                     case "WELCOME":
-                        this.view.setWelcomeWaiting(true);
-                        this.view.setContinuePlayingWaiting(true);
-                        this.getServerMessage();
+                        view.setWelcomeWaiting(true);
+                        view.setContinuePlayingWaiting(true);
+                        getServerMessage();
                         break;
                     case "BET":
-                        this.view.setBetWaiting(true);
-                        this.getServerMessage();
+                        view.setBetWaiting(true);
+                        getServerMessage();
                         break;
                     case "INSURANCEBET":
-                        this.view.setInsuranceBetWaiting(true);
-                        this.getServerMessage();
+                        view.setInsuranceBetWaiting(true);
+                        getServerMessage();
                         break;
                     case "BEFORETURN":
-                        this.view.setBeforeTurnWaiting(true);
-                        this.getServerMessage();
+                        view.setBeforeTurnWaiting(true);
+                        getServerMessage();
                         break;
                     case "AFTERTURN":
-                        this.view.setAfterTurnWaiting(true);
-                        this.getServerMessage();
+                        view.setAfterTurnWaiting(true);
+                        getServerMessage();
                         break;
                 }
                 break;

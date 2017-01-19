@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 public class BlackjackHandPanel extends JPanel implements ActionListener {
     private BlackjackClientModel model;
     private DefaultListModel<String> cardsListModel;
-    private JList<String> cardsList;
     private JLabel handValueLabel;
     private JLabel handBetLabel;
     private JLabel handMessageLabel;
@@ -19,184 +18,190 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
 
     public BlackjackHandPanel(BlackjackClientModel model, String firstCard, String secondCard) {
         this.model = model;
-        this.setupHand();
-        this.setupActionListeners();
-        this.cardsListModel.addElement(firstCard);
-        this.cardsListModel.addElement(secondCard);
+        setupHand();
+        setupActionListeners();
+        cardsListModel.addElement(firstCard);
+        cardsListModel.addElement(secondCard);
     }
 
     public BlackjackHandPanel(BlackjackClientModel model) {
         this.model = model;
-        this.setupHand();
-        this.setupActionListeners();
+        setupHand();
+        setupActionListeners();
     }
 
     private void setupHand() {
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
-        this.cardsListModel = new DefaultListModel<>();
-        this.cardsList = new JList<>(this.cardsListModel);
+        cardsListModel = new DefaultListModel<>();
+        JList<String> cardsList = new JList<>(cardsListModel);
         constraints.gridx = 0;
         constraints.gridy = 0;
-        add(this.cardsList, constraints);
-        this.handValueLabel = new JLabel();
+        add(cardsList, constraints);
+        handValueLabel = new JLabel();
         constraints.gridy = 1;
-        add(this.handValueLabel, constraints);
-        this.handBetLabel = new JLabel();
+        add(handValueLabel, constraints);
+        handBetLabel = new JLabel();
         constraints.gridy = 2;
-        add(this.handBetLabel, constraints);
-        this.handMessageLabel = new JLabel();
+        add(handBetLabel, constraints);
+        handMessageLabel = new JLabel();
         constraints.gridy = 3;
-        add(this.handMessageLabel, constraints);
-        this.hitButton = new JButton("Hit");
-        this.hitButton.setEnabled(false);
-        this.hitButton.setVisible(false);
+        add(handMessageLabel, constraints);
+        hitButton = new JButton("Hit");
+        hitButton.setEnabled(false);
+        hitButton.setVisible(false);
         constraints.gridy = 4;
-        add(this.hitButton, constraints);
-        this.standButton = new JButton("Stand");
-        this.standButton.setEnabled(false);
-        this.standButton.setVisible(false);
+        add(hitButton, constraints);
+        standButton = new JButton("Stand");
+        standButton.setEnabled(false);
+        standButton.setVisible(false);
         constraints.gridx = 1;
-        add(this.standButton, constraints);
-        this.yesButton = new JButton("Yes");
-        this.yesButton.setEnabled(false);
-        this.yesButton.setVisible(false);
+        add(standButton, constraints);
+        yesButton = new JButton("Yes");
+        yesButton.setEnabled(false);
+        yesButton.setVisible(false);
         constraints.gridx = 0;
         constraints.gridy = 5;
-        add(this.yesButton, constraints);
-        this.noButton = new JButton("No");
-        this.noButton.setEnabled(false);
-        this.noButton.setVisible(false);
+        add(yesButton, constraints);
+        noButton = new JButton("No");
+        noButton.setEnabled(false);
+        noButton.setVisible(false);
         constraints.gridx = 1;
-        add(this.noButton, constraints);
+        add(noButton, constraints);
     }
 
     private void setupActionListeners() {
-        this.hitButton.addActionListener(this);
-        this.standButton.addActionListener(this);
-        this.yesButton.addActionListener(this);
-        this.noButton.addActionListener(this);
+        hitButton.addActionListener(this);
+        standButton.addActionListener(this);
+        yesButton.addActionListener(this);
+        noButton.addActionListener(this);
     }
 
     private void showChanges() {
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        validate();
+        repaint();
+        setVisible(true);
+    }
+
+    private void enableHitButton(Boolean b) {
+        hitButton.setEnabled(b);
+        hitButton.setVisible(b);
+        showChanges();
+    }
+
+    private void enableStandButton(Boolean b) {
+        standButton.setEnabled(b);
+        standButton.setVisible(b);
+        showChanges();
+    }
+
+    private void enableYesButton(Boolean b) {
+        yesButton.setEnabled(b);
+        yesButton.setVisible(b);
+        showChanges();
+    }
+
+    private void enableNoButton(Boolean b) {
+        noButton.setEnabled(b);
+        noButton.setVisible(b);
+        showChanges();
     }
 
     public void setHandValueLabel(String handValue) {
-        this.handValueLabel.setText(handValue);
-        this.showChanges();
+        handValueLabel.setText(handValue);
+        showChanges();
     }
 
     public void setHandBet(String bet) {
-        this.handBetLabel.setText(bet);
-        this.showChanges();
+        handBetLabel.setText(bet);
+        showChanges();
     }
 
     public void setHandMessageLabel(String message) {
-        this.handMessageLabel.setText(message);
-        this.showChanges();
+        handMessageLabel.setText(message);
+        showChanges();
     }
 
     public void enableHitStand() {
         setHandMessageLabel("Would you like to hit or stand?");
-        this.hitButton.setEnabled(true);
-        this.hitButton.setVisible(true);
-        this.standButton.setEnabled(true);
-        this.standButton.setVisible(true);
-        this.showChanges();
+        enableHitButton(true);
+        enableStandButton(true);
+        showChanges();
     }
 
     public void hitStandError() {
         setHandMessageLabel("ERROR");
-        this.hitButton.setEnabled(true);
-        this.hitButton.setVisible(true);
-        this.standButton.setEnabled(true);
-        this.standButton.setVisible(true);
-        this.showChanges();
+        enableHitButton(true);
+        enableStandButton(true);
+        showChanges();
     }
 
     public void addCard(String card) {
-        this.cardsListModel.addElement(card);
-        this.showChanges();
+        cardsListModel.addElement(card);
+        showChanges();
     }
 
     public void removeCard(int index) {
-        this.cardsListModel.removeElementAt(index);
-        this.showChanges();
+        cardsListModel.removeElementAt(index);
+        showChanges();
     }
 
     public void bust() {
         setHandMessageLabel("You busted.");
-        this.showChanges();
+        showChanges();
     }
 
     public void enableDoubleDown() {
         setHandMessageLabel("Would you like to double down?");
-        this.yesButton.setEnabled(true);
-        this.yesButton.setVisible(true);
-        this.noButton.setEnabled(true);
-        this.noButton.setVisible(true);
-        this.showChanges();
+        enableYesButton(true);
+        enableNoButton(true);
+        showChanges();
     }
 
     public void doubleDownSuccess() {
         setHandMessageLabel("Your bet on this hand has been doubled. You were given a card face down.");
-        this.showChanges();
+        showChanges();
     }
 
     public void enableSplitPairs() {
         setHandMessageLabel("Would you like to split pairs?");
-        this.yesButton.setEnabled(true);
-        this.yesButton.setVisible(true);
-        this.noButton.setEnabled(true);
-        this.noButton.setVisible(true);
-        this.showChanges();
+        enableYesButton(true);
+        enableNoButton(true);
+        showChanges();
     }
 
     public void yesNoError() {
         setHandMessageLabel("ERROR");
-        this.yesButton.setEnabled(true);
-        this.yesButton.setVisible(true);
-        this.noButton.setEnabled(true);
-        this.noButton.setVisible(true);
-        this.showChanges();
+        enableYesButton(true);
+        enableNoButton(true);
+        showChanges();
     }
 
     public void revealDoubleDownCard(String message) {
         setHandMessageLabel(message);
-        this.showChanges();
+        showChanges();
     }
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         Object target = actionEvent.getSource();
 
-        if(target == this.hitButton) {
-            this.model.sendClientMessage(this.hitButton.getText());
-            this.hitButton.setEnabled(false);
-            this.hitButton.setVisible(false);
-            this.standButton.setEnabled(false);
-            this.standButton.setVisible(false);
-        } else if (target == this.standButton) {
-            this.model.sendClientMessage(this.standButton.getText());
-            this.hitButton.setEnabled(false);
-            this.hitButton.setVisible(false);
-            this.standButton.setEnabled(false);
-            this.standButton.setVisible(false);
-        } else if (target == this.yesButton) {
-            this.model.sendClientMessage(this.yesButton.getText());
-            this.yesButton.setEnabled(false);
-            this.yesButton.setVisible(false);
-            this.noButton.setEnabled(false);
-            this.noButton.setVisible(false);
-        } else if (target == this.noButton) {
-            this.model.sendClientMessage(this.noButton.getText());
-            this.yesButton.setEnabled(false);
-            this.yesButton.setVisible(false);
-            this.noButton.setEnabled(false);
-            this.noButton.setVisible(false);
+        if(target == hitButton) {
+            model.sendClientMessage(hitButton.getText());
+            enableHitButton(false);
+            enableStandButton(false);
+        } else if (target == standButton) {
+            model.sendClientMessage(standButton.getText());
+            enableHitButton(false);
+            enableStandButton(false);
+        } else if (target == yesButton) {
+            model.sendClientMessage(yesButton.getText());
+            enableYesButton(false);
+            enableNoButton(false);
+        } else if (target == noButton) {
+            model.sendClientMessage(noButton.getText());
+            enableYesButton(false);
+            enableNoButton(false);
         }
     }
 }

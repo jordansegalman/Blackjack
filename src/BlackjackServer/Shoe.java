@@ -14,7 +14,7 @@ public class Shoe {
 
     public Shoe(int numDecks) {
         for (int i = 0; i < numDecks; i++) {
-            this.addDeck(new Deck());
+            addDeck(new Deck());
         }
     }
 
@@ -24,9 +24,9 @@ public class Shoe {
      * @param deck Deck to add to the shoe
      */
 
-    public void addDeck(Deck deck) {
+    private void addDeck(Deck deck) {
         for (int i = 0; i < deck.size(); i++) {
-            this.shoe.add(deck.dealCard());
+            shoe.add(deck.dealCard());
         }
     }
 
@@ -35,7 +35,7 @@ public class Shoe {
      */
 
     public void shuffle() {
-        Collections.shuffle(this.shoe);
+        Collections.shuffle(shoe);
     }
 
     /**
@@ -45,8 +45,8 @@ public class Shoe {
      */
 
     public Card dealCard() {
-        Card card = this.shoe.get(this.shoe.size() - 1);    // last card in the shoe
-        this.shoe.remove(card);
+        Card card = shoe.get(shoe.size() - 1);    // last card in the shoe
+        shoe.remove(card);
         return card;
     }
 
@@ -57,6 +57,6 @@ public class Shoe {
      */
 
     public int remainingCards() {
-        return this.shoe.size();
+        return shoe.size();
     }
 }

@@ -22,10 +22,10 @@ public class BlackjackHand extends Hand {
 
     public int blackjackValue() {
         int value = 0;  // value of the hand in Blackjack
-        for (Card card : this.hand) {
+        for (Card card : hand) {
             value += card.value();
         }
-        if (this.isSoft()) {
+        if (isSoft()) {
             value += 10;
         }
         return value;
@@ -37,8 +37,8 @@ public class BlackjackHand extends Hand {
      * @return true if the hand contains an ace, false if does not
      */
 
-    public boolean hasAce() {
-        for (Card card : this.hand) {
+    private boolean hasAce() {
+        for (Card card : hand) {
             if (card.value() == 1) {
                 return true;
             }
@@ -53,7 +53,7 @@ public class BlackjackHand extends Hand {
      */
 
     public boolean isSoft() {
-        return this.hasAce() && this.value() < 12;
+        return hasAce() && value() < 12;
     }
 
     /**
@@ -73,7 +73,7 @@ public class BlackjackHand extends Hand {
      */
 
     public double bet() {
-        return this.bet;
+        return bet;
     }
 
     /**
@@ -81,7 +81,7 @@ public class BlackjackHand extends Hand {
      */
 
     public void setSplitPairs() {
-        this.splitPairs = true;
+        splitPairs = true;
     }
 
     /**
@@ -91,7 +91,7 @@ public class BlackjackHand extends Hand {
      */
 
     public boolean splitPairs() {
-        return this.splitPairs;
+        return splitPairs;
     }
 
     /**
@@ -99,7 +99,7 @@ public class BlackjackHand extends Hand {
      */
 
     public void setDoubleDown() {
-        this.doubleDown = true;
+        doubleDown = true;
     }
 
     /**
@@ -109,7 +109,7 @@ public class BlackjackHand extends Hand {
      */
 
     public boolean doubleDown() {
-        return this.doubleDown;
+        return doubleDown;
     }
 
     /**
@@ -119,8 +119,8 @@ public class BlackjackHand extends Hand {
      */
 
     public void addDoubleDownCard(Card card) {
-        this.doubleDownCard = card;
-        this.addCard(card);
+        doubleDownCard = card;
+        addCard(card);
     }
 
     /**
@@ -130,6 +130,6 @@ public class BlackjackHand extends Hand {
      */
 
     public Card doubleDownCard() {
-        return this.doubleDownCard;
+        return doubleDownCard;
     }
 }

@@ -18,7 +18,7 @@ public class Hand {
      */
 
     public void addCard(Card newCard) {
-        this.hand.add(newCard);
+        hand.add(newCard);
     }
 
     /**
@@ -29,7 +29,7 @@ public class Hand {
 
     public int value() {
         int value = 0;  // value of the hand
-        for (Card card : this.hand) {
+        for (Card card : hand) {
             value += card.value();
         }
         return value;
@@ -42,7 +42,7 @@ public class Hand {
      */
 
     public int size() {
-        return this.hand.size();
+        return hand.size();
     }
 
     /**
@@ -53,7 +53,7 @@ public class Hand {
      */
 
     public Card getCard(int index) {
-        return this.hand.get(index);
+        return hand.get(index);
     }
 
     /**
@@ -61,6 +61,6 @@ public class Hand {
      */
 
     public void clear() {
-        this.hand.clear();
+        hand.clear();
     }
 }
