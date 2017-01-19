@@ -7,79 +7,96 @@ import java.awt.event.ActionListener;
 
 public class BlackjackHandPanel extends JPanel implements ActionListener {
     private BlackjackClientModel model;
-    private DefaultListModel<String> cardsListModel = new DefaultListModel<>();
-    private JList<String> cardsList = new JList<>(this.cardsListModel);
-    private JLabel handValueLabel = new JLabel();
-    private JLabel handBetLabel = new JLabel();
-    private JButton hitButton = new JButton("Hit");
-    private JButton standButton = new JButton("Stand");
-    private JButton yesButton = new JButton("Yes");
-    private JButton noButton = new JButton("No");
-    private JLabel handMessageLabel = new JLabel();
+    private DefaultListModel<String> cardsListModel;
+    private JList<String> cardsList;
+    private JLabel handValueLabel;
+    private JLabel handBetLabel;
+    private JLabel handMessageLabel;
+    private JButton hitButton;
+    private JButton standButton;
+    private JButton yesButton;
+    private JButton noButton;
 
     public BlackjackHandPanel(BlackjackClientModel model, String firstCard, String secondCard) {
         this.model = model;
+        this.setupHand();
+        this.setupActionListeners();
         this.cardsListModel.addElement(firstCard);
         this.cardsListModel.addElement(secondCard);
-        this.setupHand();
     }
 
     public BlackjackHandPanel(BlackjackClientModel model) {
         this.model = model;
         this.setupHand();
+        this.setupActionListeners();
     }
 
     private void setupHand() {
-        this.setupActionListeners();
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
+        this.cardsListModel = new DefaultListModel<>();
+        this.cardsList = new JList<>(this.cardsListModel);
         constraints.gridx = 0;
         constraints.gridy = 0;
         add(this.cardsList, constraints);
+        this.handValueLabel = new JLabel();
         constraints.gridy = 1;
         add(this.handValueLabel, constraints);
+        this.handBetLabel = new JLabel();
         constraints.gridy = 2;
         add(this.handBetLabel, constraints);
+        this.handMessageLabel = new JLabel();
         constraints.gridy = 3;
         add(this.handMessageLabel, constraints);
+        this.hitButton = new JButton("Hit");
         this.hitButton.setEnabled(false);
         this.hitButton.setVisible(false);
         constraints.gridy = 4;
         add(this.hitButton, constraints);
+        this.standButton = new JButton("Stand");
         this.standButton.setEnabled(false);
         this.standButton.setVisible(false);
         constraints.gridx = 1;
         add(this.standButton, constraints);
+        this.yesButton = new JButton("Yes");
         this.yesButton.setEnabled(false);
         this.yesButton.setVisible(false);
         constraints.gridx = 0;
         constraints.gridy = 5;
         add(this.yesButton, constraints);
+        this.noButton = new JButton("No");
         this.noButton.setEnabled(false);
         this.noButton.setVisible(false);
         constraints.gridx = 1;
         add(this.noButton, constraints);
     }
 
-    public void setHandValueLabel(String handValue) {
-        this.handValueLabel.setText(handValue);
+    private void setupActionListeners() {
+        this.hitButton.addActionListener(this);
+        this.standButton.addActionListener(this);
+        this.yesButton.addActionListener(this);
+        this.noButton.addActionListener(this);
+    }
+
+    private void showChanges() {
         this.validate();
         this.repaint();
         this.setVisible(true);
+    }
+
+    public void setHandValueLabel(String handValue) {
+        this.handValueLabel.setText(handValue);
+        this.showChanges();
     }
 
     public void setHandBet(String bet) {
         this.handBetLabel.setText(bet);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void setHandMessageLabel(String message) {
         this.handMessageLabel.setText(message);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void enableHitStand() {
@@ -88,9 +105,7 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
         this.hitButton.setVisible(true);
         this.standButton.setEnabled(true);
         this.standButton.setVisible(true);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void hitStandError() {
@@ -99,30 +114,22 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
         this.hitButton.setVisible(true);
         this.standButton.setEnabled(true);
         this.standButton.setVisible(true);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void addCard(String card) {
         this.cardsListModel.addElement(card);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void removeCard(int index) {
         this.cardsListModel.removeElementAt(index);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void bust() {
         setHandMessageLabel("You busted.");
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void enableDoubleDown() {
@@ -131,16 +138,12 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
         this.yesButton.setVisible(true);
         this.noButton.setEnabled(true);
         this.noButton.setVisible(true);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void doubleDownSuccess() {
         setHandMessageLabel("Your bet on this hand has been doubled. You were given a card face down.");
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void enableSplitPairs() {
@@ -149,9 +152,7 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
         this.yesButton.setVisible(true);
         this.noButton.setEnabled(true);
         this.noButton.setVisible(true);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void yesNoError() {
@@ -160,23 +161,12 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
         this.yesButton.setVisible(true);
         this.noButton.setEnabled(true);
         this.noButton.setVisible(true);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void revealDoubleDownCard(String message) {
         setHandMessageLabel(message);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
-    }
-
-    private void setupActionListeners() {
-        this.hitButton.addActionListener(this);
-        this.standButton.addActionListener(this);
-        this.yesButton.addActionListener(this);
-        this.noButton.addActionListener(this);
+        this.showChanges();
     }
 
     @Override

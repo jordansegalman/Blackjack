@@ -44,15 +44,19 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         });
     }
 
+    private void showChanges() {
+        this.validate();
+        this.repaint();
+        this.setVisible(true);
+    }
+
     private void setupFrame() {
         setTitle("Blackjack");
         setMinimumSize(new Dimension(MINIMUM_FRAME_WIDTH, MINIMUM_FRAME_HEIGHT));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLayout(new CardLayout());
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     private void setupPanels() {
@@ -91,9 +95,7 @@ public class BlackjackClientView extends JFrame implements ActionListener {
 
     public void setWelcomeWaiting(Boolean waiting) {
         this.welcomeWaitingLabel.setVisible(waiting);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     private JPanel betPanel;
@@ -132,39 +134,29 @@ public class BlackjackClientView extends JFrame implements ActionListener {
 
     public void setMinimumBetLabel(String minimumBet) {
         this.minimumBetLabel.setText("The minimum bet is $" + minimumBet + ". How much would you like to bet?");
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void betError(String errorMessage) {
         this.betMessageLabel.setText(errorMessage);
         this.betButton.setEnabled(true);
         this.betButton.setVisible(true);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void betSuccess() {
         this.betMessageLabel.setText(null);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void setBetMoneyLabel(String money) {
         this.betMoneyLabel.setText("$" + money);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void setBetWaiting(Boolean waiting) {
         this.betWaitingLabel.setVisible(waiting);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     private JPanel roundInformationPanel;
@@ -237,44 +229,32 @@ public class BlackjackClientView extends JFrame implements ActionListener {
 
     public void addDealerCard(String card) {
         this.dealerListModel.addElement(card + "\n");
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void removeDealerCard(int index) {
         this.dealerListModel.removeElementAt(index);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void addPlayerCard(String card) {
         this.playerListModel.addElement(card + "\n");
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void setOriginalHandBetLabel(String bet) {
         this.originalHandBetLabel.setText(bet);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void setRoundInformationBlackjackLabel(String message) {
         this.roundInformationBlackjackLabel.setText(message);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void setRoundInformationInsuranceLabel(String message) {
         this.roundInformationInsuranceLabel.setText(message);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void enableInsuranceBet() {
@@ -283,9 +263,7 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         this.yesInsuranceBetButton.setVisible(true);
         this.noInsuranceBetButton.setEnabled(true);
         this.noInsuranceBetButton.setVisible(true);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void insuranceBetError() {
@@ -294,45 +272,33 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         this.yesInsuranceBetButton.setVisible(true);
         this.noInsuranceBetButton.setEnabled(true);
         this.noInsuranceBetButton.setVisible(true);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void insuranceBetSuccess() {
         this.yesInsuranceBetButton.setVisible(false);
         this.noInsuranceBetButton.setVisible(false);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void insuranceBetNotPlaced() {
         this.roundInformationInsuranceLabel.setVisible(false);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void setRoundInformationMoneyLabel(String money) {
         this.roundInformationMoneyLabel.setText("$" + money);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void setInsuranceBetWaiting(Boolean waiting) {
         this.insuranceBetWaitingLabel.setVisible(waiting);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void setBeforeTurnWaiting(Boolean waiting) {
         this.beforeTurnWaitingLabel.setVisible(waiting);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     private JPanel turnPanel;
@@ -379,44 +345,32 @@ public class BlackjackClientView extends JFrame implements ActionListener {
 
     public void setDealerHandValueLabel(String handValue) {
         this.dealerHandValueLabel.setText(handValue);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void addBlackjackHandPanel(BlackjackHandPanel blackjackHandPanel, int index) {
         this.blackjackHandsPanel.add(blackjackHandPanel, index);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void removeBlackjackHandPanel(BlackjackHandPanel blackjackHandPanel) {
         this.blackjackHandsPanel.remove(blackjackHandPanel);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void setTurnMoneyLabel(String money) {
         this.turnMoneyLabel.setText("$" + money);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void setTurnBlackjackLabel(String blackjack) {
         this.turnBlackjackLabel.setText(blackjack);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void setAfterTurnWaiting(Boolean waiting) {
         this.afterTurnWaitingLabel.setVisible(waiting);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     private JPanel continuePlayingPanel;
@@ -459,23 +413,17 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         this.yesContinuePlayingButton.setVisible(true);
         this.noContinuePlayingButton.setEnabled(true);
         this.noContinuePlayingButton.setVisible(true);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void setContinuePlayingMoneyLabel(String money) {
         this.continuePlayingMoneyLabel.setText("$" + money);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void setContinuePlayingMessageLabel(String message) {
         this.continuePlayingMessageLabel.setText(message);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void continuePlayingError() {
@@ -484,31 +432,23 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         this.yesContinuePlayingButton.setVisible(true);
         this.noContinuePlayingButton.setEnabled(true);
         this.yesContinuePlayingButton.setVisible(true);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void gameOver() {
         this.setContinuePlayingMessageLabel("Thanks for playing!");
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void setContinuePlayingWaiting(Boolean waiting) {
         this.continuePlayingWaitingLabel.setVisible(waiting);
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     private void showPanel(PanelNames panel) {
         CardLayout cardLayout = (CardLayout) getContentPane().getLayout();
         cardLayout.show(getContentPane(), panel.toString());
-        this.validate();
-        this.repaint();
-        this.setVisible(true);
+        this.showChanges();
     }
 
     public void showWelcomePanel() {
