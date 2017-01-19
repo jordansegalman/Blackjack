@@ -14,6 +14,7 @@ import java.util.ArrayList;
  */
 
 public class BlackjackClientModel {
+    private static final int MESSAGE_WAIT_TIME = 500;
     private Socket socket;          // socket on server address and port
     private BufferedReader in;      // in to server
     private PrintWriter out;        // out from server
@@ -46,7 +47,7 @@ public class BlackjackClientModel {
     public String getServerMessage() {
         String serverMessage = null;
         try {
-            Thread.sleep(500);
+            Thread.sleep(MESSAGE_WAIT_TIME);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -25,7 +25,7 @@ public class Shoe {
      */
 
     public void addDeck(Deck deck) {
-        for (int i = 0; i < 52; i++) {
+        for (int i = 0; i < deck.size(); i++) {
             this.shoe.add(deck.dealCard());
         }
     }

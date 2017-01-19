@@ -11,6 +11,8 @@ import java.net.Socket;
  */
 
 public class BlackjackServer {
+    private static final int DEFAULT_PORT = 44444;
+    private static final int DEFAULT_PLAYERS_PER_TABLE = 1;
     private int serverPort;         // server port
     private int playersPerTable;    // number of players per table
 
@@ -60,7 +62,7 @@ public class BlackjackServer {
      */
 
     public static void main(String[] args) {
-        BlackjackServer blackjackServer = new BlackjackServer(44444, 2);
+        BlackjackServer blackjackServer = new BlackjackServer(DEFAULT_PORT, DEFAULT_PLAYERS_PER_TABLE);
         blackjackServer.start();
     }
 }

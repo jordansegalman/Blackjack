@@ -43,4 +43,14 @@ public class Deck {
         this.deck.remove(card);
         return card;
     }
+
+    /**
+     * Returns the number of cards in the deck.
+     *
+     * @return the number of cards in the deck
+     */
+
+    public int size() {
+        return this.deck.size();
+    }
 }

@@ -14,6 +14,9 @@ import java.awt.event.WindowEvent;
  */
 
 public class BlackjackClientView extends JFrame implements ActionListener {
+    private static final int MINIMUM_FRAME_WIDTH = 800;
+    private static final int MINIMUM_FRAME_HEIGHT = 500;
+    private static final int BET_FIELD_SIZE = 5;
     private BlackjackClientModel model;
 
     private enum PanelNames {
@@ -43,7 +46,7 @@ public class BlackjackClientView extends JFrame implements ActionListener {
 
     private void setupFrame() {
         setTitle("Blackjack");
-        setMinimumSize(new Dimension(800, 500));
+        setMinimumSize(new Dimension(MINIMUM_FRAME_WIDTH, MINIMUM_FRAME_HEIGHT));
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLayout(new CardLayout());
@@ -108,7 +111,7 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         constraints.gridx = 0;
         constraints.gridy = 0;
         this.betPanel.add(this.minimumBetLabel, constraints);
-        this.betField = new JTextField(5);
+        this.betField = new JTextField(BET_FIELD_SIZE);
         constraints.gridy = 1;
         this.betPanel.add(this.betField, constraints);
         this.betButton = new JButton("Place Bet");

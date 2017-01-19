@@ -10,6 +10,11 @@ import java.util.concurrent.CountDownLatch;
  */
 
 public class Table implements Runnable {
+    private static final int NUMBER_OF_DECKS = 6;
+    private static final int MINIMUM_NUMBER_OF_CARDS_BEFORE_SHUFFLE = 78;
+    private static final int MAXIMUM_SCORE = 21;
+    private static final int DEALER_HIT_THRESHOLD = 17;
+    private static final int MINIMUM_BET = 500;
     private ArrayList<Player> table = new ArrayList<>();    // holds the players at the table
     private Shoe shoe;                                      // shoe being used to deal cards
     private BlackjackHand dealerHand = new BlackjackHand(); // dealer hand to hold cards
@@ -25,7 +30,7 @@ public class Table implements Runnable {
 
     @Override
     public void run() {
-        this.shoe = new Shoe(6);
+        this.shoe = new Shoe(NUMBER_OF_DECKS);
         this.shoe.shuffle();
         do {
             this.playBlackjack();
@@ -85,8 +90,8 @@ public class Table implements Runnable {
      */
 
     private void setup() {
-        if (this.shoe.remainingCards() < 78) {
-            this.shoe = new Shoe(6);
+        if (this.shoe.remainingCards() < MINIMUM_NUMBER_OF_CARDS_BEFORE_SHUFFLE) {
+            this.shoe = new Shoe(NUMBER_OF_DECKS);
             this.shoe.shuffle();
         }
         this.dealerHand.clear();
@@ -108,7 +113,7 @@ public class Table implements Runnable {
                 player.originalPlayerHand().addCard(this.shoe.dealCard());
             }
         }
-        if (this.dealerHand.blackjackValue() == 21) {
+        if (this.dealerHand.blackjackValue() == MAXIMUM_SCORE) {
             this.dealerHasBlackjack = true;
         }
     }
@@ -118,7 +123,7 @@ public class Table implements Runnable {
      */
 
     private void dealerTurn() {
-        while ((this.dealerHand.isSoft() && this.dealerHand.blackjackValue() == 17) || this.dealerHand.blackjackValue() < 17) {
+        while ((this.dealerHand.isSoft() && this.dealerHand.blackjackValue() == DEALER_HIT_THRESHOLD) || this.dealerHand.blackjackValue() < DEALER_HIT_THRESHOLD) {
             this.dealerHand.addCard(this.shoe.dealCard());
         }
     }
@@ -160,7 +165,7 @@ public class Table implements Runnable {
      */
 
     public double minimumBet() {
-        return 500;
+        return MINIMUM_BET;
     }
 
     /**

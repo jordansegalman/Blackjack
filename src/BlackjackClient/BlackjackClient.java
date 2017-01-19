@@ -10,11 +10,13 @@ import java.util.concurrent.ExecutionException;
  */
 
 public class BlackjackClient {
+    private static final String DEFAULT_SERVER = "localhost";
+    private static final int DEFAULT_PORT = 44444;
     private BlackjackClientModel model;
     private BlackjackClientView view;
 
     private void playBlackjack() {
-        this.model = new BlackjackClientModel("localhost", 44444);
+        this.model = new BlackjackClientModel(DEFAULT_SERVER, DEFAULT_PORT);
         this.view = new BlackjackClientView(this.model);
         this.getServerMessage();
     }

@@ -15,6 +15,12 @@ import java.util.concurrent.CountDownLatch;
  */
 
 public class Player implements Runnable {
+    private static final int MAXIMUM_SCORE = 21;
+    private static final int MINIMUM_DOUBLE_DOWN_SOFT_VALUE = 9;
+    private static final int MAXIMUM_DOUBLE_DOWN_SOFT_VALUE = 11;
+    private static final int MINIMUM_DOUBLE_DOWN_VALUE = 19;
+    private static final int MAXIMUM_DOUBLE_DOWN_VALUE = 21;
+    private static final double BLACKJACK_PAYOUT_MULTIPLIER = 3.0 / 2.0;
     private Table table;                                                // table to join
     private BufferedReader in;                                          // in to client
     private PrintWriter out;                                            // out from client
@@ -193,7 +199,7 @@ public class Player implements Runnable {
             this.out.println("SERVERMESSAGE--NEWPLAYERCARD--" + this.originalPlayerHand.getCard(i));
         }
         this.out.println("SERVERMESSAGE--ORIGINALHANDBET--" + String.format("%.2f", this.originalPlayerHand.bet()));
-        if (this.originalPlayerHand.blackjackValue() == 21) {
+        if (this.originalPlayerHand.blackjackValue() == MAXIMUM_SCORE) {
 //            this.out.println("INFOMESSAGE--You have Blackjack.");
             this.out.println("SERVERMESSAGE--BLACKJACK--PLAYER");
             this.hasBlackjack = true;
@@ -210,7 +216,7 @@ public class Player implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if (this.originalPlayerHand.blackjackValue() == 21 && this.table.dealerHand().blackjackValue() == 21) {
+        if (this.originalPlayerHand.blackjackValue() == MAXIMUM_SCORE && this.table.dealerHand().blackjackValue() == MAXIMUM_SCORE) {
 //            this.out.println("INFOMESSAGE--You and the dealer both have Blackjack.");
             this.out.println("SERVERMESSAGE--BLACKJACK--PLAYERANDDEALER");
             this.hasBlackjack = true;
@@ -219,7 +225,7 @@ public class Player implements Runnable {
 //                this.out.println("INFOMESSAGE--You won $" + String.format("%.2f", this.insuranceBet * 2) + " from your insurance bet.");
                 this.out.println("SERVERMESSAGE--INSURANCEBETWINNINGS--" + String.format("%.2f", this.insuranceBet * 2) + "--" + String.format("%.2f", this.money));
             }
-        } else if (this.table.dealerHand().blackjackValue() == 21) {
+        } else if (this.table.dealerHand().blackjackValue() == MAXIMUM_SCORE) {
 //            this.out.println("INFOMESSAGE--The dealer has Blackjack.");
             this.out.println("SERVERMESSAGE--BLACKJACK--DEALER");
             if (this.placedInsuranceBet) {
@@ -227,7 +233,7 @@ public class Player implements Runnable {
 //                this.out.println("INFOMESSAGE--You won $" + String.format("%.2f", this.insuranceBet * 2) + " from your insurance bet.");
                 this.out.println("SERVERMESSAGE--INSURANCEBETWON--" + String.format("%.2f", this.insuranceBet * 2) + "--" + String.format("%.2f", this.money));
             }
-        } else if (this.table.dealerShownCard().rank() == Card.Rank.ACE && this.table.dealerHand().blackjackValue() != 21){
+        } else if (this.table.dealerShownCard().rank() == Card.Rank.ACE && this.table.dealerHand().blackjackValue() != MAXIMUM_SCORE){
 //            this.out.println("INFOMESSAGE--The dealer does not have Blackjack.");
             this.out.println("SERVERMESSAGE--BLACKJACK--DEALERNOBLACKJACK");
             if (this.placedInsuranceBet) {
@@ -322,7 +328,7 @@ public class Player implements Runnable {
                 this.out.println("SERVERMESSAGE--CANNOTSPLITPAIRS--" + this.playerHands.indexOf(hand));
             }
         }
-        if (!this.hasBlackjack && !this.table.dealerHasBlackjack() && !hand.splitPairs() && ((hand.blackjackValue() >= 9 && hand.blackjackValue() <= 11) || (hand.isSoft() && hand.blackjackValue() >= 19 && hand.blackjackValue() <= 21))) {
+        if (!this.hasBlackjack && !this.table.dealerHasBlackjack() && !hand.splitPairs() && ((hand.blackjackValue() >= MINIMUM_DOUBLE_DOWN_SOFT_VALUE && hand.blackjackValue() <= MAXIMUM_DOUBLE_DOWN_SOFT_VALUE) || (hand.isSoft() && hand.blackjackValue() >= MINIMUM_DOUBLE_DOWN_VALUE && hand.blackjackValue() <= MAXIMUM_DOUBLE_DOWN_VALUE))) {
             if (this.money >= hand.bet()) {
                 this.receivedChoice = false;
                 do {
@@ -374,10 +380,10 @@ public class Player implements Runnable {
 //                    this.out.println("INFOMESSAGE--You got the " + newCard + ".");
                     this.out.println("SERVERMESSAGE--NEWCARD--" + this.playerHands.indexOf(hand) + "--" + newCard);
                 }
-            } while (this.choice.equals("Hit") && hand.blackjackValue() <= 21);
+            } while (this.choice.equals("Hit") && hand.blackjackValue() <= MAXIMUM_SCORE);
 //            this.out.println("INFOMESSAGE--Final Hand Total: " + hand.blackjackValue());
             this.out.println("SERVERMESSAGE--HANDVALUE--" + this.playerHands.indexOf(hand) + "--" + hand.blackjackValue());
-            if (hand.blackjackValue() > 21) {
+            if (hand.blackjackValue() > MAXIMUM_SCORE) {
 //                this.out.println("INFOMESSAGE--You busted.");
                 this.out.println("SERVERMESSAGE--BUST--" + this.playerHands.indexOf(hand));
             }
@@ -483,14 +489,14 @@ public class Player implements Runnable {
 //        this.out.println("INFOMESSAGE--Hand Total: " + hand.blackjackValue());
         this.out.println("SERVERMESSAGE--HANDVALUE--" + this.playerHands.indexOf(hand) + "--" + hand.blackjackValue());
         if (!this.hasBlackjack && !this.table.dealerHasBlackjack()) {
-            if (hand.blackjackValue() > 21 && this.table.dealerHand().blackjackValue() > 21) {
+            if (hand.blackjackValue() > MAXIMUM_SCORE && this.table.dealerHand().blackjackValue() > MAXIMUM_SCORE) {
 //                this.out.println("INFOMESSAGE--You and the dealer both busted. It's a tie!");
                 this.money += hand.bet();
                 this.out.println("SERVERMESSAGE--ROUNDRESULT--BUST--TIE--" + this.playerHands.indexOf(hand) + "--" + String.format("%.2f", this.money));
-            } else if (hand.blackjackValue() > 21) {
+            } else if (hand.blackjackValue() > MAXIMUM_SCORE) {
 //                this.out.println("INFOMESSAGE--You busted. The dealer wins!");
                 this.out.println("SERVERMESSAGE--ROUNDRESULT--BUST--DEALER--" + this.playerHands.indexOf(hand) + "--" + String.format("%.2f", this.money));
-            } else if (this.table.dealerHand().blackjackValue() > 21) {
+            } else if (this.table.dealerHand().blackjackValue() > MAXIMUM_SCORE) {
 //                this.out.println("INFOMESSAGE--The dealer busted. You win!");
                 this.money += hand.bet() * 2;
 //                this.out.println("INFOMESSAGE--You won $" + String.format("%.2f", hand.bet()) + ".");
@@ -520,7 +526,7 @@ public class Player implements Runnable {
                 this.out.println("SERVERMESSAGE--ROUNDRESULT--BLACKJACK--DEALER--" + this.playerHands.indexOf(hand) + "--" + String.format("%.2f", this.money));
             } else if (this.hasBlackjack && !this.table.dealerHasBlackjack()) {
 //                this.out.println("INFOMESSAGE--You have Blackjack. You win!");
-                this.money += (hand.bet() + (hand.bet() * (3.0 / 2.0)));
+                this.money += (hand.bet() + (hand.bet() * (BLACKJACK_PAYOUT_MULTIPLIER)));
 //                this.out.println("INFOMESSAGE--You won $" + String.format("%.2f", hand.bet() * (3.0 / 2.0)) + ".");
                 this.out.println("SERVERMESSAGE--ROUNDRESULT--BLACKJACK--PLAYER--" + this.playerHands.indexOf(hand) + "--" + String.format("%.2f", this.money));
             }
