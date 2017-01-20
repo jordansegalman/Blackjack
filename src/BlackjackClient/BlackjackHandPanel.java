@@ -38,27 +38,28 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
         handMessageLabel = new JLabel();
         constraints.gridy = 3;
         add(handMessageLabel, constraints);
+        JPanel hitStandButtonsPanel = new JPanel();
+        constraints.gridy = 4;
+        add(hitStandButtonsPanel, constraints);
         hitButton = new JButton("Hit");
         hitButton.setEnabled(false);
         hitButton.setVisible(false);
-        constraints.gridy = 4;
-        add(hitButton, constraints);
         standButton = new JButton("Stand");
         standButton.setEnabled(false);
         standButton.setVisible(false);
-        constraints.gridx = 1;
-        add(standButton, constraints);
+        hitStandButtonsPanel.add(hitButton);
+        hitStandButtonsPanel.add(standButton);
+        JPanel yesNoButtonsPanel = new JPanel();
+        constraints.gridy = 5;
+        add(yesNoButtonsPanel, constraints);
         yesButton = new JButton("Yes");
         yesButton.setEnabled(false);
         yesButton.setVisible(false);
-        constraints.gridx = 0;
-        constraints.gridy = 5;
-        add(yesButton, constraints);
         noButton = new JButton("No");
         noButton.setEnabled(false);
         noButton.setVisible(false);
-        constraints.gridx = 1;
-        add(noButton, constraints);
+        yesNoButtonsPanel.add(yesButton);
+        yesNoButtonsPanel.add(noButton);
     }
 
     private void setupActionListeners() {
