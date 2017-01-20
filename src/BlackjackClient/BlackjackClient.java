@@ -83,7 +83,7 @@ public class BlackjackClient {
                 getServerMessage();
                 break;
             case "NEWPLAYERCARD":
-                view.addPlayerCard(serverMessageParts[2]);
+                view.addPlayerCard(model.getCardImageLabel(serverMessageParts[2]));
                 getServerMessage();
                 break;
             case "ORIGINALHANDBET":
@@ -111,7 +111,7 @@ public class BlackjackClient {
                 }
                 break;
             case "NEWDEALERCARD":
-                view.addDealerCard(serverMessageParts[2]);
+                view.addDealerCard(model.getCardImageLabel(serverMessageParts[2]));
                 getServerMessage();
                 break;
             case "GETINSURANCEBET":
@@ -161,11 +161,6 @@ public class BlackjackClient {
                 getServerMessage();
                 break;
             case "NEWHAND":
-                model.addBlackjackHandPanel(Integer.parseInt(serverMessageParts[2]), new BlackjackHandPanel(model, serverMessageParts[3], serverMessageParts[4]));
-                view.addBlackjackHandPanel(model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])), Integer.parseInt(serverMessageParts[2]));
-                getServerMessage();
-                break;
-            case "NEWEMPTYHAND":
                 model.addBlackjackHandPanel(Integer.parseInt(serverMessageParts[2]), new BlackjackHandPanel(model));
                 view.addBlackjackHandPanel(model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])), Integer.parseInt(serverMessageParts[2]));
                 getServerMessage();
@@ -199,8 +194,8 @@ public class BlackjackClient {
                         break;
                 }
                 break;
-            case "NEWCARD":
-                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).addCard(serverMessageParts[3]);
+            case "NEWTURNCARD":
+                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).addCard(model.getCardImageLabel(serverMessageParts[3]));
                 getServerMessage();
                 break;
             case "GETHITSTAND":
@@ -264,16 +259,20 @@ public class BlackjackClient {
                 view.setAfterTurnWaiting(false);
                 getServerMessage();
                 break;
-            case "REMOVEDEALERCARD":
-                view.removeDealerCard(Integer.parseInt(serverMessageParts[2]));
+            case "NEWTURNDEALERCARD":
+                view.addTurnDealerCard(model.getCardImageLabel(serverMessageParts[2]));
+                getServerMessage();
+                break;
+            case "REMOVEDEALERFACEDOWNCARD":
+                view.removeDealerFaceDownCard();
                 getServerMessage();
                 break;
             case "DEALERHANDVALUE":
                 view.setDealerHandValueLabel("Dealer Hand Value: " + serverMessageParts[2]);
                 getServerMessage();
                 break;
-            case "REMOVEPLAYERCARD":
-                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).removeCard(Integer.parseInt(serverMessageParts[3]));
+            case "REMOVEDOUBLEDOWNFACEDOWNCARD":
+                model.getBlackjackHandPanel(Integer.parseInt(serverMessageParts[2])).removeDoubleDownFaceDownCard();
                 getServerMessage();
                 break;
             case "REVEALDOUBLEDOWNCARD":

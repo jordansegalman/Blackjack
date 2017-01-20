@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 
 public class BlackjackHandPanel extends JPanel implements ActionListener {
     private BlackjackClientModel model;
-    private DefaultListModel<String> cardsListModel;
+    private JPanel cardsPanel;
     private JLabel handValueLabel;
     private JLabel handBetLabel;
     private JLabel handMessageLabel;
@@ -15,14 +15,6 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
     private JButton standButton;
     private JButton yesButton;
     private JButton noButton;
-
-    public BlackjackHandPanel(BlackjackClientModel model, String firstCard, String secondCard) {
-        this.model = model;
-        setupHand();
-        setupActionListeners();
-        cardsListModel.addElement(firstCard);
-        cardsListModel.addElement(secondCard);
-    }
 
     public BlackjackHandPanel(BlackjackClientModel model) {
         this.model = model;
@@ -33,11 +25,10 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
     private void setupHand() {
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
-        cardsListModel = new DefaultListModel<>();
-        JList<String> cardsList = new JList<>(cardsListModel);
+        cardsPanel = new JPanel();
         constraints.gridx = 0;
         constraints.gridy = 0;
-        add(cardsList, constraints);
+        add(cardsPanel, constraints);
         handValueLabel = new JLabel();
         constraints.gridy = 1;
         add(handValueLabel, constraints);
@@ -136,13 +127,13 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
         showChanges();
     }
 
-    public void addCard(String card) {
-        cardsListModel.addElement(card);
+    public void addCard(JLabel card) {
+        cardsPanel.add(card);
         showChanges();
     }
 
-    public void removeCard(int index) {
-        cardsListModel.removeElementAt(index);
+    public void removeDoubleDownFaceDownCard() {
+        cardsPanel.remove(cardsPanel.getComponent(2));
         showChanges();
     }
 

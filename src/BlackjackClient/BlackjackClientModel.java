@@ -1,9 +1,8 @@
 package BlackjackClient;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -81,6 +80,16 @@ public class BlackjackClientModel {
 
     public void removeBlackjackHandPanel(int index) {
         blackjackHandPanels.remove(index);
+    }
+
+    public JLabel getCardImageLabel(String cardName) {
+        JLabel cardLabel = null;
+        try {
+            cardLabel = new JLabel(new ImageIcon(ImageIO.read(new File("CardImages/" + cardName + ".png"))));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return cardLabel;
     }
 
     public void reset() {

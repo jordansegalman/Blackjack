@@ -185,8 +185,8 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         showChanges();
     }
 
-    private DefaultListModel<String> dealerListModel;
-    private DefaultListModel<String> playerListModel;
+    private JPanel dealerCardsPanel;
+    private JPanel playerCardsPanel;
     private JLabel originalHandBetLabel;
     private JLabel roundInformationMoneyLabel;
     private JLabel roundInformationBlackjackLabel;
@@ -203,17 +203,15 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         constraints.gridx = 0;
         constraints.gridy = 0;
         roundInformationPanel.add(dealerCardsLabel, constraints);
-        dealerListModel = new DefaultListModel<>();
-        JList<String> dealerCardsList = new JList<>(dealerListModel);
+        dealerCardsPanel = new JPanel();
         constraints.gridy = 1;
-        roundInformationPanel.add(dealerCardsList, constraints);
+        roundInformationPanel.add(dealerCardsPanel, constraints);
         JLabel playerCardsLabel = new JLabel("Your Cards:");
         constraints.gridy = 2;
         roundInformationPanel.add(playerCardsLabel, constraints);
-        playerListModel = new DefaultListModel<>();
-        JList<String> playerCardsList = new JList<>(playerListModel);
+        playerCardsPanel = new JPanel();
         constraints.gridy = 3;
-        roundInformationPanel.add(playerCardsList, constraints);
+        roundInformationPanel.add(playerCardsPanel, constraints);
         originalHandBetLabel = new JLabel();
         constraints.gridy = 4;
         roundInformationPanel.add(originalHandBetLabel, constraints);
@@ -246,18 +244,13 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         add(roundInformationPanel, PanelNames.ROUNDINFORMATIONPANEL.toString());
     }
 
-    public void addDealerCard(String card) {
-        dealerListModel.addElement(card + "\n");
+    public void addDealerCard(JLabel card) {
+        dealerCardsPanel.add(card);
         showChanges();
     }
 
-    public void removeDealerCard(int index) {
-        dealerListModel.removeElementAt(index);
-        showChanges();
-    }
-
-    public void addPlayerCard(String card) {
-        playerListModel.addElement(card + "\n");
+    public void addPlayerCard(JLabel card) {
+        playerCardsPanel.add(card);
         showChanges();
     }
 
@@ -316,6 +309,7 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         showChanges();
     }
 
+    private JPanel turnDealerCardsPanel;
     private JLabel dealerHandValueLabel;
     private JPanel blackjackHandsPanel;
     private JLabel turnMoneyLabel;
@@ -329,9 +323,9 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         constraints.gridx = 0;
         constraints.gridy = 0;
         turnPanel.add(dealerCardsTurnLabel, constraints);
-        JList<String> dealerCardsTurnList = new JList<>(dealerListModel);
+        turnDealerCardsPanel = new JPanel();
         constraints.gridy = 1;
-        turnPanel.add(dealerCardsTurnList, constraints);
+        turnPanel.add(turnDealerCardsPanel, constraints);
         dealerHandValueLabel = new JLabel();
         constraints.gridy = 2;
         turnPanel.add(dealerHandValueLabel, constraints);
@@ -352,6 +346,16 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         constraints.gridy = 7;
         turnPanel.add(afterTurnWaitingLabel, constraints);
         add(turnPanel, PanelNames.TURNPANEL.toString());
+    }
+
+    public void addTurnDealerCard(JLabel card) {
+        turnDealerCardsPanel.add(card);
+        showChanges();
+    }
+
+    public void removeDealerFaceDownCard() {
+        turnDealerCardsPanel.remove(turnDealerCardsPanel.getComponent(1));
+        showChanges();
     }
 
     public void setDealerHandValueLabel(String handValue) {

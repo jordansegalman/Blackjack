@@ -37,7 +37,7 @@ public class Card {
 
         @Override
         public String toString() {
-            return name().charAt(0) + name().substring(1, name().length()).toLowerCase();
+            return name().toLowerCase();
         }
     }
 
@@ -56,7 +56,7 @@ public class Card {
 
         @Override
         public String toString() {
-            return name().charAt(0) + name().substring(1, name().length()).toLowerCase();
+            return name().toLowerCase();
         }
     }
 
@@ -100,6 +100,6 @@ public class Card {
 
     @Override
     public String toString() {
-        return RANK + " of " + SUIT;
+        return RANK + "_of_" + SUIT;
     }
 }
