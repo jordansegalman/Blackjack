@@ -17,7 +17,7 @@ public class BlackjackClientModel {
     private Socket socket;          // socket on server address and port
     private BufferedReader in;      // in to server
     private PrintWriter out;        // out from server
-    private ArrayList<BlackjackHandPanel> blackjackHandPanels = new ArrayList<>();
+    private ArrayList<BlackjackHandPanel> playerHandPanels = new ArrayList<>();
 
     /**
      * Constructor for Blackjack client model object.
@@ -70,16 +70,16 @@ public class BlackjackClientModel {
         out.println(clientMessage);
     }
 
-    public void addBlackjackHandPanel(int index, BlackjackHandPanel blackjackHandPanel) {
-        blackjackHandPanels.add(index, blackjackHandPanel);
+    public void addPlayerHandPanel(int index, BlackjackHandPanel playerHandPanel) {
+        playerHandPanels.add(index, playerHandPanel);
     }
 
-    public BlackjackHandPanel getBlackjackHandPanel(int index) {
-        return blackjackHandPanels.get(index);
+    public BlackjackHandPanel getPlayerHandPanel(int index) {
+        return playerHandPanels.get(index);
     }
 
-    public void removeBlackjackHandPanel(int index) {
-        blackjackHandPanels.remove(index);
+    public void removePlayerHandPanel(int index) {
+        playerHandPanels.remove(index);
     }
 
     public JLabel getCardImageLabel(String cardName) {
@@ -93,7 +93,7 @@ public class BlackjackClientModel {
     }
 
     public void reset() {
-        blackjackHandPanels.clear();
+        playerHandPanels.clear();
     }
 
     /**

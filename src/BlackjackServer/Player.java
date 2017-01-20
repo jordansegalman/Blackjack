@@ -190,12 +190,14 @@ public class Player implements Runnable {
 
     private void sendRoundInformation() {
         out.println("SERVERMESSAGE--NEWROUND--" + String.format("%.2f", money));
+        out.println("SERVERMESSAGE--NEWHAND--0");
 //        out.println("INFOMESSAGE--Your Cards:");
         for (int i = 0; i < originalPlayerHand.size(); i++) {
 //            out.println("INFOMESSAGE--" + originalPlayerHand.getCard(i));
-            out.println("SERVERMESSAGE--NEWPLAYERCARD--" + originalPlayerHand.getCard(i));
+            out.println("SERVERMESSAGE--NEWPLAYERCARD--0--" + originalPlayerHand.getCard(i));
         }
-        out.println("SERVERMESSAGE--ORIGINALHANDBET--" + String.format("%.2f", originalPlayerHand.bet()));
+        out.println("SERVERMESSAGE--HANDVALUE--0--" + originalPlayerHand.blackjackValue());
+        out.println("SERVERMESSAGE--HANDBET--0--" + String.format("%.2f", originalPlayerHand.bet()));
         if (originalPlayerHand.blackjackValue() == MAXIMUM_SCORE) {
 //            out.println("INFOMESSAGE--You have Blackjack.");
             out.println("SERVERMESSAGE--BLACKJACK--PLAYER");
@@ -243,7 +245,7 @@ public class Player implements Runnable {
         table.turnLatchCountDown();
         if (table.numPlayers() > 1) {
 //            out.println("INFOMESSAGE--Waiting for other players to take their turns.");
-            out.println("SERVERMESSAGE--WAITING--BEFORETURN");
+            out.println("SERVERMESSAGE--WAITING--TURN");
         }
     }
 
@@ -292,20 +294,14 @@ public class Player implements Runnable {
 
     void takeTurn(BlackjackHand hand) {
         if (hand == originalPlayerHand) {
-            out.println("SERVERMESSAGE--TAKETURN--" + String.format("%.2f", money));
-            out.println("SERVERMESSAGE--NEWHAND--" + playerHands.indexOf(hand));
-            out.println("SERVERMESSAGE--NEWTURNCARD--" + playerHands.indexOf(hand) + "--" + hand.getCard(0));
-            out.println("SERVERMESSAGE--NEWTURNCARD--" + playerHands.indexOf(hand) + "--" + hand.getCard(1));
-            out.println("SERVERMESSAGE--HANDBET--" + playerHands.indexOf(hand) + "--" + String.format("%.2f", hand.bet()));
-            out.println("SERVERMESSAGE--NEWTURNDEALERCARD--" + table.dealerShownCard());
-            out.println("SERVERMESSAGE--NEWTURNDEALERCARD--back");
-        }
-        if (hasBlackjack && table.dealerHasBlackjack()) {
-            out.println("SERVERMESSAGE--TURNBLACKJACK--PLAYERANDDEALER");
-        } else if (hasBlackjack && !table.dealerHasBlackjack()) {
-            out.println("SERVERMESSAGE--TURNBLACKJACK--PLAYER");
-        } else if (!hasBlackjack && table.dealerHasBlackjack()) {
-            out.println("SERVERMESSAGE--TURNBLACKJACK--DEALER");
+            out.println("SERVERMESSAGE--TAKETURN");
+            if (hasBlackjack && table.dealerHasBlackjack()) {
+                out.println("SERVERMESSAGE--TURNBLACKJACK--PLAYERANDDEALER");
+            } else if (hasBlackjack && !table.dealerHasBlackjack()) {
+                out.println("SERVERMESSAGE--TURNBLACKJACK--PLAYER");
+            } else if (!hasBlackjack && table.dealerHasBlackjack()) {
+                out.println("SERVERMESSAGE--TURNBLACKJACK--DEALER");
+            }
         }
         if (!hasBlackjack && !table.dealerHasBlackjack() && hand.getCard(0).rank() == hand.getCard(1).rank()) {
             if (money >= hand.bet()) {
@@ -353,7 +349,7 @@ public class Player implements Runnable {
                     hand.addDoubleDownCard(newCard);
 //                    out.println("INFOMESSAGE--Your bet on this hand has been doubled. You were given a card face down.");
                     out.println("SERVERMESSAGE--HANDBET--" + playerHands.indexOf(hand) + "--" + String.format("%.2f", hand.bet()));
-                    out.println("SERVERMESSAGE--NEWTURNCARD--" + playerHands.indexOf(hand) + "--back");
+                    out.println("SERVERMESSAGE--NEWPLAYERCARD--" + playerHands.indexOf(hand) + "--back");
                     out.println("SERVERMESSAGE--DOUBLEDOWNRESPONSE--SUCCESS--" + playerHands.indexOf(hand) + "--" + String.format("%.2f", money));
                 }
             } else {
@@ -380,7 +376,7 @@ public class Player implements Runnable {
                     Card newCard = table.dealCard();
                     hand.addCard(newCard);
 //                    out.println("INFOMESSAGE--You got the " + newCard + ".");
-                    out.println("SERVERMESSAGE--NEWTURNCARD--" + playerHands.indexOf(hand) + "--" + newCard);
+                    out.println("SERVERMESSAGE--NEWPLAYERCARD--" + playerHands.indexOf(hand) + "--" + newCard);
                 }
             } while (choice.equals("Hit") && hand.blackjackValue() <= MAXIMUM_SCORE);
 //            out.println("INFOMESSAGE--Final Hand Total: " + hand.blackjackValue());
@@ -392,7 +388,7 @@ public class Player implements Runnable {
         }
         if (table.numPlayers() > 1 && !hasBlackjack && !table.dealerHasBlackjack() && hand == playerHands.get(playerHands.size() - 1)) {
 //            out.println("INFOMESSAGE--Waiting for other players to take their turns.");
-            out.println("SERVERMESSAGE--WAITING--AFTERTURN");
+            out.println("SERVERMESSAGE--WAITING--TURN");
         }
     }
 
@@ -415,9 +411,9 @@ public class Player implements Runnable {
         out.println("SERVERMESSAGE--REMOVEHAND--" + playerHands.indexOf(hand));
         playerHands.remove(hand);
         firstHand.addCard(hand.getCard(0));
-        out.println("SERVERMESSAGE--NEWTURNCARD--" + playerHands.indexOf(firstHand) + "--" + firstHand.getCard(0));
+        out.println("SERVERMESSAGE--NEWPLAYERCARD--" + playerHands.indexOf(firstHand) + "--" + firstHand.getCard(0));
         secondHand.addCard(hand.getCard(1));
-        out.println("SERVERMESSAGE--NEWTURNCARD--" + playerHands.indexOf(secondHand) + "--" + secondHand.getCard(0));
+        out.println("SERVERMESSAGE--NEWPLAYERCARD--" + playerHands.indexOf(secondHand) + "--" + secondHand.getCard(0));
         firstHand.placeBet(hand.bet());
         out.println("SERVERMESSAGE--HANDBET--" + playerHands.indexOf(firstHand) + "--" + String.format("%.2f", firstHand.bet()));
         secondHand.placeBet(hand.bet());
@@ -426,30 +422,30 @@ public class Player implements Runnable {
             Card newCard = table.dealCard();
             firstHand.addCard(newCard);
 //            out.println("INFOMESSAGE--You got the " + newCard + " on the first hand.");
-            out.println("SERVERMESSAGE--NEWTURNCARD--" + playerHands.indexOf(firstHand) + "--" + newCard);
+            out.println("SERVERMESSAGE--NEWPLAYERCARD--" + playerHands.indexOf(firstHand) + "--" + newCard);
 //            out.println("INFOMESSAGE--Final First Hand Total: " + firstHand.blackjackValue());
             out.println("SERVERMESSAGE--HANDVALUE--" + playerHands.indexOf(firstHand) + "--" + firstHand.blackjackValue());
             newCard = table.dealCard();
             secondHand.addCard(newCard);
 //            out.println("INFOMESSAGE--You got the " + newCard + " on the second hand.");
-            out.println("SERVERMESSAGE--NEWTURNCARD--" + playerHands.indexOf(secondHand) + "--" + newCard);
+            out.println("SERVERMESSAGE--NEWPLAYERCARD--" + playerHands.indexOf(secondHand) + "--" + newCard);
 //            out.println("INFOMESSAGE--Final Second Hand Total: " + secondHand.blackjackValue());
             out.println("SERVERMESSAGE--HANDVALUE--" + playerHands.indexOf(secondHand) + "--" + secondHand.blackjackValue());
             if (table.numPlayers() > 1 && secondHand == playerHands.get(playerHands.size() - 1)) {
 //                out.println("INFOMESSAGE--Waiting for other players to take their turns.");
-                out.println("SERVERMESSAGE--WAITING--AFTERTURN");
+                out.println("SERVERMESSAGE--WAITING--TURN");
             }
         } else {
             Card newCard = table.dealCard();
             firstHand.addCard(newCard);
 //            out.println("INFOMESSAGE--You got the " + newCard + " on the first hand.");
-            out.println("SERVERMESSAGE--NEWTURNCARD--" + playerHands.indexOf(firstHand) + "--" + newCard);
+            out.println("SERVERMESSAGE--NEWPLAYERCARD--" + playerHands.indexOf(firstHand) + "--" + newCard);
 //            out.println("INFOMESSAGE--First Hand Total: " + firstHand.blackjackValue());
             out.println("SERVERMESSAGE--HANDVALUE--" + playerHands.indexOf(firstHand) + "--" + firstHand.blackjackValue());
             newCard = table.dealCard();
             secondHand.addCard(newCard);
 //            out.println("INFOMESSAGE--You got the " + newCard + " on the second hand.");
-            out.println("SERVERMESSAGE--NEWTURNCARD--" + playerHands.indexOf(secondHand) + "--" + newCard);
+            out.println("SERVERMESSAGE--NEWPLAYERCARD--" + playerHands.indexOf(secondHand) + "--" + newCard);
 //            out.println("INFOMESSAGE--Second Hand Total: " + secondHand.blackjackValue());
             out.println("SERVERMESSAGE--HANDVALUE--" + playerHands.indexOf(secondHand) + "--" + secondHand.blackjackValue());
             takeTurn(firstHand);
@@ -467,7 +463,7 @@ public class Player implements Runnable {
         out.println("SERVERMESSAGE--REMOVEDEALERFACEDOWNCARD");
         for (int i = 1; i < table.dealerHand().size(); i++) {
 //            out.println("INFOMESSAGE--" + table.dealerHand().getCard(i));
-            out.println("SERVERMESSAGE--NEWTURNDEALERCARD--" + table.dealerHand().getCard(i));
+            out.println("SERVERMESSAGE--NEWDEALERCARD--" + table.dealerHand().getCard(i));
         }
         out.println("SERVERMESSAGE--DEALERHANDVALUE--" + table.dealerHand().blackjackValue());
     }
@@ -485,8 +481,7 @@ public class Player implements Runnable {
         if (hand.doubleDown()) {
 //            out.println("INFOMESSAGE--Your face down card is the " + hand.doubleDownCard() + ".");
             out.println("SERVERMESSAGE--REMOVEDOUBLEDOWNFACEDOWNCARD--" + playerHands.indexOf(hand));
-            out.println("SERVERMESSAGE--NEWTURNCARD--" + playerHands.indexOf(hand) + "--" + hand.doubleDownCard());
-            out.println("SERVERMESSAGE--REVEALDOUBLEDOWNCARD--" + playerHands.indexOf(hand) + "--" + hand.doubleDownCard());
+            out.println("SERVERMESSAGE--NEWPLAYERCARD--" + playerHands.indexOf(hand) + "--" + hand.doubleDownCard());
         }
 //        out.println("INFOMESSAGE--Hand Total: " + hand.blackjackValue());
         out.println("SERVERMESSAGE--HANDVALUE--" + playerHands.indexOf(hand) + "--" + hand.blackjackValue());

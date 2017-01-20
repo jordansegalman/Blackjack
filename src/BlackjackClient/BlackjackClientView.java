@@ -20,7 +20,7 @@ public class BlackjackClientView extends JFrame implements ActionListener {
     private BlackjackClientModel model;
 
     private enum PanelNames {
-        WELCOMEPANEL, BETPANEL, ROUNDINFORMATIONPANEL, TURNPANEL, CONTINUEPLAYINGPANEL
+        WELCOMEPANEL, BETPANEL, TURNPANEL, CONTINUEPLAYINGPANEL
     }
 
     public BlackjackClientView(BlackjackClientModel model) {
@@ -62,7 +62,6 @@ public class BlackjackClientView extends JFrame implements ActionListener {
     private void setupPanels() {
         createWelcomePanel();
         createBetPanel();
-        createRoundInformationPanel();
         createTurnPanel();
         createContinuePlayingPanel();
     }
@@ -186,62 +185,62 @@ public class BlackjackClientView extends JFrame implements ActionListener {
     }
 
     private JPanel dealerCardsPanel;
-    private JPanel playerCardsPanel;
-    private JLabel originalHandBetLabel;
-    private JLabel roundInformationMoneyLabel;
-    private JLabel roundInformationBlackjackLabel;
-    private JLabel roundInformationInsuranceLabel;
+    private JLabel dealerHandValueLabel;
+    private JPanel playerHandsPanel;
+    private JLabel turnMoneyLabel;
+    private JLabel insuranceBetLabel;
     private JButton yesInsuranceBetButton;
     private JButton noInsuranceBetButton;
+    private JLabel blackjackLabel;
     private JLabel insuranceBetWaitingLabel;
-    private JLabel beforeTurnWaitingLabel;
+    private JLabel turnWaitingLabel;
 
-    private void createRoundInformationPanel() {
-        JPanel roundInformationPanel = new JPanel(new GridBagLayout());
+    private void createTurnPanel() {
+        JPanel turnPanel = new JPanel(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
         JLabel dealerCardsLabel = new JLabel("Dealer's Cards:");
         constraints.gridx = 0;
         constraints.gridy = 0;
-        roundInformationPanel.add(dealerCardsLabel, constraints);
+        turnPanel.add(dealerCardsLabel, constraints);
         dealerCardsPanel = new JPanel();
         constraints.gridy = 1;
-        roundInformationPanel.add(dealerCardsPanel, constraints);
-        JLabel playerCardsLabel = new JLabel("Your Cards:");
+        turnPanel.add(dealerCardsPanel, constraints);
+        dealerHandValueLabel = new JLabel();
         constraints.gridy = 2;
-        roundInformationPanel.add(playerCardsLabel, constraints);
-        playerCardsPanel = new JPanel();
+        turnPanel.add(dealerHandValueLabel, constraints);
+        JLabel playerCardsLabel = new JLabel("Your Cards:");
         constraints.gridy = 3;
-        roundInformationPanel.add(playerCardsPanel, constraints);
-        originalHandBetLabel = new JLabel();
+        turnPanel.add(playerCardsLabel, constraints);
+        playerHandsPanel = new JPanel();
         constraints.gridy = 4;
-        roundInformationPanel.add(originalHandBetLabel, constraints);
-        roundInformationMoneyLabel = new JLabel();
+        turnPanel.add(playerHandsPanel, constraints);
+        turnMoneyLabel = new JLabel();
         constraints.gridy = 5;
-        roundInformationPanel.add(roundInformationMoneyLabel, constraints);
-        roundInformationBlackjackLabel = new JLabel();
+        turnPanel.add(turnMoneyLabel, constraints);
+        insuranceBetLabel = new JLabel();
         constraints.gridy = 6;
-        roundInformationPanel.add(roundInformationBlackjackLabel, constraints);
-        roundInformationInsuranceLabel = new JLabel();
-        constraints.gridy = 7;
-        roundInformationPanel.add(roundInformationInsuranceLabel, constraints);
+        turnPanel.add(insuranceBetLabel, constraints);
         yesInsuranceBetButton = new JButton("Yes");
         enableYesInsuranceBetButton(false);
-        constraints.gridy = 8;
-        roundInformationPanel.add(yesInsuranceBetButton, constraints);
+        constraints.gridy = 7;
+        turnPanel.add(yesInsuranceBetButton, constraints);
         noInsuranceBetButton = new JButton("No");
         enableNoInsuranceBetButton(false);
         constraints.gridx = 1;
-        roundInformationPanel.add(noInsuranceBetButton, constraints);
+        turnPanel.add(noInsuranceBetButton, constraints);
+        blackjackLabel = new JLabel();
+        constraints.gridx = 0;
+        constraints.gridy = 7;
+        turnPanel.add(blackjackLabel, constraints);
         insuranceBetWaitingLabel = new JLabel("Waiting for other players to place their insurance bets.");
         insuranceBetWaitingLabel.setVisible(false);
-        constraints.gridx = 0;
+        constraints.gridy = 8;
+        turnPanel.add(insuranceBetWaitingLabel, constraints);
+        turnWaitingLabel = new JLabel("Waiting for other players to take their turns.");
+        turnWaitingLabel.setVisible(false);
         constraints.gridy = 9;
-        roundInformationPanel.add(insuranceBetWaitingLabel, constraints);
-        beforeTurnWaitingLabel = new JLabel("Waiting for other players to take their turns.");
-        beforeTurnWaitingLabel.setVisible(false);
-        constraints.gridy = 10;
-        roundInformationPanel.add(beforeTurnWaitingLabel, constraints);
-        add(roundInformationPanel, PanelNames.ROUNDINFORMATIONPANEL.toString());
+        turnPanel.add(turnWaitingLabel, constraints);
+        add(turnPanel, PanelNames.TURNPANEL.toString());
     }
 
     public void addDealerCard(JLabel card) {
@@ -249,35 +248,45 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         showChanges();
     }
 
-    public void addPlayerCard(JLabel card) {
-        playerCardsPanel.add(card);
+    public void removeDealerFaceDownCard() {
+        dealerCardsPanel.remove(dealerCardsPanel.getComponent(1));
         showChanges();
     }
 
-    public void setOriginalHandBetLabel(String bet) {
-        originalHandBetLabel.setText(bet);
+    public void setDealerHandValueLabel(String handValue) {
+        dealerHandValueLabel.setText(handValue);
         showChanges();
     }
 
-    public void setRoundInformationBlackjackLabel(String message) {
-        roundInformationBlackjackLabel.setText(message);
+    public void addPlayerHandPanel(BlackjackHandPanel playerHandPanel, int index) {
+        playerHandsPanel.add(playerHandPanel, index);
         showChanges();
     }
 
-    public void setRoundInformationInsuranceLabel(String message) {
-        roundInformationInsuranceLabel.setText(message);
+    public void removePlayerHandPanel(BlackjackHandPanel playerHandPanel) {
+        playerHandsPanel.remove(playerHandPanel);
+        showChanges();
+    }
+
+    public void setTurnMoneyLabel(String money) {
+        turnMoneyLabel.setText("$" + money);
+        showChanges();
+    }
+
+    public void setInsuranceBetLabel(String message) {
+        insuranceBetLabel.setText(message);
         showChanges();
     }
 
     public void enableInsuranceBet() {
-        setRoundInformationInsuranceLabel("Would you like to place an insurance bet?");
+        setInsuranceBetLabel("Would you like to place an insurance bet?");
         enableYesInsuranceBetButton(true);
         enableNoInsuranceBetButton(true);
         showChanges();
     }
 
     public void insuranceBetError() {
-        setRoundInformationInsuranceLabel("ERROR");
+        setInsuranceBetLabel("ERROR");
         enableYesInsuranceBetButton(true);
         enableNoInsuranceBetButton(true);
         showChanges();
@@ -290,12 +299,17 @@ public class BlackjackClientView extends JFrame implements ActionListener {
     }
 
     public void insuranceBetNotPlaced() {
-        roundInformationInsuranceLabel.setVisible(false);
+        insuranceBetLabel.setVisible(false);
         showChanges();
     }
 
-    public void setRoundInformationMoneyLabel(String money) {
-        roundInformationMoneyLabel.setText("$" + money);
+    public void removeInsuranceBetInfo() {
+        insuranceBetLabel.setVisible(false);
+        showChanges();
+    }
+
+    public void setBlackjackLabel(String blackjack) {
+        blackjackLabel.setText(blackjack);
         showChanges();
     }
 
@@ -304,87 +318,8 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         showChanges();
     }
 
-    public void setBeforeTurnWaiting(Boolean b) {
-        beforeTurnWaitingLabel.setVisible(b);
-        showChanges();
-    }
-
-    private JPanel turnDealerCardsPanel;
-    private JLabel dealerHandValueLabel;
-    private JPanel blackjackHandsPanel;
-    private JLabel turnMoneyLabel;
-    private JLabel turnBlackjackLabel;
-    private JLabel afterTurnWaitingLabel;
-
-    private void createTurnPanel() {
-        JPanel turnPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints constraints = new GridBagConstraints();
-        JLabel dealerCardsTurnLabel = new JLabel("Dealer's Cards:");
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        turnPanel.add(dealerCardsTurnLabel, constraints);
-        turnDealerCardsPanel = new JPanel();
-        constraints.gridy = 1;
-        turnPanel.add(turnDealerCardsPanel, constraints);
-        dealerHandValueLabel = new JLabel();
-        constraints.gridy = 2;
-        turnPanel.add(dealerHandValueLabel, constraints);
-        JLabel playerCardsTurnLabel = new JLabel("Your Cards:");
-        constraints.gridy = 3;
-        turnPanel.add(playerCardsTurnLabel, constraints);
-        blackjackHandsPanel = new JPanel();
-        constraints.gridy = 4;
-        turnPanel.add(blackjackHandsPanel, constraints);
-        turnMoneyLabel = new JLabel();
-        constraints.gridy = 5;
-        turnPanel.add(turnMoneyLabel, constraints);
-        turnBlackjackLabel = new JLabel();
-        constraints.gridy = 6;
-        turnPanel.add(turnBlackjackLabel, constraints);
-        afterTurnWaitingLabel = new JLabel("Waiting for other players to take their turns.");
-        afterTurnWaitingLabel.setVisible(false);
-        constraints.gridy = 7;
-        turnPanel.add(afterTurnWaitingLabel, constraints);
-        add(turnPanel, PanelNames.TURNPANEL.toString());
-    }
-
-    public void addTurnDealerCard(JLabel card) {
-        turnDealerCardsPanel.add(card);
-        showChanges();
-    }
-
-    public void removeDealerFaceDownCard() {
-        turnDealerCardsPanel.remove(turnDealerCardsPanel.getComponent(1));
-        showChanges();
-    }
-
-    public void setDealerHandValueLabel(String handValue) {
-        dealerHandValueLabel.setText(handValue);
-        showChanges();
-    }
-
-    public void addBlackjackHandPanel(BlackjackHandPanel blackjackHandPanel, int index) {
-        blackjackHandsPanel.add(blackjackHandPanel, index);
-        showChanges();
-    }
-
-    public void removeBlackjackHandPanel(BlackjackHandPanel blackjackHandPanel) {
-        blackjackHandsPanel.remove(blackjackHandPanel);
-        showChanges();
-    }
-
-    public void setTurnMoneyLabel(String money) {
-        turnMoneyLabel.setText("$" + money);
-        showChanges();
-    }
-
-    public void setTurnBlackjackLabel(String blackjack) {
-        turnBlackjackLabel.setText(blackjack);
-        showChanges();
-    }
-
-    public void setAfterTurnWaiting(Boolean b) {
-        afterTurnWaitingLabel.setVisible(b);
+    public void setTurnWaiting(Boolean b) {
+        turnWaitingLabel.setVisible(b);
         showChanges();
     }
 
@@ -465,10 +400,6 @@ public class BlackjackClientView extends JFrame implements ActionListener {
 
     public void showBetPanel() {
         showPanel(PanelNames.BETPANEL);
-    }
-
-    public void showRoundInformationPanel() {
-        showPanel(PanelNames.ROUNDINFORMATIONPANEL);
     }
 
     public void showTurnPanel() {

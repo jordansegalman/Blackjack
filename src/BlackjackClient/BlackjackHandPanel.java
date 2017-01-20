@@ -168,11 +168,6 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
         showChanges();
     }
 
-    public void revealDoubleDownCard(String message) {
-        setHandMessageLabel(message);
-        showChanges();
-    }
-
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         Object target = actionEvent.getSource();
