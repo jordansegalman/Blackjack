@@ -1,10 +1,10 @@
 package BlackjackClient;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import javax.imageio.ImageIO;
 
 /**
  * BlackjackClientModel objects represent a Blackjack client model that holds client information.

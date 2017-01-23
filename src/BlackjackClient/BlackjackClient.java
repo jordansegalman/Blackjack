@@ -162,11 +162,11 @@ public class BlackjackClient {
                 getServerMessage();
                 break;
             case "HANDBET":
-                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).setHandBet("Bet: $" + serverMessageParts[3]);
+                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).setHandBet(serverMessageParts[3]);
                 getServerMessage();
                 break;
             case "HANDVALUE":
-                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).setHandValueLabel("Hand Value: " + serverMessageParts[3]);
+                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).setHandValueLabel(serverMessageParts[3]);
                 getServerMessage();
                 break;
             case "TURNBLACKJACK":
@@ -197,6 +197,10 @@ public class BlackjackClient {
                 switch (serverMessageParts[2]) {
                     case "ERROR":
                         model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).hitStandError();
+                        getServerMessage();
+                        break;
+                    case "SUCCESS":
+                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).hitStandSuccess();
                         getServerMessage();
                         break;
                 }
@@ -255,7 +259,7 @@ public class BlackjackClient {
                 getServerMessage();
                 break;
             case "DEALERHANDVALUE":
-                view.setDealerHandValueLabel("Dealer Hand Value: " + serverMessageParts[2]);
+                view.setDealerHandValueLabel(serverMessageParts[2]);
                 getServerMessage();
                 break;
             case "REMOVEDOUBLEDOWNFACEDOWNCARD":
@@ -375,7 +379,7 @@ public class BlackjackClient {
                 }
                 break;
             default:
-                System.err.println("UNKNOWN MESSAGE RECEIVED FROM SERVER: \"" + serverMessage + "\"");
+                System.err.println("Unknown message received from server: \"" + serverMessage + "\"");
                 break;
         }
     }

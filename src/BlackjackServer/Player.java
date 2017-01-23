@@ -372,6 +372,7 @@ public class Player implements Runnable {
                         receivedChoice = false;
                     }
                 } while (!receivedChoice);
+                out.println("SERVERMESSAGE--HITSTANDRESPONSE--SUCCESS--" + playerHands.indexOf(hand));
                 if (choice.equals("Hit")) {
                     Card newCard = table.dealCard();
                     hand.addCard(newCard);
@@ -404,11 +405,11 @@ public class Player implements Runnable {
         out.println("SERVERMESSAGE--SPLITPAIRSRESPONSE--SUCCESS--" + String.format("%.2f", money));
         BlackjackHand firstHand = new BlackjackHand();
         BlackjackHand secondHand = new BlackjackHand();
-        out.println("SERVERMESSAGE--NEWHAND--" + playerHands.indexOf(hand));
+        out.println("SERVERMESSAGE--REMOVEHAND--" + playerHands.indexOf(hand));
         playerHands.add(playerHands.indexOf(hand), secondHand);
         out.println("SERVERMESSAGE--NEWHAND--" + playerHands.indexOf(secondHand));
         playerHands.add(playerHands.indexOf(secondHand), firstHand);
-        out.println("SERVERMESSAGE--REMOVEHAND--" + playerHands.indexOf(hand));
+        out.println("SERVERMESSAGE--NEWHAND--" + playerHands.indexOf(firstHand));
         playerHands.remove(hand);
         firstHand.addCard(hand.getCard(0));
         out.println("SERVERMESSAGE--NEWPLAYERCARD--" + playerHands.indexOf(firstHand) + "--" + firstHand.getCard(0));

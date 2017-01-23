@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class BlackjackHandPanel extends JPanel implements ActionListener {
+    private static final Color CARD_TABLE_GREEN = new Color(37, 93, 54);
+    private static final Color TEXT_COLOR = new Color(230, 230, 230);
     private BlackjackClientModel model;
     private JPanel cardsPanel;
     private JLabel handValueLabel;
@@ -23,24 +25,28 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
     }
 
     private void setupHand() {
+        setBackground(CARD_TABLE_GREEN);
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
         cardsPanel = new JPanel();
+        cardsPanel.setBackground(CARD_TABLE_GREEN);
         constraints.gridx = 0;
         constraints.gridy = 0;
         add(cardsPanel, constraints);
         handValueLabel = new JLabel();
+        handValueLabel.setForeground(TEXT_COLOR);
         constraints.gridy = 1;
         add(handValueLabel, constraints);
         handBetLabel = new JLabel();
+        handBetLabel.setForeground(TEXT_COLOR);
         constraints.gridy = 2;
         add(handBetLabel, constraints);
         handMessageLabel = new JLabel();
+        handMessageLabel.setForeground(TEXT_COLOR);
         constraints.gridy = 3;
         add(handMessageLabel, constraints);
         JPanel hitStandButtonsPanel = new JPanel();
-        constraints.gridy = 4;
-        add(hitStandButtonsPanel, constraints);
+        hitStandButtonsPanel.setBackground(CARD_TABLE_GREEN);
         hitButton = new JButton("Hit");
         hitButton.setEnabled(false);
         hitButton.setVisible(false);
@@ -49,9 +55,10 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
         standButton.setVisible(false);
         hitStandButtonsPanel.add(hitButton);
         hitStandButtonsPanel.add(standButton);
+        constraints.gridy = 4;
+        add(hitStandButtonsPanel, constraints);
         JPanel yesNoButtonsPanel = new JPanel();
-        constraints.gridy = 5;
-        add(yesNoButtonsPanel, constraints);
+        yesNoButtonsPanel.setBackground(CARD_TABLE_GREEN);
         yesButton = new JButton("Yes");
         yesButton.setEnabled(false);
         yesButton.setVisible(false);
@@ -60,6 +67,8 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
         noButton.setVisible(false);
         yesNoButtonsPanel.add(yesButton);
         yesNoButtonsPanel.add(noButton);
+        constraints.gridy = 5;
+        add(yesNoButtonsPanel, constraints);
     }
 
     private void setupActionListeners() {
@@ -70,42 +79,18 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
     }
 
     private void showChanges() {
-        validate();
+        revalidate();
         repaint();
         setVisible(true);
     }
 
-    private void enableHitButton(Boolean b) {
-        hitButton.setEnabled(b);
-        hitButton.setVisible(b);
-        showChanges();
-    }
-
-    private void enableStandButton(Boolean b) {
-        standButton.setEnabled(b);
-        standButton.setVisible(b);
-        showChanges();
-    }
-
-    private void enableYesButton(Boolean b) {
-        yesButton.setEnabled(b);
-        yesButton.setVisible(b);
-        showChanges();
-    }
-
-    private void enableNoButton(Boolean b) {
-        noButton.setEnabled(b);
-        noButton.setVisible(b);
-        showChanges();
-    }
-
     public void setHandValueLabel(String handValue) {
-        handValueLabel.setText(handValue);
+        handValueLabel.setText("Hand Value: " + handValue);
         showChanges();
     }
 
     public void setHandBet(String bet) {
-        handBetLabel.setText(bet);
+        handBetLabel.setText("Bet: $" + bet);
         showChanges();
     }
 
@@ -118,6 +103,11 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
         setHandMessageLabel("Would you like to hit or stand?");
         enableHitButton(true);
         enableStandButton(true);
+        showChanges();
+    }
+
+    public void hitStandSuccess() {
+        setHandMessageLabel("");
         showChanges();
     }
 
@@ -151,7 +141,7 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
     }
 
     public void doubleDownSuccess() {
-        setHandMessageLabel("Your bet on this hand has been doubled. You were given a card face down.");
+        setHandMessageLabel("Your bet on this hand has been doubled.");
         showChanges();
     }
 
@@ -166,6 +156,30 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
         setHandMessageLabel("ERROR");
         enableYesButton(true);
         enableNoButton(true);
+        showChanges();
+    }
+
+    private void enableHitButton(Boolean b) {
+        hitButton.setEnabled(b);
+        hitButton.setVisible(b);
+        showChanges();
+    }
+
+    private void enableStandButton(Boolean b) {
+        standButton.setEnabled(b);
+        standButton.setVisible(b);
+        showChanges();
+    }
+
+    private void enableYesButton(Boolean b) {
+        yesButton.setEnabled(b);
+        yesButton.setVisible(b);
+        showChanges();
+    }
+
+    private void enableNoButton(Boolean b) {
+        noButton.setEnabled(b);
+        noButton.setVisible(b);
         showChanges();
     }
 
