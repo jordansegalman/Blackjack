@@ -14,7 +14,7 @@ import java.awt.event.WindowEvent;
  */
 
 public class BlackjackClientView extends JFrame implements ActionListener {
-    private static final Dimension FRAME_DIMENSION = new Dimension(960, 600);
+    private static final Dimension FRAME_MINIMUM_DIMENSION = new Dimension(960, 600);
     private static final Dimension DEALER_HAND_PANEL_DIMENSION = new Dimension(930, 170);
     private static final Dimension PLAYER_HANDS_PANEL_DIMENSION = new Dimension(930, 265);
     private static final Dimension BUTTONS_DIMENSION = new Dimension(110, 25);
@@ -52,8 +52,8 @@ public class BlackjackClientView extends JFrame implements ActionListener {
 
     private void setupFrame() {
         setTitle("Blackjack");
-        setSize(FRAME_DIMENSION);
-        setResizable(false);
+        setMinimumSize(FRAME_MINIMUM_DIMENSION);
+        setResizable(true);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLayout(new CardLayout());
