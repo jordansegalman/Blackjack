@@ -70,10 +70,8 @@ public class BlackjackClientView extends JFrame implements ActionListener {
     private void setupActionListeners() {
         betField.addActionListener(this);
         betButton.addActionListener(this);
-        yesInsuranceBetButton.addActionListener(this);
-        noInsuranceBetButton.addActionListener(this);
-        yesContinuePlayingButton.addActionListener(this);
-        noContinuePlayingButton.addActionListener(this);
+        yesButton.addActionListener(this);
+        noButton.addActionListener(this);
     }
 
     private void showChanges() {
@@ -176,9 +174,9 @@ public class BlackjackClientView extends JFrame implements ActionListener {
     private JPanel dealerHandPanel;
     private JLabel dealerHandValueLabel;
     private JPanel playerHandsPanel;
-    private JLabel insuranceBetLabel;
-    private JButton yesInsuranceBetButton;
-    private JButton noInsuranceBetButton;
+    private JLabel messageLabel;
+    private JButton yesButton;
+    private JButton noButton;
     private JLabel blackjackLabel;
     private JLabel turnMoneyLabel;
     private JLabel insuranceBetWaitingLabel;
@@ -221,22 +219,22 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         playerHandsScrollPane.setBorder(BorderFactory.createEmptyBorder());
         constraints.gridy = 4;
         turnPanel.add(playerHandsScrollPane, constraints);
-        insuranceBetLabel = new JLabel();
-        insuranceBetLabel.setForeground(TEXT_COLOR);
+        messageLabel = new JLabel();
+        messageLabel.setForeground(TEXT_COLOR);
         constraints.gridy = 5;
-        turnPanel.add(insuranceBetLabel, constraints);
+        turnPanel.add(messageLabel, constraints);
         JPanel insuranceBetButtonsPanel = new JPanel();
         insuranceBetButtonsPanel.setBackground(CARD_TABLE_GREEN);
         constraints.gridy = 6;
         turnPanel.add(insuranceBetButtonsPanel, constraints);
-        yesInsuranceBetButton = new JButton("Yes");
-        yesInsuranceBetButton.setPreferredSize(BUTTONS_DIMENSION);
-        enableYesInsuranceBetButton(false);
-        noInsuranceBetButton = new JButton("No");
-        noInsuranceBetButton.setPreferredSize(BUTTONS_DIMENSION);
-        enableNoInsuranceBetButton(false);
-        insuranceBetButtonsPanel.add(yesInsuranceBetButton);
-        insuranceBetButtonsPanel.add(noInsuranceBetButton);
+        yesButton = new JButton("Yes");
+        yesButton.setPreferredSize(BUTTONS_DIMENSION);
+        enableYesButton(false);
+        noButton = new JButton("No");
+        noButton.setPreferredSize(BUTTONS_DIMENSION);
+        enableNoButton(false);
+        insuranceBetButtonsPanel.add(yesButton);
+        insuranceBetButtonsPanel.add(noButton);
         blackjackLabel = new JLabel();
         blackjackLabel.setForeground(TEXT_COLOR);
         constraints.gridy = 7;
@@ -288,38 +286,52 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         showChanges();
     }
 
-    public void setInsuranceBetLabel(String message) {
-        insuranceBetLabel.setText(message);
+    public void setMessageLabel(String message) {
+        messageLabel.setText(message);
         showChanges();
     }
 
     public void enableInsuranceBet() {
-        setInsuranceBetLabel("Would you like to place an insurance bet?");
-        enableYesInsuranceBetButton(true);
-        enableNoInsuranceBetButton(true);
+        setMessageLabel("Would you like to place an insurance bet?");
+        enableYesButton(true);
+        enableNoButton(true);
         showChanges();
     }
 
     public void insuranceBetError() {
-        setInsuranceBetLabel("ERROR");
-        enableYesInsuranceBetButton(true);
-        enableNoInsuranceBetButton(true);
+        setMessageLabel("ERROR");
+        enableYesButton(true);
+        enableNoButton(true);
         showChanges();
     }
 
     public void insuranceBetSuccess() {
-        enableYesInsuranceBetButton(false);
-        enableNoInsuranceBetButton(false);
+        enableYesButton(false);
+        enableNoButton(false);
         showChanges();
     }
 
     public void insuranceBetNotPlaced() {
-        insuranceBetLabel.setVisible(false);
+        messageLabel.setText("");
         showChanges();
     }
 
     public void removeInsuranceBetInfo() {
-        insuranceBetLabel.setVisible(false);
+        messageLabel.setText("");
+        showChanges();
+    }
+
+    public void enableContinuePlaying() {
+        setMessageLabel("Would you like to keep playing?");
+        enableYesButton(true);
+        enableNoButton(true);
+        showChanges();
+    }
+
+    public void continuePlayingError() {
+        setMessageLabel("ERROR");
+        enableYesButton(true);
+        enableNoButton(true);
         showChanges();
     }
 
@@ -339,8 +351,6 @@ public class BlackjackClientView extends JFrame implements ActionListener {
     }
 
     private JLabel continuePlayingMessageLabel;
-    private JButton yesContinuePlayingButton;
-    private JButton noContinuePlayingButton;
     private JLabel continuePlayingMoneyLabel;
     private JLabel continuePlayingWaitingLabel;
 
@@ -357,14 +367,6 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         continuePlayingButtonsPanel.setBackground(CARD_TABLE_GREEN);
         constraints.gridy = 1;
         continuePlayingPanel.add(continuePlayingButtonsPanel, constraints);
-        yesContinuePlayingButton = new JButton("Yes");
-        yesContinuePlayingButton.setPreferredSize(BUTTONS_DIMENSION);
-        enableYesContinuePlayingButton(false);
-        noContinuePlayingButton = new JButton("No");
-        noContinuePlayingButton.setPreferredSize(BUTTONS_DIMENSION);
-        enableNoContinuePlayingButton(false);
-        continuePlayingButtonsPanel.add(yesContinuePlayingButton);
-        continuePlayingButtonsPanel.add(noContinuePlayingButton);
         continuePlayingMoneyLabel = new JLabel();
         continuePlayingMoneyLabel.setForeground(TEXT_COLOR);
         constraints.gridy = 2;
@@ -377,12 +379,6 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         add(continuePlayingPanel, PanelNames.CONTINUEPLAYINGPANEL.toString());
     }
 
-    public void enableContinuePlaying() {
-        enableYesContinuePlayingButton(true);
-        enableNoContinuePlayingButton(true);
-        showChanges();
-    }
-
     public void setContinuePlayingMoneyLabel(String money) {
         continuePlayingMoneyLabel.setText("Money: $" + money);
         showChanges();
@@ -390,13 +386,6 @@ public class BlackjackClientView extends JFrame implements ActionListener {
 
     public void setContinuePlayingMessageLabel(String message) {
         continuePlayingMessageLabel.setText(message);
-        showChanges();
-    }
-
-    public void continuePlayingError() {
-        setContinuePlayingMessageLabel("ERROR");
-        enableYesContinuePlayingButton(true);
-        enableNoContinuePlayingButton(true);
         showChanges();
     }
 
@@ -421,27 +410,15 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         showChanges();
     }
 
-    private void enableYesInsuranceBetButton(Boolean b) {
-        yesInsuranceBetButton.setEnabled(b);
-        yesInsuranceBetButton.setVisible(b);
+    private void enableYesButton(Boolean b) {
+        yesButton.setEnabled(b);
+        yesButton.setVisible(b);
         showChanges();
     }
 
-    private void enableNoInsuranceBetButton(Boolean b) {
-        noInsuranceBetButton.setEnabled(b);
-        noInsuranceBetButton.setVisible(b);
-        showChanges();
-    }
-
-    private void enableYesContinuePlayingButton(Boolean b) {
-        yesContinuePlayingButton.setEnabled(b);
-        yesContinuePlayingButton.setVisible(b);
-        showChanges();
-    }
-
-    private void enableNoContinuePlayingButton(Boolean b) {
-        noContinuePlayingButton.setEnabled(b);
-        noContinuePlayingButton.setVisible(b);
+    private void enableNoButton(Boolean b) {
+        noButton.setEnabled(b);
+        noButton.setVisible(b);
         showChanges();
     }
 
@@ -485,22 +462,14 @@ public class BlackjackClientView extends JFrame implements ActionListener {
             model.sendClientMessage(betField.getText());
             enableBetButton(false);
             enableBetField(false);
-        } else if (target == yesInsuranceBetButton) {
-            model.sendClientMessage(yesInsuranceBetButton.getText());
-            enableYesInsuranceBetButton(false);
-            enableNoInsuranceBetButton(false);
-        } else if (target == noInsuranceBetButton) {
-            model.sendClientMessage(noInsuranceBetButton.getText());
-            enableYesInsuranceBetButton(false);
-            enableNoInsuranceBetButton(false);
-        } else if (target == yesContinuePlayingButton) {
-            model.sendClientMessage(yesContinuePlayingButton.getText());
-            enableYesContinuePlayingButton(false);
-            enableNoContinuePlayingButton(false);
-        } else if (target == noContinuePlayingButton) {
-            model.sendClientMessage(noContinuePlayingButton.getText());
-            enableYesContinuePlayingButton(false);
-            enableNoContinuePlayingButton(false);
+        } else if (target == yesButton) {
+            model.sendClientMessage(yesButton.getText());
+            enableYesButton(false);
+            enableNoButton(false);
+        } else if (target == noButton) {
+            model.sendClientMessage(noButton.getText());
+            enableYesButton(false);
+            enableNoButton(false);
         }
     }
 }

@@ -118,7 +118,7 @@ public class BlackjackClient {
                         break;
                     case "PLACED":
                         view.insuranceBetSuccess();
-                        view.setInsuranceBetLabel("Insurance Bet: $" + serverMessageParts[3]);
+                        view.setMessageLabel("Insurance Bet: $" + serverMessageParts[3]);
                         view.setTurnMoneyLabel(serverMessageParts[4]);
                         getServerMessage();
                         break;
@@ -130,16 +130,16 @@ public class BlackjackClient {
                 }
                 break;
             case "CANNOTINSURANCEBET":
-                view.setInsuranceBetLabel("You do not have enough money to place an insurance bet.");
+                view.setMessageLabel("You do not have enough money to place an insurance bet.");
                 getServerMessage();
                 break;
             case "INSURANCEBETWON":
-                view.setInsuranceBetLabel("You won $" + serverMessageParts[2] + " from your insurance bet.");
+                view.setMessageLabel("You won $" + serverMessageParts[2] + " from your insurance bet.");
                 view.setTurnMoneyLabel(serverMessageParts[3]);
                 getServerMessage();
                 break;
             case "INSURANCEBETLOST":
-                view.setInsuranceBetLabel("You lost your insurance bet.");
+                view.setMessageLabel("You lost your insurance bet.");
                 getServerMessage();
                 break;
             case "INSURANCEBETDONE":
@@ -316,10 +316,7 @@ public class BlackjackClient {
                 }
                 break;
             case "GETCONTINUEPLAYING":
-                view.showContinuePlayingPanel();
                 view.enableContinuePlaying();
-                view.setContinuePlayingMessageLabel("Would you like to keep playing?");
-                view.setContinuePlayingMoneyLabel(serverMessageParts[2]);
                 getServerMessage();
                 break;
             case "CONTINUEPLAYINGRESPONSE":
@@ -331,17 +328,14 @@ public class BlackjackClient {
                     case "CONTINUE":
                         view.reset();
                         model.reset();
+                        view.showContinuePlayingPanel();
                         getServerMessage();
                         break;
                 }
                 break;
-            case "CANNOTCONTINUEPLAYING":
-                view.showContinuePlayingPanel();
-                view.setContinuePlayingMessageLabel("You do not have enough money to make the minimum bet.");
-                view.setContinuePlayingMoneyLabel(serverMessageParts[2]);
-                getServerMessage();
-                break;
             case "GAMEOVER":
+                view.showContinuePlayingPanel();
+                view.setContinuePlayingMoneyLabel(serverMessageParts[2]);
                 view.gameOver();
                 getServerMessage();
                 break;

@@ -67,7 +67,7 @@ public class Player implements Runnable {
         do {
             playBlackjack();
         } while (continuePlaying);
-        out.println("SERVERMESSAGE--GAMEOVER");
+        out.println("SERVERMESSAGE--GAMEOVER--" + String.format("%.2f", money));
     }
 
     /**
@@ -507,7 +507,7 @@ public class Player implements Runnable {
         if (money >= table.minimumBet()) {
             receivedChoice = false;
             do {
-                out.println("SERVERMESSAGE--GETCONTINUEPLAYING--" + String.format("%.2f", money));
+                out.println("SERVERMESSAGE--GETCONTINUEPLAYING");
                 getChoice();
                 if (!choice.equals("Yes") && !choice.equals("No")) {
                     out.println("SERVERMESSAGE--CONTINUEPLAYINGRESPONSE--ERROR");
@@ -521,7 +521,6 @@ public class Player implements Runnable {
                 table.removePlayer(this);
             }
         } else {
-            out.println("SERVERMESSAGE--CANNOTCONTINUEPLAYING--" + String.format("%.2f", money));
             table.removePlayer(this);
         }
         table.continuePlayingLatchCountDown();
