@@ -189,66 +189,54 @@ public class BlackjackClient {
                 model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).addCard(model.getCardImageLabel(serverMessageParts[3]));
                 getServerMessage();
                 break;
-            case "GETHITSTAND":
-                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).enableHitStand();
-                getServerMessage();
-                break;
-            case "HITSTANDRESPONSE":
+            case "TURNOPTION":
                 switch (serverMessageParts[2]) {
-                    case "ERROR":
-                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).hitStandError();
+                    case "BOTH":
+                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).enableSplitPairs();
+                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).enableDoubleDown();
+                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).enableHitStand();
                         getServerMessage();
                         break;
-                    case "SUCCESS":
-                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).hitStandSuccess();
+                    case "SPLITPAIRS":
+                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).enableSplitPairs();
+                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).enableHitStand();
+                        getServerMessage();
+                        break;
+                    case "DOUBLEDOWN":
+                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).enableDoubleDown();
+                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).enableHitStand();
+                        getServerMessage();
+                        break;
+                    case "NEITHER":
+                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).enableHitStand();
                         getServerMessage();
                         break;
                 }
+                break;
+            case "TURNOPTIONERROR":
+                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).turnError();
+                getServerMessage();
                 break;
             case "BUST":
                 model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).bust();
                 getServerMessage();
                 break;
-            case "GETSPLITPAIRS":
-                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).enableSplitPairs();
-                getServerMessage();
-                break;
             case "SPLITPAIRSRESPONSE":
                 switch (serverMessageParts[2]) {
-                    case "ERROR":
-                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).yesNoError();
-                        getServerMessage();
-                        break;
                     case "SUCCESS":
                         view.setTurnMoneyLabel(serverMessageParts[3]);
                         getServerMessage();
                         break;
                 }
                 break;
-            case "CANNOTSPLITPAIRS":
-                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).setHandMessageLabel("You do not have enough money to split pairs.");
-                getServerMessage();
-                break;
-            case "GETDOUBLEDOWN":
-                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).enableDoubleDown();
-                getServerMessage();
-                break;
             case "DOUBLEDOWNRESPONSE":
                 switch (serverMessageParts[2]) {
-                    case "ERROR":
-                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).yesNoError();
-                        getServerMessage();
-                        break;
                     case "SUCCESS":
                         model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).doubleDownSuccess();
                         view.setTurnMoneyLabel(serverMessageParts[4]);
                         getServerMessage();
                         break;
                 }
-                break;
-            case "CANNOTDOUBLEDOWN":
-                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).setHandMessageLabel("You do not have enough money to double down.");
-                getServerMessage();
                 break;
             case "SENDRESULT":
                 view.setTurnWaiting(false);

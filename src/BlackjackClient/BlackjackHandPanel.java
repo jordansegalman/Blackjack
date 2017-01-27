@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 public class BlackjackHandPanel extends JPanel implements ActionListener {
     private static final Color CARD_TABLE_GREEN = new Color(37, 93, 54);
     private static final Color TEXT_COLOR = new Color(230, 230, 230);
+    private static final Dimension BUTTONS_DIMENSION = new Dimension(110, 25);
     private BlackjackClientModel model;
     private JPanel cardsPanel;
     private JLabel handValueLabel;
@@ -15,8 +16,8 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
     private JLabel handMessageLabel;
     private JButton hitButton;
     private JButton standButton;
-    private JButton yesButton;
-    private JButton noButton;
+    private JButton splitPairsButton;
+    private JButton doubleDownButton;
 
     public BlackjackHandPanel(BlackjackClientModel model) {
         this.model = model;
@@ -48,9 +49,11 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
         JPanel hitStandButtonsPanel = new JPanel();
         hitStandButtonsPanel.setBackground(CARD_TABLE_GREEN);
         hitButton = new JButton("Hit");
+        hitButton.setPreferredSize(BUTTONS_DIMENSION);
         hitButton.setEnabled(false);
         hitButton.setVisible(false);
         standButton = new JButton("Stand");
+        standButton.setPreferredSize(BUTTONS_DIMENSION);
         standButton.setEnabled(false);
         standButton.setVisible(false);
         hitStandButtonsPanel.add(hitButton);
@@ -59,14 +62,16 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
         add(hitStandButtonsPanel, constraints);
         JPanel yesNoButtonsPanel = new JPanel();
         yesNoButtonsPanel.setBackground(CARD_TABLE_GREEN);
-        yesButton = new JButton("Yes");
-        yesButton.setEnabled(false);
-        yesButton.setVisible(false);
-        noButton = new JButton("No");
-        noButton.setEnabled(false);
-        noButton.setVisible(false);
-        yesNoButtonsPanel.add(yesButton);
-        yesNoButtonsPanel.add(noButton);
+        splitPairsButton = new JButton("Split Pairs");
+        splitPairsButton.setPreferredSize(BUTTONS_DIMENSION);
+        splitPairsButton.setEnabled(false);
+        splitPairsButton.setVisible(false);
+        doubleDownButton = new JButton("Double Down");
+        doubleDownButton.setPreferredSize(BUTTONS_DIMENSION);
+        doubleDownButton.setEnabled(false);
+        doubleDownButton.setVisible(false);
+        yesNoButtonsPanel.add(splitPairsButton);
+        yesNoButtonsPanel.add(doubleDownButton);
         constraints.gridy = 5;
         add(yesNoButtonsPanel, constraints);
     }
@@ -74,8 +79,8 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
     private void setupActionListeners() {
         hitButton.addActionListener(this);
         standButton.addActionListener(this);
-        yesButton.addActionListener(this);
-        noButton.addActionListener(this);
+        splitPairsButton.addActionListener(this);
+        doubleDownButton.addActionListener(this);
     }
 
     private void showChanges() {
@@ -99,20 +104,14 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
         showChanges();
     }
 
-    public void enableHitStand() {
-        setHandMessageLabel("Would you like to hit or stand?");
+    public void turnError() {
+        setHandMessageLabel("ERROR");
         enableHitButton(true);
         enableStandButton(true);
         showChanges();
     }
 
-    public void hitStandSuccess() {
-        setHandMessageLabel("");
-        showChanges();
-    }
-
-    public void hitStandError() {
-        setHandMessageLabel("ERROR");
+    public void enableHitStand() {
         enableHitButton(true);
         enableStandButton(true);
         showChanges();
@@ -123,20 +122,18 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
         showChanges();
     }
 
-    public void removeDoubleDownFaceDownCard() {
-        cardsPanel.remove(cardsPanel.getComponent(2));
-        showChanges();
-    }
-
     public void bust() {
         setHandMessageLabel("You busted.");
         showChanges();
     }
 
+    public void enableSplitPairs() {
+        enableSplitPairsButton(true);
+        showChanges();
+    }
+
     public void enableDoubleDown() {
-        setHandMessageLabel("Would you like to double down?");
-        enableYesButton(true);
-        enableNoButton(true);
+        enableDoubleDownButton(true);
         showChanges();
     }
 
@@ -145,17 +142,8 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
         showChanges();
     }
 
-    public void enableSplitPairs() {
-        setHandMessageLabel("Would you like to split pairs?");
-        enableYesButton(true);
-        enableNoButton(true);
-        showChanges();
-    }
-
-    public void yesNoError() {
-        setHandMessageLabel("ERROR");
-        enableYesButton(true);
-        enableNoButton(true);
+    public void removeDoubleDownFaceDownCard() {
+        cardsPanel.remove(cardsPanel.getComponent(2));
         showChanges();
     }
 
@@ -171,15 +159,15 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
         showChanges();
     }
 
-    private void enableYesButton(Boolean b) {
-        yesButton.setEnabled(b);
-        yesButton.setVisible(b);
+    private void enableSplitPairsButton(Boolean b) {
+        splitPairsButton.setEnabled(b);
+        splitPairsButton.setVisible(b);
         showChanges();
     }
 
-    private void enableNoButton(Boolean b) {
-        noButton.setEnabled(b);
-        noButton.setVisible(b);
+    private void enableDoubleDownButton(Boolean b) {
+        doubleDownButton.setEnabled(b);
+        doubleDownButton.setVisible(b);
         showChanges();
     }
 
@@ -191,18 +179,26 @@ public class BlackjackHandPanel extends JPanel implements ActionListener {
             model.sendClientMessage(hitButton.getText());
             enableHitButton(false);
             enableStandButton(false);
+            enableSplitPairsButton(false);
+            enableDoubleDownButton(false);
         } else if (target == standButton) {
             model.sendClientMessage(standButton.getText());
             enableHitButton(false);
             enableStandButton(false);
-        } else if (target == yesButton) {
-            model.sendClientMessage(yesButton.getText());
-            enableYesButton(false);
-            enableNoButton(false);
-        } else if (target == noButton) {
-            model.sendClientMessage(noButton.getText());
-            enableYesButton(false);
-            enableNoButton(false);
+            enableSplitPairsButton(false);
+            enableDoubleDownButton(false);
+        } else if (target == splitPairsButton) {
+            model.sendClientMessage(splitPairsButton.getText());
+            enableHitButton(false);
+            enableStandButton(false);
+            enableSplitPairsButton(false);
+            enableDoubleDownButton(false);
+        } else if (target == doubleDownButton) {
+            model.sendClientMessage(doubleDownButton.getText());
+            enableHitButton(false);
+            enableStandButton(false);
+            enableSplitPairsButton(false);
+            enableDoubleDownButton(false);
         }
     }
 }

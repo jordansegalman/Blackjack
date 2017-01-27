@@ -16,7 +16,8 @@ import java.awt.event.WindowEvent;
 public class BlackjackClientView extends JFrame implements ActionListener {
     private static final Dimension FRAME_DIMENSION = new Dimension(960, 600);
     private static final Dimension DEALER_HAND_PANEL_DIMENSION = new Dimension(930, 170);
-    private static final Dimension PLAYER_HANDS_PANEL_DIMENSION = new Dimension(930, 260);
+    private static final Dimension PLAYER_HANDS_PANEL_DIMENSION = new Dimension(930, 265);
+    private static final Dimension BUTTONS_DIMENSION = new Dimension(110, 25);
     private static final int BET_FIELD_SIZE = 5;
     private static final Color CARD_TABLE_GREEN = new Color(37, 93, 54);
     private static final Color TEXT_COLOR = new Color(230, 230, 230);
@@ -130,6 +131,7 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         constraints.gridy = 2;
         betPanel.add(betMessageLabel, constraints);
         betButton = new JButton("Place Bet");
+        betButton.setPreferredSize(BUTTONS_DIMENSION);
         constraints.gridy = 3;
         betPanel.add(betButton, constraints);
         betMoneyLabel = new JLabel();
@@ -228,8 +230,10 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         constraints.gridy = 6;
         turnPanel.add(insuranceBetButtonsPanel, constraints);
         yesInsuranceBetButton = new JButton("Yes");
+        yesInsuranceBetButton.setPreferredSize(BUTTONS_DIMENSION);
         enableYesInsuranceBetButton(false);
         noInsuranceBetButton = new JButton("No");
+        noInsuranceBetButton.setPreferredSize(BUTTONS_DIMENSION);
         enableNoInsuranceBetButton(false);
         insuranceBetButtonsPanel.add(yesInsuranceBetButton);
         insuranceBetButtonsPanel.add(noInsuranceBetButton);
@@ -354,8 +358,10 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         constraints.gridy = 1;
         continuePlayingPanel.add(continuePlayingButtonsPanel, constraints);
         yesContinuePlayingButton = new JButton("Yes");
+        yesContinuePlayingButton.setPreferredSize(BUTTONS_DIMENSION);
         enableYesContinuePlayingButton(false);
         noContinuePlayingButton = new JButton("No");
+        noContinuePlayingButton.setPreferredSize(BUTTONS_DIMENSION);
         enableNoContinuePlayingButton(false);
         continuePlayingButtonsPanel.add(yesContinuePlayingButton);
         continuePlayingButtonsPanel.add(noContinuePlayingButton);
