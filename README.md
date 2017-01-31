@@ -8,24 +8,16 @@ Follow these instructions to run Blackjack on your computer.
 
 ### Prerequisites
 
-* Java Development Kit
-
-### Installing
-
-Before you can run the Blackjack server and clients, you need to compile the java files. Navigate to the directories containing the java files. If you would like to change what port the server runs on, change the port number in the server and client files. If you are running the server on a different computer than your client, change the server IP address in the client file. To change the number of players per table, edit the number in the server file. Finally, just compile all of the java files.
-
-```
-javac *.java
-```
+* Java Runtime Environment
 
 ### Running
 
-Once you have compiled the java files, all you have to do is run the server and client.
+To run the server and client, navigate to the directory containing the JAR files and enter the following commands.
 
 ```
-java BlackjackServer
+java -jar BlackjackServer.jar
 
-java BlackjackClient
+java -jar BlackjackClient.jar
 ```
 
 ## License

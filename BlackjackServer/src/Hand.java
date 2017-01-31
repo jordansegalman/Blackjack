@@ -1,5 +1,3 @@
-package BlackjackServer;
-
 import java.util.ArrayList;
 
 /**

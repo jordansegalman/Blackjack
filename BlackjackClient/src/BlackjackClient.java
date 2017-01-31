@@ -1,5 +1,3 @@
-package BlackjackClient;
-
 import javax.swing.SwingWorker;
 import java.util.concurrent.ExecutionException;
 
