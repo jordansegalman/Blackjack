@@ -4,22 +4,30 @@ import javax.swing.SwingWorker;
 import java.util.concurrent.ExecutionException;
 
 /**
- * BlackjackClient objects represent a Blackjack client that can connect to the Blackjack server.
+ * BlackjackClient objects connect to the Blackjack server and coordinate between the model and view.
  *
  * @author Jordan Segalman
  */
 
 public class BlackjackClient {
-    private static final String DEFAULT_SERVER = "localhost";
-    private static final int DEFAULT_PORT = 44444;
-    private BlackjackClientModel model;
-    private BlackjackClientView view;
+    private static final String DEFAULT_SERVER_ADDRESS = "localhost";   // default server address
+    private static final int DEFAULT_SERVER_PORT = 44444;               // default server port
+    private BlackjackClientModel model;                                 // client GUI model
+    private BlackjackClientView view;                                   // client GUI view
 
-    private void playBlackjack() {
-        model = new BlackjackClientModel(DEFAULT_SERVER, DEFAULT_PORT);
-        view = new BlackjackClientView(model);
+    /**
+     * Sets up the client GUI and gets the first message from the server.
+     */
+
+    public void start() {
+        model = new BlackjackClientModel(DEFAULT_SERVER_ADDRESS, DEFAULT_SERVER_PORT);
+        view = new BlackjackClientView(this);
         getServerMessage();
     }
+
+    /**
+     * Gets a message from the server and calls the changeView method with the message.
+     */
 
     private void getServerMessage() {
         SwingWorker swingWorker = new SwingWorker<String, String>() {
@@ -40,9 +48,15 @@ public class BlackjackClient {
         swingWorker.execute();
     }
 
+    /**
+     * Changes the client view based on which message was received from the server.
+     *
+     * @param serverMessage Message received from server
+     */
+
     private void changeView (String serverMessage) {
-        String[] serverMessageParts = serverMessage.split("--");
-        switch (serverMessageParts[1]) {
+        String[] serverMessageComponents = serverMessage.split("--");   // array containing the components of the server message
+        switch (serverMessageComponents[1]) {
             case "WELCOME":
                 view.showWelcomePanel();
                 getServerMessage();
@@ -51,12 +65,12 @@ public class BlackjackClient {
                 view.setWelcomeWaiting(false);
                 view.setContinuePlayingWaiting(false);
                 view.showBetPanel();
-                view.setBetMoneyLabel(serverMessageParts[2]);
-                view.setMinimumBetLabel(serverMessageParts[3]);
+                view.setBetMoneyLabel(serverMessageComponents[2]);
+                view.setMinimumBetLabel(serverMessageComponents[3]);
                 getServerMessage();
                 break;
             case "BETRESPONSE":
-                switch (serverMessageParts[2]) {
+                switch (serverMessageComponents[2]) {
                     case "INVALID":
                         view.betError("Your bet must be a positive whole number.");
                         getServerMessage();
@@ -71,7 +85,7 @@ public class BlackjackClient {
                         break;
                     case "SUCCESS":
                         view.betSuccess();
-                        view.setBetMoneyLabel(serverMessageParts[3]);
+                        view.setBetMoneyLabel(serverMessageComponents[3]);
                         getServerMessage();
                         break;
                 }
@@ -79,11 +93,11 @@ public class BlackjackClient {
             case "NEWROUND":
                 view.setBetWaiting(false);
                 view.showTurnPanel();
-                view.setTurnMoneyLabel(serverMessageParts[2]);
+                view.setTurnMoneyLabel(serverMessageComponents[2]);
                 getServerMessage();
                 break;
             case "BLACKJACK":
-                switch (serverMessageParts[2]) {
+                switch (serverMessageComponents[2]) {
                     case "PLAYERANDDEALER":
                         view.setBlackjackLabel("You and the dealer both have Blackjack!");
                         getServerMessage();
@@ -103,7 +117,7 @@ public class BlackjackClient {
                 }
                 break;
             case "NEWDEALERCARD":
-                view.addDealerCard(model.getCardImageLabel(serverMessageParts[2]));
+                view.addDealerCard(model.getCardImageLabel(serverMessageComponents[2]));
                 getServerMessage();
                 break;
             case "GETINSURANCEBET":
@@ -111,20 +125,20 @@ public class BlackjackClient {
                 getServerMessage();
                 break;
             case "INSURANCEBETRESPONSE":
-                switch (serverMessageParts[2]) {
+                switch (serverMessageComponents[2]) {
                     case "ERROR":
                         view.insuranceBetError();
                         getServerMessage();
                         break;
                     case "PLACED":
                         view.insuranceBetSuccess();
-                        view.setMessageLabel("Insurance Bet: $" + serverMessageParts[3]);
-                        view.setTurnMoneyLabel(serverMessageParts[4]);
+                        view.setMessageLabel("Insurance Bet: $" + serverMessageComponents[3]);
+                        view.setTurnMoneyLabel(serverMessageComponents[4]);
                         getServerMessage();
                         break;
                     case "NOTPLACED":
                         view.insuranceBetSuccess();
-                        view.insuranceBetNotPlaced();
+                        view.removeInsuranceBetInfo();
                         getServerMessage();
                         break;
                 }
@@ -134,8 +148,8 @@ public class BlackjackClient {
                 getServerMessage();
                 break;
             case "INSURANCEBETWON":
-                view.setMessageLabel("You won $" + serverMessageParts[2] + " from your insurance bet.");
-                view.setTurnMoneyLabel(serverMessageParts[3]);
+                view.setMessageLabel("You won $" + serverMessageComponents[2] + " from your insurance bet.");
+                view.setTurnMoneyLabel(serverMessageComponents[3]);
                 getServerMessage();
                 break;
             case "INSURANCEBETLOST":
@@ -152,25 +166,25 @@ public class BlackjackClient {
                 getServerMessage();
                 break;
             case "NEWHAND":
-                model.addPlayerHandPanel(Integer.parseInt(serverMessageParts[2]), new BlackjackHandPanel(model));
-                view.addPlayerHandPanel(model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])), Integer.parseInt(serverMessageParts[2]));
+                model.addPlayerHandPanel(Integer.parseInt(serverMessageComponents[2]), new BlackjackHandPanel(this));
+                view.addPlayerHandPanel(model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[2])), Integer.parseInt(serverMessageComponents[2]));
                 getServerMessage();
                 break;
             case "REMOVEHAND":
-                view.removePlayerHandPanel(model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])));
-                model.removePlayerHandPanel(Integer.parseInt(serverMessageParts[2]));
+                view.removePlayerHandPanel(model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[2])));
+                model.removePlayerHandPanel(Integer.parseInt(serverMessageComponents[2]));
                 getServerMessage();
                 break;
             case "HANDBET":
-                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).setHandBet(serverMessageParts[3]);
+                model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[2])).setHandBet(serverMessageComponents[3]);
                 getServerMessage();
                 break;
             case "HANDVALUE":
-                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).setHandValueLabel(serverMessageParts[3]);
+                model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[2])).setHandValueLabel(serverMessageComponents[3]);
                 getServerMessage();
                 break;
             case "TURNBLACKJACK":
-                switch (serverMessageParts[2]) {
+                switch (serverMessageComponents[2]) {
                     case "PLAYERANDDEALER":
                         view.setBlackjackLabel("You and the dealer both have Blackjack!");
                         getServerMessage();
@@ -186,54 +200,54 @@ public class BlackjackClient {
                 }
                 break;
             case "NEWPLAYERCARD":
-                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).addCard(model.getCardImageLabel(serverMessageParts[3]));
+                model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[2])).addCard(model.getCardImageLabel(serverMessageComponents[3]));
                 getServerMessage();
                 break;
             case "TURNOPTION":
-                switch (serverMessageParts[2]) {
+                switch (serverMessageComponents[2]) {
                     case "BOTH":
-                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).enableSplitPairs();
-                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).enableDoubleDown();
-                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).enableHitStand();
+                        model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[3])).enableSplitPairs();
+                        model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[3])).enableDoubleDown();
+                        model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[3])).enableHitStand();
                         getServerMessage();
                         break;
                     case "SPLITPAIRS":
-                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).enableSplitPairs();
-                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).enableHitStand();
+                        model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[3])).enableSplitPairs();
+                        model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[3])).enableHitStand();
                         getServerMessage();
                         break;
                     case "DOUBLEDOWN":
-                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).enableDoubleDown();
-                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).enableHitStand();
+                        model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[3])).enableDoubleDown();
+                        model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[3])).enableHitStand();
                         getServerMessage();
                         break;
                     case "NEITHER":
-                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).enableHitStand();
+                        model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[3])).enableHitStand();
                         getServerMessage();
                         break;
                 }
                 break;
             case "TURNOPTIONERROR":
-                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).turnError();
+                model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[2])).turnError();
                 getServerMessage();
                 break;
             case "BUST":
-                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).bust();
+                model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[2])).bust();
                 getServerMessage();
                 break;
             case "SPLITPAIRSRESPONSE":
-                switch (serverMessageParts[2]) {
+                switch (serverMessageComponents[2]) {
                     case "SUCCESS":
-                        view.setTurnMoneyLabel(serverMessageParts[3]);
+                        view.setTurnMoneyLabel(serverMessageComponents[3]);
                         getServerMessage();
                         break;
                 }
                 break;
             case "DOUBLEDOWNRESPONSE":
-                switch (serverMessageParts[2]) {
+                switch (serverMessageComponents[2]) {
                     case "SUCCESS":
-                        model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[3])).doubleDownSuccess();
-                        view.setTurnMoneyLabel(serverMessageParts[4]);
+                        model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[3])).doubleDownSuccess();
+                        view.setTurnMoneyLabel(serverMessageComponents[4]);
                         getServerMessage();
                         break;
                 }
@@ -247,68 +261,68 @@ public class BlackjackClient {
                 getServerMessage();
                 break;
             case "DEALERHANDVALUE":
-                view.setDealerHandValueLabel(serverMessageParts[2]);
+                view.setDealerHandValueLabel(serverMessageComponents[2]);
                 getServerMessage();
                 break;
             case "REMOVEDOUBLEDOWNFACEDOWNCARD":
-                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[2])).removeDoubleDownFaceDownCard();
+                model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[2])).removeDoubleDownFaceDownCard();
                 getServerMessage();
                 break;
             case "ROUNDRESULT":
-                switch (serverMessageParts[2]) {
+                switch (serverMessageComponents[2]) {
                     case "BUST":
-                        switch (serverMessageParts[3]) {
+                        switch (serverMessageComponents[3]) {
                             case "TIE":
-                                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You and the dealer both busted. It's a tie!");
-                                view.setTurnMoneyLabel(serverMessageParts[5]);
+                                model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[4])).setHandMessageLabel("You and the dealer both busted. It's a tie!");
+                                view.setTurnMoneyLabel(serverMessageComponents[5]);
                                 getServerMessage();
                                 break;
                             case "DEALER":
-                                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You busted. The dealer wins!");
-                                view.setTurnMoneyLabel(serverMessageParts[5]);
+                                model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[4])).setHandMessageLabel("You busted. The dealer wins!");
+                                view.setTurnMoneyLabel(serverMessageComponents[5]);
                                 getServerMessage();
                                 break;
                             case "PLAYER":
-                                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("The dealer busted. You win!");
-                                view.setTurnMoneyLabel(serverMessageParts[5]);
+                                model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[4])).setHandMessageLabel("The dealer busted. You win!");
+                                view.setTurnMoneyLabel(serverMessageComponents[5]);
                                 getServerMessage();
                                 break;
                         }
                         break;
                     case "NORMAL":
-                        switch (serverMessageParts[3]) {
+                        switch (serverMessageComponents[3]) {
                             case "TIE":
-                                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("It's a tie!");
-                                view.setTurnMoneyLabel(serverMessageParts[5]);
+                                model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[4])).setHandMessageLabel("It's a tie!");
+                                view.setTurnMoneyLabel(serverMessageComponents[5]);
                                 getServerMessage();
                                 break;
                             case "DEALER":
-                                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("The dealer wins!");
-                                view.setTurnMoneyLabel(serverMessageParts[5]);
+                                model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[4])).setHandMessageLabel("The dealer wins!");
+                                view.setTurnMoneyLabel(serverMessageComponents[5]);
                                 getServerMessage();
                                 break;
                             case "PLAYER":
-                                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You win!");
-                                view.setTurnMoneyLabel(serverMessageParts[5]);
+                                model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[4])).setHandMessageLabel("You win!");
+                                view.setTurnMoneyLabel(serverMessageComponents[5]);
                                 getServerMessage();
                                 break;
                         }
                         break;
                     case "BLACKJACK":
-                        switch (serverMessageParts[3]) {
+                        switch (serverMessageComponents[3]) {
                             case "TIE":
-                                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You and the dealer both have Blackjack. It's a tie!");
-                                view.setTurnMoneyLabel(serverMessageParts[5]);
+                                model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[4])).setHandMessageLabel("You and the dealer both have Blackjack. It's a tie!");
+                                view.setTurnMoneyLabel(serverMessageComponents[5]);
                                 getServerMessage();
                                 break;
                             case "DEALER":
-                                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("The dealer has Blackjack. The dealer wins!");
-                                view.setTurnMoneyLabel(serverMessageParts[5]);
+                                model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[4])).setHandMessageLabel("The dealer has Blackjack. The dealer wins!");
+                                view.setTurnMoneyLabel(serverMessageComponents[5]);
                                 getServerMessage();
                                 break;
                             case "PLAYER":
-                                model.getPlayerHandPanel(Integer.parseInt(serverMessageParts[4])).setHandMessageLabel("You have Blackjack. You win!");
-                                view.setTurnMoneyLabel(serverMessageParts[5]);
+                                model.getPlayerHandPanel(Integer.parseInt(serverMessageComponents[4])).setHandMessageLabel("You have Blackjack. You win!");
+                                view.setTurnMoneyLabel(serverMessageComponents[5]);
                                 getServerMessage();
                                 break;
                         }
@@ -320,7 +334,7 @@ public class BlackjackClient {
                 getServerMessage();
                 break;
             case "CONTINUEPLAYINGRESPONSE":
-                switch (serverMessageParts[2]) {
+                switch (serverMessageComponents[2]) {
                     case "ERROR":
                         view.continuePlayingError();
                         getServerMessage();
@@ -335,12 +349,12 @@ public class BlackjackClient {
                 break;
             case "GAMEOVER":
                 view.showContinuePlayingPanel();
-                view.setContinuePlayingMoneyLabel(serverMessageParts[2]);
+                view.setContinuePlayingMoneyLabel(serverMessageComponents[2]);
                 view.gameOver();
                 getServerMessage();
                 break;
             case "WAITING":
-                switch (serverMessageParts[2]) {
+                switch (serverMessageComponents[2]) {
                     case "WELCOME":
                         view.setWelcomeWaiting(true);
                         view.setContinuePlayingWaiting(true);
@@ -367,6 +381,24 @@ public class BlackjackClient {
     }
 
     /**
+     * Calls the model sendClientMessage method with the given clientMessage.
+     *
+     * @param clientMessage Message to send to server
+     */
+
+    public void sendClientMessage(String clientMessage) {
+        model.sendClientMessage(clientMessage);
+    }
+
+    /**
+     * Calls the model quitGame method.
+     */
+
+    public void quitGame() {
+        model.quitGame();
+    }
+
+    /**
      * Main method of the client that creates objects and executes other methods.
      *
      * @param args String array of arguments passed to the client
@@ -374,6 +406,6 @@ public class BlackjackClient {
 
     public static void main(String[] args) {
         BlackjackClient controller = new BlackjackClient();
-        controller.playBlackjack();
+        controller.start();
     }
 }

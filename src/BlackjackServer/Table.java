@@ -10,19 +10,19 @@ import java.util.concurrent.CountDownLatch;
  */
 
 public class Table implements Runnable {
-    private static final int NUMBER_OF_DECKS = 6;
-    private static final int MINIMUM_NUMBER_OF_CARDS_BEFORE_SHUFFLE = 78;
-    private static final int MAXIMUM_SCORE = 21;
-    private static final int DEALER_HIT_THRESHOLD = 17;
-    private static final int MINIMUM_BET = 500;
-    private ArrayList<Player> table = new ArrayList<>();    // holds the players at the table
-    private Shoe shoe;                                      // shoe being used to deal cards
-    private BlackjackHand dealerHand = new BlackjackHand(); // dealer hand to hold cards
-    private boolean dealerHasBlackjack;                     // true if dealer has Blackjack, false if does not
-    private CountDownLatch placedBetsLatch;                 // latch to wait for all players to place their bets
-    private CountDownLatch placedInsuranceBetsLatch;        // latch to wait for all players to place their insurance bets
-    private CountDownLatch turnLatch;                       // latch to wait for all players to be ready for their turns
-    private CountDownLatch continuePlayingLatch;            // latch to wait for all players to determine if they will keep playing
+    private static final int NUMBER_OF_DECKS = 6;                           // number of decks in shoe
+    private static final int MINIMUM_NUMBER_OF_CARDS_BEFORE_SHUFFLE = 78;   // minimum number of cards remaining before shuffling the shoe
+    private static final int MAXIMUM_SCORE = 21;                            // maximum score before bust
+    private static final int DEALER_HIT_THRESHOLD = 17;                     // score that dealer stands on
+    private static final int MINIMUM_BET = 500;                             // minimum player bet
+    private ArrayList<Player> table = new ArrayList<>();                    // holds the players at the table
+    private Shoe shoe;                                                      // shoe being used to deal cards
+    private BlackjackHand dealerHand = new BlackjackHand();                 // dealer hand to hold cards
+    private boolean dealerHasBlackjack;                                     // true if dealer has Blackjack, false if does not
+    private CountDownLatch placedBetsLatch;                                 // latch to wait for all players to place their bets
+    private CountDownLatch placedInsuranceBetsLatch;                        // latch to wait for all players to place their insurance bets
+    private CountDownLatch turnLatch;                                       // latch to wait for all players to be ready for their turns
+    private CountDownLatch continuePlayingLatch;                            // latch to wait for all players to determine if they will keep playing
 
     /**
      * Table thread run method.

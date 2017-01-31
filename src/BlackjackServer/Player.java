@@ -15,29 +15,29 @@ import java.util.concurrent.CountDownLatch;
  */
 
 public class Player implements Runnable {
-    private static final int MAXIMUM_SCORE = 21;
-    private static final int MINIMUM_DOUBLE_DOWN_SOFT_VALUE = 9;
-    private static final int MAXIMUM_DOUBLE_DOWN_SOFT_VALUE = 11;
-    private static final int MINIMUM_DOUBLE_DOWN_VALUE = 19;
-    private static final int MAXIMUM_DOUBLE_DOWN_VALUE = 21;
-    private static final double BLACKJACK_PAYOUT_MULTIPLIER = 3.0 / 2.0;
-    private Table table;                                                // table to join
-    private BufferedReader in;                                          // in to client
-    private PrintWriter out;                                            // out from client
-    private ArrayList<BlackjackHand> playerHands = new ArrayList<>();   // holds player hands
-    private BlackjackHand originalPlayerHand;                           // player hand to hold cards
-    private double money = 2500;                                        // money available to bet
-    private boolean hasBlackjack = false;                               // true if player has Blackjack, false if does not
-    private String choice;                                              // choice player made
-    private boolean receivedChoice = false;                             // true if player made a choice, false if did not
-    private double insuranceBet;                                        // amount of insurance bet
-    private boolean placedInsuranceBet = false;                         // true if insurance bet made, false if not
-    private CountDownLatch startLatch;                                  // latch to wait for all players to join game
-    private CountDownLatch betLatch;                                    // latch to wait for all players to place their bets
-    private CountDownLatch insuranceBetLatch;                           // latch to wait for all players to place their insurance bets
-    private CountDownLatch dealLatch;                                   // latch to wait for all players to be dealt cards
-    private CountDownLatch dealerTurnLatch;                             // latch to wait for dealer to finish turn
-    private boolean continuePlaying = false;                            // true if player wants to keep playing, false if does not
+    private static final int MAXIMUM_SCORE = 21;                            // maximum score before bust
+    private static final int MINIMUM_DOUBLE_DOWN_SCORE = 9;                 // minimum score player can double down on
+    private static final int MAXIMUM_DOUBLE_DOWN_SCORE = 11;                // maximum score player can double down on
+    private static final int MINIMUM_DOUBLE_DOWN_SOFT_SCORE = 19;           // minimum soft score player can double down on
+    private static final int MAXIMUM_DOUBLE_DOWN_SOFT_SCORE = 21;           // maximum soft score player can double down on
+    private static final double BLACKJACK_PAYOUT_MULTIPLIER = 3.0 / 2.0;    // payout multiplier when player has Blackjack
+    private Table table;                                                    // table to join
+    private BufferedReader in;                                              // in to client
+    private PrintWriter out;                                                // out from client
+    private ArrayList<BlackjackHand> playerHands = new ArrayList<>();       // holds player hands
+    private BlackjackHand originalPlayerHand;                               // player hand to hold cards
+    private double money = 2500;                                            // money available to bet
+    private boolean hasBlackjack = false;                                   // true if player has Blackjack, false if does not
+    private String choice;                                                  // choice player made
+    private boolean receivedChoice = false;                                 // true if player made a choice, false if did not
+    private double insuranceBet;                                            // amount of insurance bet
+    private boolean placedInsuranceBet = false;                             // true if insurance bet made, false if not
+    private CountDownLatch startLatch;                                      // latch to wait for all players to join game
+    private CountDownLatch betLatch;                                        // latch to wait for all players to place their bets
+    private CountDownLatch insuranceBetLatch;                               // latch to wait for all players to place their insurance bets
+    private CountDownLatch dealLatch;                                       // latch to wait for all players to be dealt cards
+    private CountDownLatch dealerTurnLatch;                                 // latch to wait for dealer to finish turn
+    private boolean continuePlaying = false;                                // true if player wants to keep playing, false if does not
 
     /**
      * Constructor for player object.
@@ -266,11 +266,11 @@ public class Player implements Runnable {
                 out.println("SERVERMESSAGE--TURNBLACKJACK--DEALER");
             }
         }
-        if (!hasBlackjack && !table.dealerHasBlackjack() && hand.getCard(0).rank() == hand.getCard(1).rank() && ((hand.blackjackValue() >= MINIMUM_DOUBLE_DOWN_SOFT_VALUE && hand.blackjackValue() <= MAXIMUM_DOUBLE_DOWN_SOFT_VALUE) || (hand.isSoft() && hand.blackjackValue() >= MINIMUM_DOUBLE_DOWN_VALUE && hand.blackjackValue() <= MAXIMUM_DOUBLE_DOWN_VALUE)) && money >= hand.bet()) {
+        if (!hasBlackjack && !table.dealerHasBlackjack() && hand.getCard(0).rank() == hand.getCard(1).rank() && ((hand.blackjackValue() >= MINIMUM_DOUBLE_DOWN_SCORE && hand.blackjackValue() <= MAXIMUM_DOUBLE_DOWN_SCORE) || (hand.isSoft() && hand.blackjackValue() >= MINIMUM_DOUBLE_DOWN_SOFT_SCORE && hand.blackjackValue() <= MAXIMUM_DOUBLE_DOWN_SOFT_SCORE)) && money >= hand.bet()) {
             bothOptions(hand);
         } else if (!hasBlackjack && !table.dealerHasBlackjack() && !hand.doubleDown() && hand.getCard(0).rank() == hand.getCard(1).rank() && money >= hand.bet()) {
             splitPairsOption(hand);
-        } else if (!hasBlackjack && !table.dealerHasBlackjack() && !hand.splitPairs() && ((hand.blackjackValue() >= MINIMUM_DOUBLE_DOWN_SOFT_VALUE && hand.blackjackValue() <= MAXIMUM_DOUBLE_DOWN_SOFT_VALUE) || (hand.isSoft() && hand.blackjackValue() >= MINIMUM_DOUBLE_DOWN_VALUE && hand.blackjackValue() <= MAXIMUM_DOUBLE_DOWN_VALUE)) && money >= hand.bet()) {
+        } else if (!hasBlackjack && !table.dealerHasBlackjack() && !hand.splitPairs() && ((hand.blackjackValue() >= MINIMUM_DOUBLE_DOWN_SCORE && hand.blackjackValue() <= MAXIMUM_DOUBLE_DOWN_SCORE) || (hand.isSoft() && hand.blackjackValue() >= MINIMUM_DOUBLE_DOWN_SOFT_SCORE && hand.blackjackValue() <= MAXIMUM_DOUBLE_DOWN_SOFT_SCORE)) && money >= hand.bet()) {
             doubleDownOption(hand);
         } else if (!hasBlackjack && !table.dealerHasBlackjack() && !hand.splitPairs() && !hand.doubleDown()) {
             neitherOption(hand);
@@ -292,6 +292,12 @@ public class Player implements Runnable {
         }
     }
 
+    /**
+     * Sends turn options split pairs, double down, hit, or stand for given hand.
+     *
+     * @param hand Hand to send turn options for
+     */
+
     private void bothOptions(BlackjackHand hand) {
         receivedChoice = false;
         do {
@@ -304,6 +310,12 @@ public class Player implements Runnable {
             }
         } while (!receivedChoice);
     }
+
+    /**
+     * Sends turn options split pairs, hit, or stand for given hand.
+     *
+     * @param hand Hand to send turn options for
+     */
 
     private void splitPairsOption(BlackjackHand hand) {
         receivedChoice = false;
@@ -318,6 +330,12 @@ public class Player implements Runnable {
         } while (!receivedChoice);
     }
 
+    /**
+     * Sends turn options double down, hit, or stand for given hand.
+     *
+     * @param hand Hand to send turn options for
+     */
+
     private void doubleDownOption(BlackjackHand hand) {
         receivedChoice = false;
         do {
@@ -330,6 +348,12 @@ public class Player implements Runnable {
             }
         } while (!receivedChoice);
     }
+
+    /**
+     * Sends turn options hit or stand for given hand.
+     *
+     * @param hand Hand to send turn options for
+     */
 
     private void neitherOption(BlackjackHand hand) {
         receivedChoice = false;

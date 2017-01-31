@@ -8,7 +8,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 /**
- * BlackjackClientView objects represent a Blackjack client GUI.
+ * BlackjackClientView objects create the GUI for a Blackjack player.
  *
  * @author Jordan Segalman
  */
@@ -23,32 +23,80 @@ public class BlackjackClientView extends JFrame implements ActionListener {
     private static final Color TEXT_COLOR = new Color(230, 230, 230);
     private static final Float WELCOME_LABEL_SIZE = 24.0f;
     private static final Float HANDS_LABEL_SIZE = 18.0f;
-    private BlackjackClientModel model;
+    private BlackjackClient controller; // client GUI controller
+
+    // welcome panel components
+    private JLabel welcomeWaitingLabel;
+
+    // bet panel components
+    private JLabel minimumBetLabel;
+    private JTextField betField;
+    private JButton betButton;
+    private JLabel betMoneyLabel;
+    private JLabel betMessageLabel;
+    private JLabel betWaitingLabel;
+
+    // turn panel components
+    private JPanel dealerHandPanel;
+    private JLabel dealerHandValueLabel;
+    private JPanel playerHandsPanel;
+    private JLabel messageLabel;
+    private JButton yesButton;
+    private JButton noButton;
+    private JLabel blackjackLabel;
+    private JLabel turnMoneyLabel;
+    private JLabel insuranceBetWaitingLabel;
+    private JLabel turnWaitingLabel;
+
+    // continue playing panel components
+    private JLabel continuePlayingMessageLabel;
+    private JLabel continuePlayingMoneyLabel;
+    private JLabel continuePlayingWaitingLabel;
+
+    /**
+     * Names of panels in GUI.
+     */
 
     private enum PanelNames {
         WELCOMEPANEL, BETPANEL, TURNPANEL, CONTINUEPLAYINGPANEL
     }
 
-    public BlackjackClientView(BlackjackClientModel model) {
-        this.model = model;
-        setupWindowListener(this.model);
+    /**
+     * Constructor for BlackjackClientView object.
+     *
+     * @param controller Client GUI controller
+     */
+
+    public BlackjackClientView(BlackjackClient controller) {
+        this.controller = controller;
+        setupWindowListener(this.controller);
         setupFrame();
-        setupPanels();
+        createPanels();
         setupActionListeners();
     }
 
-    private void setupWindowListener(BlackjackClientModel model) {
+    /**
+     * Sets up the window listener.
+     *
+     * @param controller Client GUI controller
+     */
+
+    private void setupWindowListener(BlackjackClient controller) {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 int response = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?", null, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if (response == JOptionPane.YES_OPTION) {
-                    model.quitGame();
+                    controller.quitGame();
                     System.exit(0);
                 }
             }
         });
     }
+
+    /**
+     * Sets up the frame.
+     */
 
     private void setupFrame() {
         setTitle("Blackjack");
@@ -60,12 +108,20 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         showChanges();
     }
 
-    private void setupPanels() {
+    /**
+     * Creates all of the panels.
+     */
+
+    private void createPanels() {
         createWelcomePanel();
         createBetPanel();
         createTurnPanel();
         createContinuePlayingPanel();
     }
+
+    /**
+     * Sets up the action listeners.
+     */
 
     private void setupActionListeners() {
         betField.addActionListener(this);
@@ -74,13 +130,19 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         noButton.addActionListener(this);
     }
 
+    /**
+     * Shows changes made to GUI.
+     */
+
     private void showChanges() {
         revalidate();
         repaint();
         setVisible(true);
     }
 
-    private JLabel welcomeWaitingLabel;
+    /**
+     * Creates the welcome panel.
+     */
 
     private void createWelcomePanel() {
         JPanel welcomePanel = new JPanel(new GridBagLayout());
@@ -100,17 +162,20 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         add(welcomePanel, PanelNames.WELCOMEPANEL.toString());
     }
 
+    /**
+     * Shows the welcome waiting label.
+     *
+     * @param b If true, shows the waiting label; otherwise, hides the waiting label
+     */
+
     public void setWelcomeWaiting(Boolean b) {
         welcomeWaitingLabel.setVisible(b);
         showChanges();
     }
 
-    private JLabel minimumBetLabel;
-    private JTextField betField;
-    private JButton betButton;
-    private JLabel betMoneyLabel;
-    private JLabel betMessageLabel;
-    private JLabel betWaitingLabel;
+    /**
+     * Creates the bet panel.
+     */
 
     private void createBetPanel() {
         JPanel betPanel = new JPanel(new GridBagLayout());
@@ -144,10 +209,22 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         add(betPanel, PanelNames.BETPANEL.toString());
     }
 
+    /**
+     * Sets the minimum bet label to the given minimum bet.
+     *
+     * @param minimumBet Minimum bet to set label to
+     */
+
     public void setMinimumBetLabel(String minimumBet) {
         minimumBetLabel.setText("The minimum bet is $" + minimumBet + ". How much would you like to bet?");
         showChanges();
     }
+
+    /**
+     * Sets the bet message label to the given error message.
+     *
+     * @param errorMessage Error message to set label to
+     */
 
     public void betError(String errorMessage) {
         betMessageLabel.setText(errorMessage);
@@ -156,31 +233,40 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         showChanges();
     }
 
+    /**
+     * Removes the text from the bet message label.
+     */
+
     public void betSuccess() {
         betMessageLabel.setText("");
         showChanges();
     }
+
+    /**
+     * Sets the bet money label to the given amount of money.
+     *
+     * @param money Amount of money to set label to
+     */
 
     public void setBetMoneyLabel(String money) {
         betMoneyLabel.setText("Money: $" + money);
         showChanges();
     }
 
+    /**
+     * Shows the bet waiting label.
+     *
+     * @param b If true, shows the waiting label; otherwise, hides the waiting label
+     */
+
     public void setBetWaiting(Boolean b) {
         betWaitingLabel.setVisible(b);
         showChanges();
     }
 
-    private JPanel dealerHandPanel;
-    private JLabel dealerHandValueLabel;
-    private JPanel playerHandsPanel;
-    private JLabel messageLabel;
-    private JButton yesButton;
-    private JButton noButton;
-    private JLabel blackjackLabel;
-    private JLabel turnMoneyLabel;
-    private JLabel insuranceBetWaitingLabel;
-    private JLabel turnWaitingLabel;
+    /**
+     * Creates the turn panel.
+     */
 
     private void createTurnPanel() {
         JPanel turnPanel = new JPanel(new GridBagLayout());
@@ -256,40 +342,85 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         add(turnPanel, PanelNames.TURNPANEL.toString());
     }
 
-    public void addDealerCard(JLabel card) {
-        dealerHandPanel.add(card);
+    /**
+     * Adds a given JLabel containing the image of a card to the dealer hand panel.
+     *
+     * @param cardLabel JLabel containing image of card
+     */
+
+    public void addDealerCard(JLabel cardLabel) {
+        dealerHandPanel.add(cardLabel);
         showChanges();
     }
+
+    /**
+     * Removes the dealer's face-down card.
+     */
 
     public void removeDealerFaceDownCard() {
         dealerHandPanel.remove(dealerHandPanel.getComponent(1));
         showChanges();
     }
 
+    /**
+     * Sets the dealer hand value label to the given hand value.
+     *
+     * @param dealerHandValue Hand value to set label to
+     */
+
     public void setDealerHandValueLabel(String dealerHandValue) {
         dealerHandValueLabel.setText("Dealer Hand Value: " + dealerHandValue);
         showChanges();
     }
+
+    /**
+     * Adds the given BlackjackHandPanel to the playerHandsPanel at the given index.
+     *
+     * @param playerHandPanel BlackjackHandPanel to add to playerHandsPanel
+     * @param index Index to add BlackjackHandPanel at
+     */
 
     public void addPlayerHandPanel(BlackjackHandPanel playerHandPanel, int index) {
         playerHandsPanel.add(playerHandPanel, index);
         showChanges();
     }
 
+    /**
+     * Removes the given BlackjackHandPanel from the playerHandsPanel.
+     *
+     * @param playerHandPanel BlackjackHandPanel to remove from playerHandsPanel
+     */
+
     public void removePlayerHandPanel(BlackjackHandPanel playerHandPanel) {
         playerHandsPanel.remove(playerHandPanel);
         showChanges();
     }
+
+    /**
+     * Sets the turn money label to the given amount of money.
+     *
+     * @param money Amount of money to set label to
+     */
 
     public void setTurnMoneyLabel(String money) {
         turnMoneyLabel.setText("Money: $" + money);
         showChanges();
     }
 
+    /**
+     * Sets the message label to the given message.
+     *
+     * @param message Message to set label to
+     */
+
     public void setMessageLabel(String message) {
         messageLabel.setText(message);
         showChanges();
     }
+
+    /**
+     * Sets the message label to the insurance bet message and enables the yes and no buttons.
+     */
 
     public void enableInsuranceBet() {
         setMessageLabel("Would you like to place an insurance bet?");
@@ -298,6 +429,10 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         showChanges();
     }
 
+    /**
+     * Sets the message label to the error message and enables the yes and no buttons.
+     */
+
     public void insuranceBetError() {
         setMessageLabel("ERROR");
         enableYesButton(true);
@@ -305,21 +440,28 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         showChanges();
     }
 
+    /**
+     * Disables the yes and no buttons after either placing or not placing insurance bet.
+     */
+
     public void insuranceBetSuccess() {
         enableYesButton(false);
         enableNoButton(false);
         showChanges();
     }
 
-    public void insuranceBetNotPlaced() {
-        messageLabel.setText("");
-        showChanges();
-    }
+    /**
+     * Removes the text from the message label.
+     */
 
     public void removeInsuranceBetInfo() {
         messageLabel.setText("");
         showChanges();
     }
+
+    /**
+     * Sets the message label to the continue playing message and enables the yes and no buttons.
+     */
 
     public void enableContinuePlaying() {
         setMessageLabel("Would you like to keep playing?");
@@ -328,6 +470,10 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         showChanges();
     }
 
+    /**
+     * Sets the message label to the error message and enables the yes and no buttons.
+     */
+
     public void continuePlayingError() {
         setMessageLabel("ERROR");
         enableYesButton(true);
@@ -335,24 +481,42 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         showChanges();
     }
 
-    public void setBlackjackLabel(String blackjack) {
-        blackjackLabel.setText(blackjack);
+    /**
+     * Sets the Blackjack label to the given message.
+     *
+     * @param blackjackMessage Message to set label to
+     */
+
+    public void setBlackjackLabel(String blackjackMessage) {
+        blackjackLabel.setText(blackjackMessage);
         showChanges();
     }
+
+    /**
+     * Shows the insurance bet waiting label.
+     *
+     * @param b If true, shows the waiting label; otherwise, hides the waiting label
+     */
 
     public void setInsuranceBetWaiting(Boolean b) {
         insuranceBetWaitingLabel.setVisible(b);
         showChanges();
     }
 
+    /**
+     * Shows the turn waiting label.
+     *
+     * @param b If true, shows the waiting label; otherwise, hides the waiting label
+     */
+
     public void setTurnWaiting(Boolean b) {
         turnWaitingLabel.setVisible(b);
         showChanges();
     }
 
-    private JLabel continuePlayingMessageLabel;
-    private JLabel continuePlayingMoneyLabel;
-    private JLabel continuePlayingWaitingLabel;
+    /**
+     * Creates the continue playing panel.
+     */
 
     private void createContinuePlayingPanel() {
         JPanel continuePlayingPanel = new JPanel(new GridBagLayout());
@@ -379,25 +543,53 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         add(continuePlayingPanel, PanelNames.CONTINUEPLAYINGPANEL.toString());
     }
 
+    /**
+     * Sets the continue playing money label to the given amount of money.
+     *
+     * @param money Amount of money to set label to
+     */
+
     public void setContinuePlayingMoneyLabel(String money) {
         continuePlayingMoneyLabel.setText("Money: $" + money);
         showChanges();
     }
 
-    public void setContinuePlayingMessageLabel(String message) {
-        continuePlayingMessageLabel.setText(message);
+    /**
+     * Sets the continue playing message label to the game over message.
+     */
+
+    public void gameOver() {
+        continuePlayingMessageLabel.setText("Thanks for playing!");
         showChanges();
     }
 
-    public void gameOver() {
-        setContinuePlayingMessageLabel("Thanks for playing!");
-        showChanges();
-    }
+    /**
+     * Shows the continue playing waiting label.
+     *
+     * @param b If true, shows the waiting label; otherwise, hides the waiting label
+     */
 
     public void setContinuePlayingWaiting(Boolean b) {
         continuePlayingWaitingLabel.setVisible(b);
         showChanges();
     }
+
+    /**
+     * Enables or disables the bet field.
+     *
+     * @param b If true, enables and shows the bet field; otherwise, disables and hides the bet field
+     */
+
+    private void enableBetField(Boolean b) {
+        betField.setEnabled(b);
+        showChanges();
+    }
+
+    /**
+     * Enables and shows or disables and hides the bet button.
+     *
+     * @param b If true, enables and shows the bet button; otherwise, disables and hides the bet button
+     */
 
     private void enableBetButton(Boolean b) {
         betButton.setEnabled(b);
@@ -405,10 +597,11 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         showChanges();
     }
 
-    private void enableBetField(Boolean b) {
-        betField.setEnabled(b);
-        showChanges();
-    }
+    /**
+     * Enables and shows or disables and hides the yes button.
+     *
+     * @param b If true, enables and shows the yes button; otherwise, disables and hides the yes button
+     */
 
     private void enableYesButton(Boolean b) {
         yesButton.setEnabled(b);
@@ -416,58 +609,91 @@ public class BlackjackClientView extends JFrame implements ActionListener {
         showChanges();
     }
 
+    /**
+     * Enables and shows or disables and hides the no button.
+     *
+     * @param b If true, enables and shows the no button; otherwise, disables and hides the no button
+     */
+
     private void enableNoButton(Boolean b) {
         noButton.setEnabled(b);
         noButton.setVisible(b);
         showChanges();
     }
 
-    private void showPanel(PanelNames panel) {
+    /**
+     * Shows the panel with the given name.
+     *
+     * @param panelName Name of panel to show
+     */
+
+    private void showPanel(PanelNames panelName) {
         CardLayout cardLayout = (CardLayout) getContentPane().getLayout();
-        cardLayout.show(getContentPane(), panel.toString());
+        cardLayout.show(getContentPane(), panelName.toString());
         showChanges();
     }
+
+    /**
+     * Shows the welcome panel.
+     */
 
     public void showWelcomePanel() {
         showPanel(PanelNames.WELCOMEPANEL);
     }
 
+    /**
+     * Shows the bet panel.
+     */
+
     public void showBetPanel() {
         showPanel(PanelNames.BETPANEL);
     }
+
+    /**
+     * Shows the turn panel.
+     */
 
     public void showTurnPanel() {
         showPanel(PanelNames.TURNPANEL);
     }
 
+    /**
+     * Shows the continue playing panel.
+     */
+
     public void showContinuePlayingPanel() {
         showPanel(PanelNames.CONTINUEPLAYINGPANEL);
     }
 
+    /**
+     * Resets the view.
+     */
+
     public void reset() {
-        setupPanels();
+        createPanels();
         setupActionListeners();
         showContinuePlayingPanel();
     }
 
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-        Object target = actionEvent.getSource();
+    /**
+     * Invoked when an action occurs.
+     *
+     * @param e Event generated by component action
+     */
 
-        if (target == betField) {
-            model.sendClientMessage(betField.getText());
-            enableBetButton(false);
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object target = e.getSource();
+        if (target == betField || target == betButton) {
+            controller.sendClientMessage(betField.getText());
             enableBetField(false);
-        } else if (target == betButton) {
-            model.sendClientMessage(betField.getText());
             enableBetButton(false);
-            enableBetField(false);
         } else if (target == yesButton) {
-            model.sendClientMessage(yesButton.getText());
+            controller.sendClientMessage(yesButton.getText());
             enableYesButton(false);
             enableNoButton(false);
         } else if (target == noButton) {
-            model.sendClientMessage(noButton.getText());
+            controller.sendClientMessage(noButton.getText());
             enableYesButton(false);
             enableNoButton(false);
         }

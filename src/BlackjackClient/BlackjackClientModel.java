@@ -7,20 +7,20 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 /**
- * BlackjackClientModel objects represent a Blackjack client model that holds client information.
+ * BlackjackClientModel objects hold client information.
  *
  * @author Jordan Segalman
  */
 
 public class BlackjackClientModel {
-    private static final int MESSAGE_WAIT_TIME = 500;
-    private Socket socket;          // socket on server address and port
-    private BufferedReader in;      // in to server
-    private PrintWriter out;        // out from server
-    private ArrayList<BlackjackHandPanel> playerHandPanels = new ArrayList<>();
+    private static final int MESSAGE_WAIT_TIME = 500;                           // time to wait between server messages
+    private Socket socket;                                                      // socket on server address and port
+    private BufferedReader in;                                                  // in to server
+    private PrintWriter out;                                                    // out from server
+    private ArrayList<BlackjackHandPanel> playerHandPanels = new ArrayList<>(); // holds player hand panels
 
     /**
-     * Constructor for Blackjack client model object.
+     * Constructor for BlackjackClientModel object.
      *
      * @param serverAddress Server address
      * @param serverPort Server port
@@ -70,20 +70,47 @@ public class BlackjackClientModel {
         out.println(clientMessage);
     }
 
+    /**
+     * Adds a BlackjackHandPanel to playerHandPanels at the given index.
+     *
+     * @param index Index to add BlackjackHandPanel at
+     * @param playerHandPanel BlackjackHandPanel to add to playerHandPanels
+     */
+
     public void addPlayerHandPanel(int index, BlackjackHandPanel playerHandPanel) {
         playerHandPanels.add(index, playerHandPanel);
     }
+
+    /**
+     * Returns the BlackjackHandPanel in playerHandPanels at the given index.
+     *
+     * @param index Index of BlackjackHandPanel
+     * @return the BlackjackHandPanel at the given index
+     */
 
     public BlackjackHandPanel getPlayerHandPanel(int index) {
         return playerHandPanels.get(index);
     }
 
+    /**
+     * Removes the BlackjackHandPanel in playerHandPanels at the given index.
+     *
+     * @param index Index of BlackjackHandPanel to remove
+     */
+
     public void removePlayerHandPanel(int index) {
         playerHandPanels.remove(index);
     }
 
+    /**
+     * Returns a JLabel containing an image of the card with the given name.
+     *
+     * @param cardName Name of card to add to JLabel
+     * @return the JLabel containing an image of the card
+     */
+
     public JLabel getCardImageLabel(String cardName) {
-        JLabel cardLabel = null;
+        JLabel cardLabel = null;    // label containing image of card
         try {
             cardLabel = new JLabel(new ImageIcon(ImageIO.read(new File("CardImages/" + cardName + ".png"))));
         } catch (IOException e) {
@@ -91,6 +118,10 @@ public class BlackjackClientModel {
         }
         return cardLabel;
     }
+
+    /**
+     * Resets the model.
+     */
 
     public void reset() {
         playerHandPanels.clear();
