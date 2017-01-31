@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * Player objects represent a player in the Blackjack game.
+ * Player objects represent a player in Blackjack.
  *
  * @author Jordan Segalman
  */

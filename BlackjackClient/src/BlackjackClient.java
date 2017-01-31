@@ -2,7 +2,7 @@ import javax.swing.SwingWorker;
 import java.util.concurrent.ExecutionException;
 
 /**
- * BlackjackClient objects connect to the Blackjack server and coordinate between the model and view.
+ * BlackjackClient objects connect to the Blackjack server and coordinate between the client model and view.
  *
  * @author Jordan Segalman
  */

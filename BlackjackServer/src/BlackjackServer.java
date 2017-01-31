@@ -3,7 +3,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * BlackjackServer objects represent a Blackjack server that Blackjack clients can connect to.
+ * BlackjackServer objects allow clients to connect to play Blackjack as a new player.
  *
  * @author Jordan Segalman
  */

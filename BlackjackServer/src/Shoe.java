@@ -1,6 +1,12 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * Shoe objects represent a shoe that holds decks of cards.
+ *
+ * @author Jordan Segalman
+ */
+
 public class Shoe {
     private ArrayList<Card> shoe = new ArrayList<>();   // holds the cards in the shoe
 
