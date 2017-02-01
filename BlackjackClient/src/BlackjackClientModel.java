@@ -27,6 +27,11 @@ public class BlackjackClientModel {
     public BlackjackClientModel(String serverAddress, int serverPort) {
         try {
             socket = new Socket(serverAddress, serverPort);
+        } catch (IOException e) {
+            System.err.println("No Blackjack server running on port " + serverPort + " at address " + serverAddress);
+            System.exit(1);
+        }
+        try {
             InputStreamReader isr = new InputStreamReader(socket.getInputStream());    // input stream reader from socket
             in = new BufferedReader(isr);
             out = new PrintWriter(socket.getOutputStream(), true);

@@ -18,7 +18,7 @@ public class Card {
         private int value;  // value of the rank
 
         /**
-         * Constructor for rank object.
+         * Constructor for Rank object.
          *
          * @param value Value of the rank
          */
@@ -59,7 +59,7 @@ public class Card {
     }
 
     /**
-     * Constructor for card object.
+     * Constructor for Card object.
      *
      * @param rank Rank of the card
      * @param suit Suit of the card

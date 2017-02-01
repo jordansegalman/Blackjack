@@ -10,15 +10,30 @@ import java.util.concurrent.ExecutionException;
 public class BlackjackClient {
     private static final String DEFAULT_SERVER_ADDRESS = "localhost";   // default server address
     private static final int DEFAULT_SERVER_PORT = 44444;               // default server port
+    private String serverAddress;                                       // server address
+    private int serverPort;                                             // server port
     private BlackjackClientModel model;                                 // client GUI model
     private BlackjackClientView view;                                   // client GUI view
+
+    /**
+     * Constructor for BlackjackClient object.
+     *
+     * @param serverAddress Server address
+     * @param serverPort Server port
+     */
+
+    public BlackjackClient(String serverAddress, int serverPort) {
+        this.serverAddress = serverAddress;
+        this.serverPort = serverPort;
+    }
 
     /**
      * Sets up the client GUI and gets the first message from the server.
      */
 
     public void start() {
-        model = new BlackjackClientModel(DEFAULT_SERVER_ADDRESS, DEFAULT_SERVER_PORT);
+        System.out.println("Starting Blackjack client\nServer address: " + serverAddress + "\nServer port: " + serverPort);
+        model = new BlackjackClientModel(serverAddress, serverPort);
         view = new BlackjackClientView(this);
         getServerMessage();
     }
@@ -403,7 +418,36 @@ public class BlackjackClient {
      */
 
     public static void main(String[] args) {
-        BlackjackClient controller = new BlackjackClient();
+        String serverAddress = DEFAULT_SERVER_ADDRESS;
+        int serverPort = DEFAULT_SERVER_PORT;
+        for (int i = 0; i < args.length; i += 2) {
+            String option = args[i];
+            String argument = null;
+            try {
+                argument = args[i + 1];
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.err.println("Options: [-a serverAddress] [-p serverPort]");
+                System.exit(1);
+            }
+            switch (option) {
+                case "-a":
+                    serverAddress = argument;
+                    break;
+                case "-p":
+                    try {
+                        serverPort = Integer.parseInt(argument);
+                    } catch (NumberFormatException e) {
+                        System.err.println("Server port must be an integer");
+                        System.exit(1);
+                    }
+                    break;
+                default:
+                    System.err.println("Options: [-a serverAddress] [-p serverPort]");
+                    System.exit(1);
+                    break;
+            }
+        }
+        BlackjackClient controller = new BlackjackClient(serverAddress, serverPort);
         controller.start();
     }
 }

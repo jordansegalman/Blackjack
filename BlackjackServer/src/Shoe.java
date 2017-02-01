@@ -11,7 +11,7 @@ public class Shoe {
     private ArrayList<Card> shoe = new ArrayList<>();   // holds the cards in the shoe
 
     /**
-     * Constructor for shoe object.
+     * Constructor for Shoe object.
      *
      * @param numDecks Number of decks in the shoe
      */

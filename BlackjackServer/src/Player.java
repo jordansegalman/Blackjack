@@ -24,7 +24,7 @@ public class Player implements Runnable {
     private PrintWriter out;                                                // out from client
     private ArrayList<BlackjackHand> playerHands = new ArrayList<>();       // holds player hands
     private BlackjackHand originalPlayerHand;                               // player hand to hold cards
-    private double money = 2500;                                            // money available to bet
+    private double money;                                                   // money available to bet
     private boolean hasBlackjack = false;                                   // true if player has Blackjack, false if does not
     private String choice;                                                  // choice player made
     private boolean receivedChoice = false;                                 // true if player made a choice, false if did not
@@ -38,14 +38,15 @@ public class Player implements Runnable {
     private boolean continuePlaying = false;                                // true if player wants to keep playing, false if does not
 
     /**
-     * Constructor for player object.
+     * Constructor for Player object.
      *
      * @param socket Socket from server socket
      * @param table Table the player joined
      */
 
-    public Player(Socket socket, Table table) {
+    public Player(Socket socket, Table table, int money) {
         this.table = table;
+        this.money = money;
         try {
             InputStreamReader isr = new InputStreamReader(socket.getInputStream());     // input stream reader from socket
             in = new BufferedReader(isr);

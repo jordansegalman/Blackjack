@@ -8,12 +8,12 @@ import java.util.concurrent.CountDownLatch;
  */
 
 public class Table implements Runnable {
-    private static final int NUMBER_OF_DECKS = 6;                           // number of decks in shoe
-    private static final int MINIMUM_NUMBER_OF_CARDS_BEFORE_SHUFFLE = 78;   // minimum number of cards remaining before shuffling the shoe
     private static final int MAXIMUM_SCORE = 21;                            // maximum score before bust
     private static final int DEALER_HIT_THRESHOLD = 17;                     // score that dealer stands on
-    private static final int MINIMUM_BET = 500;                             // minimum player bet
     private ArrayList<Player> table = new ArrayList<>();                    // holds the players at the table
+    private int minimumBet;                                                 // minimum player bet
+    private int numberOfDecks;                                              // number of decks in shoe
+    private int minimumCardsBeforeShuffle;                                  // minimum number of cards remaining before shuffling the shoe
     private Shoe shoe;                                                      // shoe being used to deal cards
     private BlackjackHand dealerHand = new BlackjackHand();                 // dealer hand to hold cards
     private boolean dealerHasBlackjack;                                     // true if dealer has Blackjack, false if does not
@@ -23,12 +23,24 @@ public class Table implements Runnable {
     private CountDownLatch continuePlayingLatch;                            // latch to wait for all players to determine if they will keep playing
 
     /**
+     * Constructor for Table object.
+     *
+     * @param minimumBet Minimum player bet
+     */
+
+    public Table(int minimumBet, int numberOfDecks, int minimumCardsBeforeShuffle) {
+        this.minimumBet = minimumBet;
+        this.numberOfDecks = numberOfDecks;
+        this.minimumCardsBeforeShuffle = minimumCardsBeforeShuffle;
+    }
+
+    /**
      * Table thread run method.
      */
 
     @Override
     public void run() {
-        shoe = new Shoe(NUMBER_OF_DECKS);
+        shoe = new Shoe(numberOfDecks);
         shoe.shuffle();
         do {
             playBlackjack();
@@ -88,8 +100,8 @@ public class Table implements Runnable {
      */
 
     private void setup() {
-        if (shoe.remainingCards() < MINIMUM_NUMBER_OF_CARDS_BEFORE_SHUFFLE) {
-            shoe = new Shoe(NUMBER_OF_DECKS);
+        if (shoe.remainingCards() <= minimumCardsBeforeShuffle) {
+            shoe = new Shoe(numberOfDecks);
             shoe.shuffle();
         }
         dealerHand.clear();
@@ -106,9 +118,9 @@ public class Table implements Runnable {
 
     private void dealInitialCards() {
         for (int i = 0; i < 2; i++) {
-            dealerHand.addCard(shoe.dealCard());
+            dealerHand.addCard(dealCard());
             for (Player player : table) {
-                player.originalPlayerHand().addCard(shoe.dealCard());
+                player.originalPlayerHand().addCard(dealCard());
             }
         }
         if (dealerHand.blackjackValue() == MAXIMUM_SCORE) {
@@ -122,7 +134,7 @@ public class Table implements Runnable {
 
     private void dealerTurn() {
         while ((dealerHand.isSoft() && dealerHand.blackjackValue() == DEALER_HIT_THRESHOLD) || dealerHand.blackjackValue() < DEALER_HIT_THRESHOLD) {
-            dealerHand.addCard(shoe.dealCard());
+            dealerHand.addCard(dealCard());
         }
     }
 
@@ -163,7 +175,7 @@ public class Table implements Runnable {
      */
 
     public double minimumBet() {
-        return MINIMUM_BET;
+        return minimumBet;
     }
 
     /**
@@ -203,6 +215,10 @@ public class Table implements Runnable {
      */
 
     public Card dealCard() {
+        if (shoe.remainingCards() == 0) {
+            shoe = new Shoe(numberOfDecks);
+            shoe.shuffle();
+        }
         return shoe.dealCard();
     }
 
