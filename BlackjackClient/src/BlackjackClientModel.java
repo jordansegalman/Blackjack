@@ -115,7 +115,7 @@ public class BlackjackClientModel {
     public JLabel getCardImageLabel(String cardName) {
         JLabel cardLabel = null;    // label containing image of card
         try {
-            cardLabel = new JLabel(new ImageIcon(ImageIO.read(new File("BlackjackClient/CardImages/" + cardName + ".png"))));
+            cardLabel = new JLabel(new ImageIcon(ImageIO.read(getClass().getResourceAsStream(cardName + ".png"))));
         } catch (IOException e) {
             e.printStackTrace();
         }
