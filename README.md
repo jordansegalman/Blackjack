@@ -8,7 +8,7 @@ Follow these instructions to play Blackjack. It can be played singleplayer by ru
 
 ### Prerequisites
 
-* Java Runtime Environment
+* Java SE 9
 
 ### Running
 
