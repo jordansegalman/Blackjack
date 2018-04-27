@@ -68,6 +68,12 @@ Options that can be used when running the server and client are listed below. No
 * Server port to connect to.
 * Default: 44444
 
+## Screenshots
+
+![Player Turn](screenshots/turn.png)
+
+![Round Outcome](screenshots/outcome.png)
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE.md](LICENSE.md) file for details.
